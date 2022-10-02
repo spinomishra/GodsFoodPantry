@@ -1,10 +1,10 @@
 import java.util.*;
 import javax.swing.*;
 import java.io.*;
-import Pantry.*;
 
 class Main {
-  public static void main(String[] args) {    
+ /*
+    public static void main(String[] args) {
     // Create and show UI
     JFrame frame = new JFrame("Pantry Manager");
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -14,7 +14,8 @@ class Main {
     frame.setLocationRelativeTo(null);      
     frame.setVisible(true);    
   }
-  
+  */
+
   /**
   * 
   * 

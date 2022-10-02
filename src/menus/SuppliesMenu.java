@@ -1,5 +1,5 @@
-package Menus;
-import Pantry.*;
+package menus;
+import pantry.*;
 
 public class SuppliesMenu extends Menu {
   public SuppliesMenu()

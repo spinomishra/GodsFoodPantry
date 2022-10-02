@@ -1,4 +1,4 @@
-package Pantry;
+package pantry;
 import java.util.*;
 import java.io.FileOutputStream;
 import java.io.FileInputStream;

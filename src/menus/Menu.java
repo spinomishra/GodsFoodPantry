@@ -1,7 +1,6 @@
-package Menus;
+package menus;
 
 import javax.swing.*;
-import java.awt.*;
 
 /*
 Abstract menu class

@@ -1,4 +1,4 @@
-package Pantry;
+package pantry;
 import java.util.Random;
 import java.io.Serializable;
 

@@ -1,13 +1,10 @@
-package Pantry;
+package pantry;
 
 import java.util.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
-
-import java.text.*;
-import java.io.Serializable;
 
 public class VolunteerDialogbox extends JPanel
                                     implements ListSelectionListener {

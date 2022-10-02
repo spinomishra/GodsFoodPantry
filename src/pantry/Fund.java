@@ -1,4 +1,4 @@
-package Pantry;
+package pantry;
 
 public class Fund{
 

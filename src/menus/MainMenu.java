@@ -1,9 +1,8 @@
-package Menus;
-import Pantry.*;
+package menus;
+import pantry.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import javax.swing.event.*;
 import javax.swing.border.*;
 
 public class MainMenu extends Menu implements ActionListener{  
@@ -79,7 +78,7 @@ public class MainMenu extends Menu implements ActionListener{
         
         case 1:  // Volunteers
         {
-          Pantry pantry = Pantry.getInstance();     
+          Pantry pantry = Pantry.getInstance();
           VolunteerDialogbox.createAndShowGUI(parent, pantry.volunteers);          
           //Schedule a job for the event-dispatching thread:
           //creating and showing this application's GUI.

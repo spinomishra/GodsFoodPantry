@@ -27,7 +27,7 @@ public class Volunteer extends Person
   // };
 
   /* *
-  * constucts a Volunteer object with inputted data
+  * constucts a Volunteer object with inputted pantry.data
   * @param volName the name of the volunteer
   */
   public Volunteer(String volName){

@@ -79,7 +79,7 @@ public class MainMenu extends Menu implements ActionListener{
         case 1:  // Volunteers
         {
           Pantry pantry = Pantry.getInstance();
-          VolunteerDialogbox.createAndShowGUI(parent, pantry.volunteers);          
+          VolunteerDialogbox.createAndShowGUI(parent, pantry.get_Data().get_Volunteers());
           //Schedule a job for the event-dispatching thread:
           //creating and showing this application's GUI.
           // javax.swing.SwingUtilities.invokeLater(new Runnable() {
@@ -104,14 +104,14 @@ public class MainMenu extends Menu implements ActionListener{
       case 4: 
         {
           Pantry p = Pantry.getInstance();
-          p.Load() ;
+          p.Open();
         }
         break;
         
       case 5:
         {
           Pantry p = Pantry.getInstance();
-          p.Save() ;
+          p.get_Data().Save();
         }
         break;
         

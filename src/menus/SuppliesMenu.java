@@ -24,14 +24,14 @@ public class SuppliesMenu extends Menu {
       case 0: 
         {
           Pantry p = Pantry.getInstance();
-          p.Load() ;
+          p.Open();
         }
         return true;
         
       case 1:
         {
           Pantry p = Pantry.getInstance();
-          p.Save() ;
+          p.get_Data().Save() ;
         }
         return true;
         

@@ -100,8 +100,8 @@ public abstract class Person implements Serializable {
   }
 
 /**
-  * formats the data of the Volunteer as a string
-  * @return the string format of the data
+  * formats the pantry.data of the Volunteer as a string
+  * @return the string format of the pantry.data
   */
   public String toString(){
     return getName() + ":" + getAddress() + ":" + getContactNumber();

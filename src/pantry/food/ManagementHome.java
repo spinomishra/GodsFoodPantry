@@ -147,7 +147,7 @@ public class ManagementHome extends JFrame implements IHome {
 
                 private void OnManageVolunteers(ActionEvent e) {
                     Pantry pantry = Pantry.getInstance();
-                    VolunteerDialogbox.createAndShowGUI(mainFrame, pantry.volunteers);
+                    VolunteerDialogbox.createAndShowGUI(mainFrame, pantry.get_Data().get_Volunteers());
                     //Schedule a job for the event-dispatching thread:
                     //creating and showing this application's GUI.
                     // javax.swing.SwingUtilities.invokeLater(new Runnable() {

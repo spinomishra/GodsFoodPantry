@@ -1,9 +1,9 @@
 package pantry.food;
 
+import pantry.Pantry;
 import pantry.interfaces.IHome;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -34,9 +34,6 @@ public abstract class Home {
             prop.load(propsInput);
 
             pantryName = prop.getProperty("PANTRY_NAME");
-        }
-        catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -56,6 +53,9 @@ public abstract class Home {
                 break;
         }
 
+        Pantry.getInstance().Open();
+
+        assert home != null;
         home.ShowHome() ;
 
         /* Create and display the form */
@@ -65,5 +65,7 @@ public abstract class Home {
                 finalHome.Run();
             }
         });
+
+        Pantry.getInstance().Close();
     }
 }

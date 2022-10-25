@@ -2,6 +2,7 @@ package pantry.food;
 
 import pantry.Pantry;
 import pantry.VolunteerDialogbox;
+import pantry.auth.Login;
 import pantry.interfaces.IHome;
 import pantry.ui.SideMenuItem;
 import pantry.ui.SideMenuPanel;
@@ -54,23 +55,33 @@ public class ManagementHome extends JFrame implements IHome {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setVisible(true);
+
+        Login login = new Login();
+        login.Show(this) ;
     }
 
     /**
      * Initialize home screen
      */
     private  void initHome() {
+        mainPanel = new JPanel();
+        ShowDashboard();
+    }
+
+    /**
+     * Show management dashboard
+     */
+    private void ShowDashboard(){
         setTitle("PantryWare - "+ pantryName);
         setSize(800, 600);
 
-        mainPanel = new javax.swing.JPanel();
         mainPanel.setBackground(new java.awt.Color(210, 231, 255));
 
         sideMenuPanel = new SideMenuPanel(this, mainPanel);
         sideMenuPanel.setSpeed(4);
-        sideMenuPanel.setResponsiveMinWidth(200);
+        sideMenuPanel.setResponsiveMinWidth(100);
         sideMenuPanel.addMenu(CreateMenuList());
-        sideMenuPanel.setMaxWidth(400);
+        sideMenuPanel.setMaxWidth(300);
 
         jPanel1 = new javax.swing.JPanel();
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);

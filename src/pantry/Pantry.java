@@ -25,7 +25,6 @@ public class Pantry {
   {
     if (instance == null) {
         instance = new Pantry();
-        instance.Open();
     }
 
     return instance;

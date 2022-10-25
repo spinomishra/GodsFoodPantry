@@ -22,21 +22,22 @@ public class PantryData {
     public PantryData(){
         Reset();
     }
+
     /**
      * Gets Employees list
-     * @return
+     * @return employee list
      */
     public ArrayList<String>    get_Employees() {return employees;}
 
     /**
      * Gets Donors list
-     * @return
+     * @return donors list
      */
     public ArrayList<Donor>     get_Donors() {return donors;}
 
     /**
      * Gets volunteers list
-     * @return
+     * @return volunteer list
      */
     public ArrayList<Volunteer> get_Volunteers() {return volunteers;}
 
@@ -48,6 +49,9 @@ public class PantryData {
         recordsFile.Load();
     }
 
+    /**
+     * Save records in the file
+     */
     public void Save() {
         FileAdapter recordsFile = new FileAdapter(recordsFileName, this);
         recordsFile.Save();
@@ -55,9 +59,9 @@ public class PantryData {
 
     /**
      * Read from input stream
-     * @param ois
-     * @throws IOException
-     * @throws ClassNotFoundException
+     * @param ois ObjectInputStream type
+     * @throws IOException Input output exception
+     * @throws ClassNotFoundException Class not found exception
      */
     protected void ReadFrom(ObjectInputStream ois) throws IOException, ClassNotFoundException {
         if (ois != null) {
@@ -71,8 +75,8 @@ public class PantryData {
 
     /**
      * Write to output stream
-     * @param oos
-     * @throws IOException
+     * @param oos output stream
+     * @throws IOException input output exception
      */
     protected void WriteTo(ObjectOutputStream oos) throws IOException {
         if (oos != null) {

@@ -2,20 +2,48 @@ package pantry;
 import java.util.Random;
 import java.io.Serializable;
 
+/**
+ * Person class represents any human. It collects all necessary information like name and contact info.
+ * No personally identifiable information is collected.
+ */
 public abstract class Person implements Serializable {
-  int Id;
-  String fName;
-  String lName;
-  String Address;
-  String Mobile_number;
+  /**
+   * Unique identifier assigned to the person
+   */
+  private int Id;
+  /**
+   * First Name
+   */
+  private String fName;
+  /**
+   * Last Name
+   */
+  private String lName;
+  /**
+   * Mailing address
+   */
+  private String Address;
+  /**
+   * Contact Mobile number
+   */
+  private String Mobile_number;
 
+  /**
+   * Constructor
+   * @param fname first name
+   * @param lname last name
+   */
   public Person(String fname, String lname)
   {
     generateId() ;
     fName = fname ;
     lName = lname ;
   }
-  
+
+  /**
+   * Constructor
+   * @param fullname Full name
+   */
   public Person(String fullname)
   {
     String[] tokens = fullname.split(" ");
@@ -32,12 +60,25 @@ public abstract class Person implements Serializable {
     generateId();
   }
 
+  /**
+   * Constructor
+   * @param fname First name
+   * @param lname Last name
+   * @param address Mailing address
+   */
   public Person(String fname, String lname, String address)
   {
     this(fname, lname);
     setAddress(address);
   }
 
+  /**
+   * Constructor
+   * @param fname First name
+   * @param lname Last name
+   * @param address Mailing address
+   * @param phone_no Contact mobile number
+   */
   public Person(String fname, String lname, String address, String phone_no)
   {
     this(fname, lname);
@@ -45,23 +86,25 @@ public abstract class Person implements Serializable {
     setContactPhone(phone_no);
   }
 
-  /* *
-  * sets address for the person
-  */
+  /**
+   * sets address for the person
+   * @param address address
+   */
   public void setAddress(String address)
   {
       Address = address;
   }
 
-  /* *
-  * sets contact phone number for the person
-  */
+  /**
+   * sets contact phone number for the person
+   * @param phone_no contact mobile phone number
+   */
   public void setContactPhone(String phone_no)
   {
       Mobile_number = phone_no;
   }
 
-  /* *
+  /**
   * returns the name of the person
   * @return person's name
   */
@@ -70,7 +113,7 @@ public abstract class Person implements Serializable {
     return (fName + " " + lName).trim();
   }
 
-    /* *
+  /**
   * returns person's address
   * @return person's address
   */
@@ -79,7 +122,7 @@ public abstract class Person implements Serializable {
     return Address;
   }
 
-  /* *
+  /**
   * returns person's contact number
   * @return person's phone number
   */
@@ -88,7 +131,7 @@ public abstract class Person implements Serializable {
     return Mobile_number;
   }
 
-  /* *
+  /**
   * generates an identity number for the person
   */
   void generateId()
@@ -99,7 +142,7 @@ public abstract class Person implements Serializable {
       Id = random.nextInt(32767);
   }
 
-/**
+  /**
   * formats the pantry.data of the Volunteer as a string
   * @return the string format of the pantry.data
   */

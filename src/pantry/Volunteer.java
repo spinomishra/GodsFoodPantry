@@ -3,6 +3,9 @@ import java.util.*;
 
 public class Volunteer extends Person
 {
+  /**
+   * Volunteer activity history
+   */
   private ArrayList<ActivityInfo> activityHistory;
 
   // private int hoursWorked;

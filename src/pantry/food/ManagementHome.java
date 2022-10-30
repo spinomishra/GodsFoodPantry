@@ -1,7 +1,6 @@
 package pantry.food;
 
 import pantry.Pantry;
-import pantry.VolunteerDialogbox;
 import pantry.auth.Login;
 import pantry.interfaces.IHome;
 import pantry.ui.*;

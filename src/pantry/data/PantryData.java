@@ -9,11 +9,18 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
+/**
+ * Pantry data structure
+ */
 public class PantryData {
+    // pantry data is stored in pantry.rec file
     String recordsFileName = "pantry.rec";
 
+    // employees list
     ArrayList<Employee> employees = null;
+    // donors list
     ArrayList<Donor> donors  = null;
+    // volunteers list
     ArrayList<Volunteer> volunteers  = null;
 
     /**

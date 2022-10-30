@@ -1,10 +1,31 @@
 package pantry;
 
+/**
+ * Activities enumeration
+ */
 public enum Activities {
-  FundRaising,  // FundRasing
-  Serving,      // Food Serving
-  Packaging,    // Food Packaging
-  Stacking,     // Food Stacking
-  Cleaning,     // Cleaning operations
-  MOV,           // Meals On Wheels - Dropping off food
+  /**
+   * Fund raising
+   */
+  FundRaising,
+  /**
+   * Food Serving
+   */
+  Serving,
+  /**
+   * Food Packaging
+   */
+  Packaging,
+  /**
+   * Food and other content stacking
+   */
+  Stacking,
+  /**
+   * Cleaning operations
+   */
+  Cleaning,
+  /**
+   * Food Delivery - Meals on wheels
+   */
+  MOV,
 }

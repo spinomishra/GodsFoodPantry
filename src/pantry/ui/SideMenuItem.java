@@ -12,9 +12,9 @@ public class SideMenuItem extends JButton {
     public static int MENUITEM_HEIGHT = 45;
     public static int MENUITEM_WIDTH = 70;
 
-    private Color backgroundColor = new Color(16,84,129);
-    private Color foregroundColor = new Color(195, 217, 233);
-    private Color hoverColor = new Color(151,83,74);
+    private final Color backgroundColor = new Color(16,84,129);
+    private final Color foregroundColor = new Color(195, 217, 233);
+    private final Color hoverColor = new Color(151,83,74);
 
     private ImageIcon icon ;
     private ImageIcon icon_hover;

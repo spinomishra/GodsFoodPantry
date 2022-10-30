@@ -1,35 +1,40 @@
 package pantry.food;
 
 import pantry.Pantry;
-import pantry.VolunteerDialogbox;
 import pantry.auth.Login;
 import pantry.interfaces.IHome;
-import pantry.ui.SideMenuItem;
-import pantry.ui.SideMenuPanel;
+import pantry.ui.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
+import java.util.*;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Home screen for Food Pantry Management
  */
 public class ManagementHome extends JFrame implements IHome {
-    /**
-     * Panel1
-     */
-    JPanel jPanel1;
+    String pantryName;
     /**
      * Main Panel
      */
-    JPanel mainPanel;
+    MainPanel mainPanel;
+
+    /**
+     * Card for main panel
+     */
+    Map<String, JPanel>  mainPanelCards ;
+
     /**
      * Side Menu Panel
      */
     SideMenuPanel sideMenuPanel;
-    String pantryName;
+    /**
+     * Panel1
+     */
+    JPanel jPanel1;
 
     /**
      * Constructor
@@ -37,6 +42,7 @@ public class ManagementHome extends JFrame implements IHome {
      */
     ManagementHome(String pn){
         pantryName = pn;
+        mainPanelCards = new HashMap<String, JPanel>();
     }
 
     /**
@@ -52,8 +58,21 @@ public class ManagementHome extends JFrame implements IHome {
      */
     @Override
     public void Run() {
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        // setting default close operation to do nothing.. so that I can handle it with windowClosing action handler
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         setLocationRelativeTo(null);
+
+        this.addWindowListener(new WindowAdapter() {
+            /**
+             * Invoked when a window is in the process of being closed.
+             * @param e window event
+             */
+            @Override
+            public void windowClosing(WindowEvent e) {
+                handleClosing() ;
+            }
+        });
+
         setVisible(true);
 
         Login login = new Login();
@@ -61,20 +80,38 @@ public class ManagementHome extends JFrame implements IHome {
     }
 
     /**
-     * Initialize home screen
+     * Invoked when a window is in the process of being closed.
+     */
+    private void handleClosing() {
+        // save pantry data
+        Pantry.getInstance().get_Data().Save();
+        var result = JOptionPane.showConfirmDialog(this,
+                "Are you sure you want to close this window?", "Close Window ?",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+
+        if (result == JOptionPane.YES_OPTION){
+            Pantry.getInstance().Close();
+            System.exit(0);
+        }
+    }
+
+    /**
+     * Initializes home screen
      */
     private  void initHome() {
-        mainPanel = new JPanel();
+        mainPanel = new MainPanel(this);
         ShowDashboard();
     }
 
     /**
-     * Show management dashboard
+     * Shows management dashboard
      */
     private void ShowDashboard(){
         setTitle("PantryWare - "+ pantryName);
         setSize(800, 600);
 
+        mainPanel.initComponent();
         mainPanel.setBackground(new java.awt.Color(210, 231, 255));
 
         sideMenuPanel = new SideMenuPanel(this, mainPanel);
@@ -123,17 +160,12 @@ public class ManagementHome extends JFrame implements IHome {
             menuItems.add(new SideMenuItem("", "", SideMenuItem.MENUITEM_WIDTH, 10));
 
             menuItems.add(new SideMenuItem("Employees", "../../images/employees.png", new ActionListener() {
-                @Override
                 public void actionPerformed(ActionEvent e) {
-                    OnManageEmployees(e);
-                }
-
-                private void OnManageEmployees(ActionEvent e) {
+                    mainPanel.Show(EmployeeManagerCard.Title);
                 }
             }));
 
             menuItems.add(new SideMenuItem("Inventory", "../../images/inventory.png", new ActionListener() {
-                @Override
                 public void actionPerformed(ActionEvent e) {
                     OnManageInventory(e);
                 }
@@ -143,32 +175,18 @@ public class ManagementHome extends JFrame implements IHome {
             }));
 
             menuItems.add(new SideMenuItem("Donations", "../../images/donations.png", new ActionListener() {
-                @Override
                 public void actionPerformed(ActionEvent e) { OnManageDonations(e); }
-
                 private void OnManageDonations(ActionEvent e) {
                 }
             }));
 
             menuItems.add(new SideMenuItem("Volunteers", "../../images/volunteer.png", new ActionListener() {
-                @Override
                 public void actionPerformed(ActionEvent e) {
-                    OnManageVolunteers(e);
-                }
-
-                private void OnManageVolunteers(ActionEvent e) {
-                    Pantry pantry = Pantry.getInstance();
-                    VolunteerDialogbox.createAndShowGUI(mainFrame, pantry.get_Data().get_Volunteers());
-                    //Schedule a job for the event-dispatching thread:
-                    //creating and showing this application's GUI.
-                    // javax.swing.SwingUtilities.invokeLater(new Runnable() {
-                    //     public void run() {
-                    //         VolunteerDialogbox.createAndShowGUI(parent, pantry.volunteers);
-                    //     }
-                    // });
+                    mainPanel.Show(VolunteerManagerCard.Title);
                 }
             }));
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
 

@@ -7,10 +7,13 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
@@ -19,7 +22,7 @@ import java.util.HashMap;
 /**
  * Login class represents login and registration UI
  */
-public class Login implements DocumentListener, ActionListener{
+public class Login implements DocumentListener, ActionListener, KeyListener {
     // login page controls
     JTextField      username;
     JPasswordField  password;
@@ -39,6 +42,7 @@ public class Login implements DocumentListener, ActionListener{
     final String REGISTER_CARD = "RegisterNewUser";
     HashMap<String, String> passwordDB = null;
     JDialog modelDialog = null;
+    String activePage ;
 
     public void Show(final JFrame frame) {
         modelDialog = new JDialog(frame, "PantryWare - Manager Login", Dialog.ModalityType.DOCUMENT_MODAL);
@@ -71,6 +75,7 @@ public class Login implements DocumentListener, ActionListener{
     public void ShowLoginPage() {
         modelDialog.setTitle("PantryWare - Login");
         cardLayout.show(cards, LOGIN_CARD);
+        activePage = LOGIN_CARD;
     }
 
     /**
@@ -79,6 +84,7 @@ public class Login implements DocumentListener, ActionListener{
     public void ShowUserRegistrationPage(){
         modelDialog.setTitle("PantryWare - Register New User");
         cardLayout.show(cards, REGISTER_CARD);
+        activePage = REGISTER_CARD;
     }
 
     /**
@@ -95,7 +101,6 @@ public class Login implements DocumentListener, ActionListener{
         cards.add(registerCard, REGISTER_CARD) ;
         dialog.add(cards);
     }
-
 
     /**
      * Adds register user card
@@ -114,6 +119,7 @@ public class Login implements DocumentListener, ActionListener{
 
         reg_username = new JTextField();
         reg_username.setBounds(leftx+107, 8, 193, 28);
+        reg_username.addKeyListener(this);
         registerPanel.add(reg_username);
 
         JLabel pwdLbl = new JLabel("Password");
@@ -124,6 +130,7 @@ public class Login implements DocumentListener, ActionListener{
         reg_password.getDocument().addDocumentListener(this);
         reg_password.getDocument().putProperty("owner", reg_password); //set the owner
         reg_password.setBounds(leftx+107, 46, 193, 28);
+        reg_password.addKeyListener(this);
         registerPanel.add(reg_password);
 
         JLabel confirm_pwd_lbl = new JLabel("Confirm Password");
@@ -134,6 +141,7 @@ public class Login implements DocumentListener, ActionListener{
         conf_password.getDocument().addDocumentListener(this);
         conf_password.getDocument().putProperty("owner", conf_password); //set the owner
         conf_password.setBounds(leftx+107, 84, 193, 28);
+        conf_password.addKeyListener(this);
         registerPanel.add(conf_password);
 
         regButton = new JButton("Register");
@@ -168,6 +176,7 @@ public class Login implements DocumentListener, ActionListener{
 
         username = new JTextField();
         username.setBounds(leftx, 30, 193, 28);
+        username.addKeyListener(this);
         loginPanel.add(username);
 
         JLabel pwdLbl = new JLabel("Password");
@@ -176,6 +185,7 @@ public class Login implements DocumentListener, ActionListener{
 
         password = new JPasswordField();
         password.setBounds(leftx, 90, 193, 28);
+        password.addKeyListener(this);
         loginPanel.add(password);
 
         loginButton = new JButton("Login");
@@ -247,7 +257,7 @@ public class Login implements DocumentListener, ActionListener{
      */
     private String hash(char[] chars) {
         CharBuffer charBuffer = CharBuffer.wrap(chars);
-        ByteBuffer byteBuffer = Charset.forName("UTF-8").encode(charBuffer);
+        ByteBuffer byteBuffer = StandardCharsets.UTF_8.encode(charBuffer);
         byte[] bytes = Arrays.copyOfRange(byteBuffer.array(),
                 byteBuffer.position(), byteBuffer.limit());
         Arrays.fill(byteBuffer.array(), (byte) 0); // clear sensitive data
@@ -400,5 +410,50 @@ public class Login implements DocumentListener, ActionListener{
     @Override
     public void changedUpdate(DocumentEvent e) {
           UpdateRegisterButton(e);
+    }
+
+    /**
+     * Invoked when a key has been typed.
+     * See the class description for {@link KeyEvent} for a definition of
+     * a key typed event.
+     *
+     * @param e the event to be processed
+     */
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    /**
+     * Invoked when a key has been pressed.
+     * See the class description for {@link KeyEvent} for a definition of
+     * a key pressed event.
+     *
+     * @param e the event to be processed
+     */
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_ENTER){
+            if (activePage == LOGIN_CARD) {
+                if (loginButton.isEnabled()){
+                    loginButton.doClick();
+                }
+            }
+            else if (activePage == REGISTER_CARD) {
+                if (regButton.isEnabled())
+                    regButton.doClick();
+            }
+        }
+    }
+
+    /**
+     * Invoked when a key has been released.
+     * See the class description for {@link KeyEvent} for a definition of
+     * a key released event.
+     *
+     * @param e the event to be processed
+     */
+    @Override
+    public void keyReleased(KeyEvent e) {
     }
 }

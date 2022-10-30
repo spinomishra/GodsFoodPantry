@@ -1,8 +1,8 @@
 package pantry.data;
 
 import pantry.Donor;
+import pantry.Employee;
 import pantry.Volunteer;
-import pantry.data.FileAdapter;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class PantryData {
     String recordsFileName = "pantry.rec";
 
-    ArrayList<String> employees = null;
+    ArrayList<Employee> employees = null;
     ArrayList<Donor> donors  = null;
     ArrayList<Volunteer> volunteers  = null;
 
@@ -27,7 +27,7 @@ public class PantryData {
      * Gets Employees list
      * @return employee list
      */
-    public ArrayList<String>    get_Employees() {return employees;}
+    public ArrayList<Employee>    get_Employees() {return employees;}
 
     /**
      * Gets Donors list
@@ -66,10 +66,9 @@ public class PantryData {
     protected void ReadFrom(ObjectInputStream ois) throws IOException, ClassNotFoundException {
         if (ois != null) {
             Reset() ;
-
             volunteers.addAll((ArrayList<Volunteer>) ois.readObject());
             donors.addAll((ArrayList<Donor>) ois.readObject());
-            employees.addAll((ArrayList<String>) ois.readObject());
+            employees.addAll((ArrayList<Employee>) ois.readObject());
         }
     }
 
@@ -91,7 +90,7 @@ public class PantryData {
      */
     void Reset(){
         if (employees == null)
-            employees = new ArrayList<String>();
+            employees = new ArrayList<Employee>();
         else
             employees.clear();
 

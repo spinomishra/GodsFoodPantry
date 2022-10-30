@@ -65,7 +65,5 @@ public abstract class Home {
                 finalHome.Run();
             }
         });
-
-        Pantry.getInstance().Close();
     }
 }

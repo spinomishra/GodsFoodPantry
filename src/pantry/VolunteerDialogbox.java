@@ -9,22 +9,22 @@ import javax.swing.event.*;
 public class VolunteerDialogbox extends JPanel
                                     implements ListSelectionListener {
 
-    private JList list;
-    private DefaultListModel listModel;
+    private final JList list;
+    private final DefaultListModel listModel;
                                       
     //Labels to identify the fields
     private JLabel existingVolunteers;
  
     //Strings for the labels
-    private static String volunteers = "Volunteers: ";
+    private static final String volunteers = "Volunteers: ";
                                       
     private static final String addNew = "New";
     private static final String removeLabel = "Delete";
-    private JButton removeButton;
-    private JTextField nameTextBox;
-    private JButton scheduleActivityButton  ;
+    private final JButton removeButton;
+    private final JTextField nameTextBox;
     ArrayList<Volunteer> Volunteers ;
-                                      
+    private final JButton scheduleActivityButton  ;
+
     public VolunteerDialogbox(ArrayList<Volunteer> volunteers) {
       super(new BorderLayout());
       listModel = new DefaultListModel();
@@ -123,7 +123,7 @@ public class VolunteerDialogbox extends JPanel
     //This listener is shared by the text field and the hire button.
     class HireListener implements ActionListener, DocumentListener {
         private boolean alreadyEnabled = false;
-        private JButton button;
+        private final JButton button;
  
         public HireListener(JButton button) {
             this.button = button;

@@ -29,16 +29,16 @@ public class Volunteer extends Person
   //   Month.DECEMBER
   // };
 
-  /* *
-  * constucts a Volunteer object with inputted pantry.data
+  /**
+  * Constructs a Volunteer object with pantry.data
   * @param volName the name of the volunteer
   */
   public Volunteer(String volName){
     super(volName);
   }
   
-  /* *
-  * returns the actvity the volunteer did
+  /**
+  * returns the activity the volunteer did
   * @return the activity's name
   */
   public ActivityInfo getUpcomingActivity(){

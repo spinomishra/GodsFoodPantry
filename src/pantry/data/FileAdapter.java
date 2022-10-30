@@ -1,11 +1,7 @@
 package pantry.data;
 
-import pantry.Donor;
-import pantry.Volunteer;
 import pantry.interfaces.IDataConnector;
-
 import java.io.*;
-import java.util.ArrayList;
 
 /**
  * Persistent record in a local file
@@ -18,7 +14,8 @@ public class FileAdapter extends PantryData implements IDataConnector {
 
     /**
      * Constructor
-     * @param fileName - filename
+     * @param fn filename
+     * @param data pantry data
      */
     public FileAdapter(String fn, PantryData data){
         fileName = fn;

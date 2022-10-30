@@ -1,3 +1,6 @@
 /out/
 *.class
+*.xml
+*.html
+/docs/
 

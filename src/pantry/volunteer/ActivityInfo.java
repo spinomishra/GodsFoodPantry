@@ -1,4 +1,6 @@
-package pantry;
+package pantry.volunteer;
+import pantry.volunteer.Activities;
+
 import java.time.*;
 
 /**
@@ -8,7 +10,7 @@ class ActivityInfo{
   /**
    * Activity
    */
-  private Activities     activity;
+  private Activities activity;
   /**
    * Activity start date time
    */

@@ -1,4 +1,4 @@
-package pantry;
+package pantry.volunteer;
 
 /**
  * Activities enumeration

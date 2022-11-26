@@ -1,7 +1,7 @@
 /**
  * 
  */
-package pantry;
+package pantry.person.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Dialog;
@@ -33,7 +33,7 @@ public class PersonInfo extends JDialog implements ActionListener, DocumentListe
 	JTextField contactTextBox; 
 	JButton okButton;
 	JButton cancelButton;
-	int option = JOptionPane.CANCEL_OPTION;
+	protected int option = JOptionPane.CANCEL_OPTION;
 
 	/**
 	 * @param frame - parent component
@@ -63,11 +63,7 @@ public class PersonInfo extends JDialog implements ActionListener, DocumentListe
 		setResizable(false); 
 		setLocationRelativeTo(getParent());
 
-		JPanel containerPanel = new JPanel();		
-		GridLayout layout = new GridLayout(3,2,5,5);
-		containerPanel.setLayout(layout);
-		containerPanel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));	
-	    addControlsToTopPanel(containerPanel);
+		JPanel containerPanel = addControlsToTopPanel();
 		
 		JPanel containerPanel2 = new JPanel();		
 		GridLayout layout2 = new GridLayout(1,2,5,5);
@@ -115,7 +111,12 @@ public class PersonInfo extends JDialog implements ActionListener, DocumentListe
 	 * adding controls to top panel
 	 * @param containerPanel
 	 */
-	protected void addControlsToTopPanel(JPanel containerPanel) {
+	protected JPanel addControlsToTopPanel() {
+		JPanel containerPanel = new JPanel();
+		GridLayout layout = new GridLayout(3,2,5,5);
+		containerPanel.setLayout(layout);
+		containerPanel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+
 		JLabel nameLabel = new JLabel("Name", JLabel.LEFT);
 	    nameTextBox = new JTextField(10);
 		nameTextBox.addActionListener(this);
@@ -129,6 +130,8 @@ public class PersonInfo extends JDialog implements ActionListener, DocumentListe
 	    contactTextBox.getDocument().addDocumentListener(this);
 	    containerPanel.add(phoneLabel);
 	    containerPanel.add(contactTextBox );
+
+		return containerPanel;
 	}
 
 	/**

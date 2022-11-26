@@ -1,7 +1,7 @@
-package pantry.ui;
+package pantry.volunteer.ui;
 
 import pantry.Pantry;
-import pantry.Volunteer;
+import pantry.volunteer.Volunteer;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;

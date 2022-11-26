@@ -1,5 +1,8 @@
 package pantry.ui;
 
+import pantry.employee.ui.EmployeeManagerCard;
+import pantry.volunteer.ui.VolunteerManagerCard;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
@@ -38,7 +41,9 @@ public class MainPanel extends JPanel {
     public void initComponent(){
         cardLayout = new CardLayout();
         this.setLayout(cardLayout);
+    }
 
+    public void addManagementCards(){
         JPanel empCard = new EmployeeManagerCard(parentWindow);
         cards.put(EmployeeManagerCard.Title, empCard);
 

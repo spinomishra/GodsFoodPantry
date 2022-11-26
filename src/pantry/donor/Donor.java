@@ -1,4 +1,6 @@
-package pantry;
+package pantry.donor;
+
+import pantry.person.Person;
 
 /**
  * Donor class represents donors. It captures donor information like name and contact info

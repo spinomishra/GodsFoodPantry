@@ -1,8 +1,8 @@
 package pantry.data;
 
-import pantry.Donor;
-import pantry.Employee;
-import pantry.Volunteer;
+import pantry.donor.Donor;
+import pantry.employee.Employee;
+import pantry.volunteer.Volunteer;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

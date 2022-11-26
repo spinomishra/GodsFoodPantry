@@ -1,4 +1,7 @@
-package pantry;
+package pantry.volunteer;
+
+import pantry.person.Person;
+
 import java.util.*;
 
 public class Volunteer extends Person

@@ -1,9 +1,11 @@
-package pantry.food;
+package pantry;
 
 import pantry.Pantry;
 import pantry.auth.Login;
+import pantry.employee.ui.EmployeeManagerCard;
 import pantry.interfaces.IHome;
 import pantry.ui.*;
+import pantry.volunteer.ui.VolunteerManagerCard;
 
 import javax.swing.*;
 import java.awt.*;
@@ -76,7 +78,11 @@ public class ManagementHome extends JFrame implements IHome {
         setVisible(true);
 
         Login login = new Login();
-        login.Show(this) ;
+        if (login.Show(this)) {
+            // authenticated successfully
+            mainPanel.addManagementCards();
+            mainPanel.Show(EmployeeManagerCard.Title);
+        }
     }
 
     /**
@@ -151,7 +157,7 @@ public class ManagementHome extends JFrame implements IHome {
 
     /**
      * Create menu items list
-     * @return menu item list
+     * @return list of menu items
      */
     private List<SideMenuItem> CreateMenuList(){
         JFrame mainFrame = this;

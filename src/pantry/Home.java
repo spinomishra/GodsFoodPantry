@@ -1,8 +1,8 @@
-package pantry.food;
+package pantry;
 
-import pantry.Pantry;
 import pantry.interfaces.IHome;
 
+import javax.swing.*;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
@@ -38,23 +38,26 @@ public abstract class Home {
             e.printStackTrace();
         }
 
-        if((mode == null) || !mode.trim().isEmpty())
-            mode = "manage";
+        int response = JOptionPane.showConfirmDialog(null,"Are you an employee? Press Cancel if you want to exit. ", "Pantryware", JOptionPane.YES_NO_CANCEL_OPTION);
+        switch (response) {
+            case JOptionPane.YES_OPTION :{
+                mode = "manage";
+                home = new ManagementHome(pantryName);
+            }
+            break;
 
-        // show the application in the specific mode as requested by caller
-        switch (mode){
-            // home screen is volunteer home
-            case "volunteer":
+            case JOptionPane.NO_OPTION: {
+                mode = "volunteer";
                 //home = new VolunteerHome();
-                break;
+            }
+            break;
 
-            default:
-                home =new ManagementHome(pantryName);
+            case JOptionPane.CANCEL_OPTION:
+                System.exit(0);
                 break;
         }
 
         Pantry.getInstance().Open();
-
         assert home != null;
         home.ShowHome() ;
 

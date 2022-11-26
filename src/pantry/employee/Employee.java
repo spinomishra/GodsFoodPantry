@@ -1,10 +1,10 @@
-package pantry;
-import java.util.*;
+package pantry.employee;
+import pantry.dataprotection.Hash;
+import pantry.person.Person;
 
 
 /**
  * Employee class derived from Person
- *
  */
 public class Employee extends Person
 {
@@ -15,6 +15,9 @@ public class Employee extends Person
 	public enum EmployeeRole {Owner, Manager, Cook, Cleaner, Assistant, Validator, Accountant, Driver}
 	
 	private EmployeeRole Role;
+
+	// Employee Social Security hash Info
+	private String SSNHash;
 
 	/**
 	 * Constructs a Employee object with data
@@ -44,18 +47,37 @@ public class Employee extends Person
 	
 	/**
 	 * Sets employee role
-	 * @param employee role
+	 * @param role Employee role
 	 */	
 	public void setRole(EmployeeRole role) {
 		Role = role;
 	}
 
 	/**
-	 * formats the data of the Volunteer as a string
-	 * @return the string format of the data
+	 * Gets social security number
+	 * @return anonymized social security
 	 */
-	public String toString(){
-		return getName() + ":" + Role.toString() + ":" + getContactNumber() + ":" + getAddress() ;
+	public String getSSN(){
+		// display SSN in clear only if super admin
+		return "**-**-****";
+	}
+
+	public void setSSN(String hash){
+		SSNHash = hash;
+	}
+
+	/**
+	 * Validate Social Security Number
+	 * @param ssn Social Security Number
+	 * @return true if hash compares to known SSN
+	 */
+	public boolean validateSSN(String ssn){
+		if (ssn != null && !ssn.isEmpty()){
+			String ssnHash = Hash.Sha2Hash(ssn.toCharArray());
+			return (ssnHash.compareTo(SSNHash) == 0);
+		}
+
+		return false;
 	}
 
 	/**
@@ -96,5 +118,13 @@ public class Employee extends Person
 		}
 
 		return false;
+	}
+
+	/**
+	 * formats the data of the Volunteer as a string
+	 * @return the string format of the data
+	 */
+	public String toString(){
+		return getName() + ":" + Role.toString() + ":" + getContactNumber() + ":" + getAddress() ;
 	}
 }

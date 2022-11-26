@@ -1,4 +1,4 @@
-package pantry;
+package pantry.supplies;
 public class Supply{
 
   

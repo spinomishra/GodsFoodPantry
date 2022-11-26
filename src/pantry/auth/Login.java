@@ -1,5 +1,7 @@
 package pantry.auth;
 
+import pantry.dataprotection.Hash;
+
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -10,12 +12,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.*;
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -43,8 +39,9 @@ public class Login implements DocumentListener, ActionListener, KeyListener {
     HashMap<String, String> passwordDB = null;
     JDialog modelDialog = null;
     String activePage ;
+    boolean authenticated = false;
 
-    public void Show(final JFrame frame) {
+    public boolean Show(final JFrame frame) {
         modelDialog = new JDialog(frame, "PantryWare - Manager Login", Dialog.ModalityType.DOCUMENT_MODAL);
 
         // set dialog box size
@@ -67,6 +64,8 @@ public class Login implements DocumentListener, ActionListener, KeyListener {
             ShowLoginPage() ;
 
         modelDialog.setVisible(true);
+
+        return authenticated;
     }
 
     /**
@@ -231,6 +230,7 @@ public class Login implements DocumentListener, ActionListener, KeyListener {
             if (!Authenticate(username.getText(), password.getPassword()))
                 JOptionPane.showMessageDialog(null, "Username or Password mismatch ");
             else {
+                authenticated = true ;
                 // close login dialog
                 modelDialog.dispose();
             }
@@ -242,51 +242,12 @@ public class Login implements DocumentListener, ActionListener, KeyListener {
             ShowUserRegistrationPage();
         }
         else if (e.getSource() == regButton) {
-            passwordDB.put(reg_username.getText(), hash(reg_password.getPassword()));
+            passwordDB.put(reg_username.getText(), Hash.Sha2Hash(reg_password.getPassword()));
             SavePasswordDb(passwordDB);
             username.setText(reg_username.getText());
             ShowLoginPage();
             password.requestFocus();
         }
-    }
-
-    /**
-     * Hash input array of charactrs
-     * @param chars array of characters
-     * @return hash as string
-     */
-    private String hash(char[] chars) {
-        CharBuffer charBuffer = CharBuffer.wrap(chars);
-        ByteBuffer byteBuffer = StandardCharsets.UTF_8.encode(charBuffer);
-        byte[] bytes = Arrays.copyOfRange(byteBuffer.array(),
-                byteBuffer.position(), byteBuffer.limit());
-        Arrays.fill(byteBuffer.array(), (byte) 0); // clear sensitive data
-
-        // MessageDigest instance for hashing using SHA256
-        MessageDigest md = null;
-        try {
-            md = MessageDigest.getInstance("SHA-256");
-            var digest = md.digest(bytes);
-
-            //Converting the byte array in to HexString format
-            StringBuffer hexString = new StringBuffer();
-            for (int i = 0;i<digest.length;i++) {
-                hexString.append(Integer.toHexString(0xFF & digest[i]));
-            }
-
-            return hexString.toString();
-        }
-        catch (NoSuchAlgorithmException e) {
-            System.out.println("Exception thrown : " + e);
-        }
-        catch (NullPointerException e) {
-            System.out.println("Exception thrown : " + e);
-        }
-        catch (Exception e) {
-            System.out.println("Exception thrown : " + e);
-        }
-
-        return "";
     }
 
     /**
@@ -364,7 +325,7 @@ public class Login implements DocumentListener, ActionListener, KeyListener {
     private boolean Authenticate(String username, char[] pwd) {
         boolean authenticated = false;
         boolean regRequired = true;
-        String verifyHash = hash(pwd) ;
+        String verifyHash = Hash.Sha2Hash(pwd) ;
         if (!verifyHash.isEmpty()){
             if (passwordDB != null){
                 if (passwordDB.containsKey(username)){

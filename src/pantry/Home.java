@@ -1,5 +1,6 @@
 package pantry;
 
+import pantry.helpers.StringHelper;
 import pantry.interfaces.IHome;
 
 import javax.swing.*;
@@ -22,7 +23,7 @@ public abstract class Home {
         String mode = System.getProperty("mode");
         /*
             Load properties from config.properties
-            properties e.g. pantry title
+            e.g. pantry title
          */
         String pantryName = "";
 
@@ -34,31 +35,48 @@ public abstract class Home {
             prop.load(propsInput);
 
             pantryName = prop.getProperty("PANTRY_NAME");
+            mode = prop.getProperty("EXECUTION_MODE");
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        int response = JOptionPane.showConfirmDialog(null,"Are you an employee? Press Cancel if you want to exit. ", "Pantryware", JOptionPane.YES_NO_CANCEL_OPTION);
-        switch (response) {
-            case JOptionPane.YES_OPTION :{
-                mode = "manage";
+        if (StringHelper.isNullOrEmpty(mode)) {
+            int response = JOptionPane.showConfirmDialog(null, "Are you an employee? Press Cancel if you want to exit. ", "Pantryware", JOptionPane.YES_NO_CANCEL_OPTION);
+            switch (response) {
+                case JOptionPane.YES_OPTION: {
+                    mode = "manage";
+                }
+                break;
+
+                case JOptionPane.NO_OPTION: {
+                    mode = "volunteer";
+                }
+                break;
+
+                case JOptionPane.CANCEL_OPTION:
+                    System.exit(0);
+                    break;
+            }
+        }
+
+        switch (mode){
+            case "manage": {
                 home = new ManagementHome(pantryName);
             }
             break;
 
-            case JOptionPane.NO_OPTION: {
-                mode = "volunteer";
-                //home = new VolunteerHome();
+            case "volunteer": {
+                home = new VolunteerHome(pantryName);
             }
             break;
 
-            case JOptionPane.CANCEL_OPTION:
-                System.exit(0);
-                break;
+            case "distribution": {
+                home = new DistributionHome(pantryName);
+            }
+            break;
         }
 
         Pantry.getInstance().Open();
-        assert home != null;
         home.ShowHome() ;
 
         /* Create and display the form */

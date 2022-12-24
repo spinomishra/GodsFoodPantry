@@ -3,17 +3,15 @@
  */
 package pantry.person.ui;
 
-import java.awt.BorderLayout;
-import java.awt.Dialog;
-import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.Window;
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.MaskFormatter;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
-
-import javax.swing.*;
-import javax.swing.event.*;
+import java.text.ParseException;
 
 /**
  * Person information class
@@ -30,7 +28,7 @@ public class PersonInfo extends JDialog implements ActionListener, DocumentListe
 	
 	JTextField nameTextBox; 
 	JTextArea addressTextBox;
-	JTextField contactTextBox; 
+	JFormattedTextField contactTextBox;
 	JButton okButton;
 	JButton cancelButton;
 	protected int option = JOptionPane.CANCEL_OPTION;
@@ -59,7 +57,9 @@ public class PersonInfo extends JDialog implements ActionListener, DocumentListe
 	 */
 	protected void initComponent(JPanel containerComponent)
 	{
-		setSize(460, 200);
+		setSize(460, 300);
+		setPreferredSize(new Dimension(460, 300));
+
 		setResizable(false); 
 		setLocationRelativeTo(getParent());
 
@@ -68,12 +68,12 @@ public class PersonInfo extends JDialog implements ActionListener, DocumentListe
 		JPanel containerPanel2 = new JPanel();		
 		GridLayout layout2 = new GridLayout(1,2,5,5);
 		containerPanel2.setLayout(layout2);
-		containerPanel2.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));		
+		containerPanel2.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
 		
 	    JLabel addressLabel = new JLabel("Address ", JLabel.LEFT);	    	     
-	    addressTextBox = new JTextArea(3,1);	    
+	    addressTextBox = new JTextArea(3,1);
 	    JScrollPane sp = new JScrollPane(addressTextBox);
-	    Dimension minimalSize = new Dimension(50, 80);
+	    Dimension minimalSize = new Dimension(120, 80);
 	    addressTextBox.setWrapStyleWord(true);
 	    addressTextBox.setPreferredSize(minimalSize);
 	    addressTextBox.setSize(minimalSize);                    
@@ -82,7 +82,12 @@ public class PersonInfo extends JDialog implements ActionListener, DocumentListe
 	    containerPanel2.add(sp);
 	    
 		//Create a panel that uses BoxLayout.
-		JPanel buttonPane = new JPanel();	    
+		JPanel buttonPane = new JPanel();
+		buttonPane.add(Box.createHorizontalStrut(5));
+		buttonPane.add(new JSeparator(SwingConstants.VERTICAL));
+		buttonPane.add(Box.createHorizontalStrut(5));
+		buttonPane.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+
 		okButton = new JButton("OK");
 		okButton.setActionCommand("OK");
 		okButton.addActionListener(this);
@@ -92,16 +97,10 @@ public class PersonInfo extends JDialog implements ActionListener, DocumentListe
 		cancelButton.setActionCommand("Cancel");
 		cancelButton.addActionListener(this);
 		cancelButton.setEnabled(true);		
-		
+
 		buttonPane.add(okButton);
-		buttonPane.add(Box.createHorizontalStrut(5));
-		buttonPane.add(new JSeparator(SwingConstants.VERTICAL));
-		buttonPane.add(Box.createHorizontalStrut(5));
 		buttonPane.add(cancelButton);
-		buttonPane.add(Box.createHorizontalStrut(5));
-		  
-		buttonPane.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
-				
+
 		containerComponent.add(containerPanel, BorderLayout.NORTH);
 		containerComponent.add(containerPanel2, BorderLayout.CENTER);
 		containerComponent.add(buttonPane, BorderLayout.PAGE_END);	
@@ -109,11 +108,11 @@ public class PersonInfo extends JDialog implements ActionListener, DocumentListe
 
 	/**
 	 * adding controls to top panel
-	 * @param containerPanel
+	 * @return JPanel the content Panel
 	 */
 	protected JPanel addControlsToTopPanel() {
 		JPanel containerPanel = new JPanel();
-		GridLayout layout = new GridLayout(3,2,5,5);
+		GridLayout layout = new GridLayout(2,2,5,5);
 		containerPanel.setLayout(layout);
 		containerPanel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
 
@@ -125,7 +124,14 @@ public class PersonInfo extends JDialog implements ActionListener, DocumentListe
 		containerPanel.add(nameTextBox);
 		
 	    JLabel phoneLabel = new JLabel("Contact Phone #", JLabel.LEFT);
-	    contactTextBox = new JTextField(20);
+		MaskFormatter fmt = null;
+		try {
+			fmt = new MaskFormatter("(###)###-####");
+		} catch (ParseException e) {
+
+		}
+		contactTextBox = new JFormattedTextField(fmt);
+		contactTextBox.setColumns(12);
 	    contactTextBox.addActionListener(this);
 	    contactTextBox.getDocument().addDocumentListener(this);
 	    containerPanel.add(phoneLabel);

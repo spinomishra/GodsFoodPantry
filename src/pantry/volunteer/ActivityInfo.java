@@ -1,12 +1,55 @@
 package pantry.volunteer;
-import pantry.volunteer.Activities;
 
-import java.time.*;
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * Class ActivityInfo represents Activity information for the volunteers
  */
-class ActivityInfo{
+public class ActivityInfo implements Serializable {
+  /**
+   * Version Id for serialization
+   */
+  private static final long serialVersionUID = 1L;
+
+  /**
+   * Activities enumeration
+   */
+  public enum Activities {
+    /**
+     * Generic
+     */
+    Generic,
+    /**
+     * Food and other content stacking
+     */
+    Stacking,
+    /**
+     * Food Packaging
+     */
+    Packaging,
+    /**
+     * Food Serving
+     */
+    Food_Serving,
+    /**
+     * Cleaning operations
+     */
+    Cleaning,
+    /**
+     * Food Delivery - Meals on wheels
+     */
+    FoodDelivery,
+    /**
+     * Fresh Produce Harvesting
+     */
+    Harvesting,
+    /**
+     * Fund raising
+     */
+    FundRaising,
+  };
+
   /**
    * Activity
    */
@@ -24,9 +67,8 @@ class ActivityInfo{
    * Constructor
    */
   public ActivityInfo(){
-    activity = Activities.Serving;
+    activity = Activities.Food_Serving;
     start_time = LocalDateTime.now();
-    end_time = LocalDateTime.now();
   }
 
   /**
@@ -39,6 +81,18 @@ class ActivityInfo{
     activity = act;
     start_time = start;
     end_time = start_time.plusHours(hours);
+  }
+
+  /**
+   * Constructor
+   * @param act activity enum
+   * @param checkinTime start date time
+   * @param checkoutTime end date time
+   */
+  public  ActivityInfo(Activities act, LocalDateTime checkinTime, LocalDateTime checkoutTime){
+    activity = act;
+    start_time = checkinTime;
+    end_time = checkoutTime;
   }
 
   /**
@@ -59,6 +113,14 @@ class ActivityInfo{
   {
     start_time = start;
     end_time = start_time.plusHours(hours);
+  }
+
+  /**
+   * Sets activity end time
+   * @param end end datetime stamp for the activity
+   */
+  public void setCheckoutTime(LocalDateTime end){
+    end_time = end;
   }
 
   /**

@@ -2,6 +2,7 @@ package pantry.data;
 
 import pantry.donor.Donor;
 import pantry.employee.Employee;
+import pantry.helpers.StringHelper;
 import pantry.volunteer.Volunteer;
 
 import java.io.IOException;
@@ -65,6 +66,25 @@ public class PantryData {
     }
 
     /**
+     * Search Volunteers in the volunteer record set
+     * @param name Volunteer name to be searched
+     * @param phone_no Volunteer phone number
+     * @return list of volunteers (return empty list if no match found)
+     */
+    public ArrayList<Volunteer> searchVolunteers(String name, String phone_no){
+        ArrayList<Volunteer> matchList = new ArrayList<Volunteer>();
+        boolean usePhoneNumberToo = !StringHelper.isNullOrEmpty(phone_no);
+        for (Volunteer v:volunteers) {
+            if (v.getName().compareToIgnoreCase(name) == 0 &&
+                    (usePhoneNumberToo ? v.getContactNumber().compareToIgnoreCase(phone_no) == 0 : true)){
+                matchList.add(v);
+            }
+        }
+
+        return matchList;
+    }
+
+    /**
      * Read from input stream
      * @param ois ObjectInputStream type
      * @throws IOException Input output exception
@@ -95,7 +115,7 @@ public class PantryData {
     /**
      * Reset the data
      */
-    void Reset(){
+    private void Reset(){
         if (employees == null)
             employees = new ArrayList<Employee>();
         else

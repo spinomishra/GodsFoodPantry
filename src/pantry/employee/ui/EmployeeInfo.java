@@ -25,11 +25,7 @@ public class EmployeeInfo extends PersonInfo {
 	/**
 	 * Roles list combo box
 	 */
-	private JComboBox<Employee.EmployeeRole> rolelist;
-	/**
-	 * Rolelist combobox model
-	 */
-    private DefaultComboBoxModel<Employee.EmployeeRole> rolelistModel;
+	private JComboBox<Employee.EmployeeRole> roleList;
 	/**
 	 * Employee Role
 	 */
@@ -66,8 +62,8 @@ public class EmployeeInfo extends PersonInfo {
 		JLabel empStartLabel = new JLabel("Employment Start (mm/dd/yyyy)", JLabel.LEFT);
 		JLabel ssnLabel = new JLabel("Social Security #", JLabel.LEFT);
 		try {
-			MaskFormatter datefmt = new MaskFormatter("##/##/####");
-			empStart = new JFormattedTextField(datefmt);
+			MaskFormatter dateFmt = new MaskFormatter("##/##/####");
+			empStart = new JFormattedTextField(dateFmt);
 			empStart.setColumns(11);
 
 			MaskFormatter fmt = new MaskFormatter("###-##-####");
@@ -82,27 +78,29 @@ public class EmployeeInfo extends PersonInfo {
 		containerPanel.add(ssnLabel);
 		containerPanel.add(ssnField);
 
-		rolelistModel = new DefaultComboBoxModel<Employee.EmployeeRole>();           
+		// Role list combo box model
+		DefaultComboBoxModel<Employee.EmployeeRole> roleListModel = new DefaultComboBoxModel<>();
 		for (Employee.EmployeeRole r : Employee.EmployeeRole.values())
-		       rolelistModel.addElement(r);
+		       roleListModel.addElement(r);
 		
 		JLabel roleLabel = new JLabel("Employee Role", JLabel.LEFT);	    	     
 		
-		//Create the listbox to show the volunteers names		 
-		rolelist = new JComboBox<Employee.EmployeeRole>(rolelistModel);
+		//Create the list box to show the volunteers names
+		roleList = new JComboBox<Employee.EmployeeRole>(roleListModel);
 		
 		// single item can be selected
-		rolelist.setActionCommand("rolelist");
-		rolelist.setSelectedIndex(0);
-		rolelist.addActionListener(this);
+		roleList.setActionCommand("roleList");
+		roleList.setSelectedIndex(0);
+		roleList.addActionListener(this);
 
 		containerPanel.add(roleLabel);
-		containerPanel.add(rolelist);
+		containerPanel.add(roleList);
 
 		return containerPanel;
 	}
 	
 	/**
+	 * Get employee role
 	 * @return - employee's role
 	 */
 	public Employee.EmployeeRole getRole() {
@@ -110,21 +108,22 @@ public class EmployeeInfo extends PersonInfo {
 	}
 	
 	/**
-	 * action handler for the UI controls
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		super.actionPerformed(e);
 		if (e.getActionCommand() == "OK") {
-			Role = rolelist.getItemAt(rolelist.getSelectedIndex());
+			Role = roleList.getItemAt(roleList.getSelectedIndex());
 		}
-		else if (e.getActionCommand() == "rolelist")
+		else if (e.getActionCommand() == "roleList")
 		{
-			Role = rolelist.getItemAt(rolelist.getSelectedIndex());
+			Role = roleList.getItemAt(roleList.getSelectedIndex());
 		}
 	}
 
 	/**
+	 * Create and show the UI for Employee information
 	 * @param frame - parent component
 	 * @param title - title of the dialog box
 	 * @return EmployeeInfo object

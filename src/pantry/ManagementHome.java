@@ -1,16 +1,20 @@
 package pantry;
 
-import pantry.Pantry;
 import pantry.auth.Login;
 import pantry.employee.ui.EmployeeManagerCard;
 import pantry.interfaces.IHome;
-import pantry.ui.*;
+import pantry.ui.MainPanel;
+import pantry.ui.SideMenuItem;
+import pantry.ui.SideMenuPanel;
 import pantry.volunteer.ui.VolunteerManagerCard;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -117,15 +121,18 @@ public class ManagementHome extends JFrame implements IHome {
         setTitle("PantryWare - "+ pantryName);
         setSize(800, 600);
 
+        // main screen
         mainPanel.initComponent();
         mainPanel.setBackground(new java.awt.Color(210, 231, 255));
 
+        // side menu bar
         sideMenuPanel = new SideMenuPanel(this, mainPanel);
         sideMenuPanel.setSpeed(4);
         sideMenuPanel.setResponsiveMinWidth(100);
         sideMenuPanel.addMenu(CreateMenuList());
         sideMenuPanel.setMaxWidth(300);
 
+        // content panel
         jPanel1 = new javax.swing.JPanel();
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);

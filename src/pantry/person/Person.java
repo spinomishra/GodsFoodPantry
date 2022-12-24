@@ -1,4 +1,7 @@
 package pantry.person;
+import pantry.helpers.StringHelper;
+import pantry.person.ui.PersonInfo;
+
 import java.util.Random;
 import java.io.Serializable;
 
@@ -51,7 +54,7 @@ public abstract class Person implements Serializable {
       fName = fullname;
     else 
     {
-      if (tokens.length >= 2)
+      if (tokens.length >= 1)
         fName = tokens[0];
       if (tokens.length >= 2)
         lName = tokens[1];
@@ -87,11 +90,23 @@ public abstract class Person implements Serializable {
   }
 
   /**
+   * Constructor
+   * @param pInfo Personal Information
+   */
+  public Person(PersonInfo pInfo){
+    this(pInfo.getPersonName());
+
+    setAddress(pInfo.getPersonAddress());
+    setContactPhone(pInfo.getPersonContact());
+  }
+
+  /**
    * sets address for the person
    * @param address address
    */
   public void setAddress(String address)
   {
+    if (!StringHelper.isNullOrEmpty(address))
       Address = address;
   }
 
@@ -101,6 +116,7 @@ public abstract class Person implements Serializable {
    */
   public void setContactPhone(String phone_no)
   {
+    if (!StringHelper.isNullOrEmpty(phone_no))
       Mobile_number = phone_no;
   }
 
@@ -110,7 +126,10 @@ public abstract class Person implements Serializable {
   */
   public String getName()
   {
-    return (fName + " " + lName).trim();
+    if (StringHelper.isNullOrEmpty(lName))
+      return fName;
+    else
+      return (fName + " " + lName).trim();
   }
 
   /**
@@ -147,7 +166,10 @@ public abstract class Person implements Serializable {
   * @return the string format of the pantry.data
   */
   public String toString(){
-    return getName() + ":" + getAddress() + ":" + getContactNumber();
+    String s = getName() ;
+    if (!StringHelper.isNullOrEmpty(getContactNumber()))
+      s = s + "   "  + getContactNumber();
+    return s;
   }
 
   /**

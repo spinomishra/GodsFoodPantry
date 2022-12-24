@@ -52,8 +52,6 @@ public class Login implements DocumentListener, ActionListener, KeyListener {
         modelDialog.setLocationRelativeTo(frame);
         InitComponent(modelDialog);
 
-        Container dialogContainer = modelDialog.getContentPane();
-
         // load password database, before you show the dialog
         passwordDB = LoadPasswordDb();
 

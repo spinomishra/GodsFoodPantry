@@ -1,8 +1,13 @@
 package pantry.employee.ui;
 
-import pantry.employee.Employee;
 import pantry.Pantry;
+import pantry.helpers.PrintHelper;
+import pantry.employee.Employee;
 
+import javax.print.DocPrintJob;
+import javax.print.PrintService;
+import javax.print.event.PrintJobAdapter;
+import javax.print.event.PrintJobEvent;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -30,6 +35,7 @@ public class EmployeeManagerCard extends JPanel implements ListSelectionListener
     // Labels for various buttons
     private static final String addNew = "Add";
     private static final String removeLabel = "Delete";
+    private static final String printLabel = "Print";
 
     private EmployeeTableModel employeeModel;
     private ListSelectionModel employeeTableListModel;
@@ -38,6 +44,7 @@ public class EmployeeManagerCard extends JPanel implements ListSelectionListener
     // buttons
     private	JButton newButton;
     private JButton removeButton;
+    private JButton printButton;
 
     // reference to employees list
     private ArrayList<Employee> employees;
@@ -53,9 +60,16 @@ public class EmployeeManagerCard extends JPanel implements ListSelectionListener
         setOpaque(true);
         parentWindow = parent;
 
+        // list of employees
         employees = Pantry.getInstance().get_Data().get_Employees();
 
+        // table control
         JScrollPane dataScrollPane = CreateTableForData();
+
+        // Action buttons
+        JPanel buttonPane = new JPanel();
+        buttonPane.setLayout(new BoxLayout(buttonPane,BoxLayout.LINE_AXIS));
+        buttonPane.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
 
         // "Add New Employee" button
         newButton = new JButton("Add New Employee");
@@ -68,23 +82,21 @@ public class EmployeeManagerCard extends JPanel implements ListSelectionListener
         removeButton.setActionCommand(removeLabel);
         removeButton.addActionListener(this);
         removeButton.setEnabled(false);
-/*
-        int selection = list.getSelectedIndex() ;
-        if (selection != -1) {
-            removeButton.setEnabled(true);
-        }
-*/
+
+        // "Print Report" button
+        printButton = new JButton("Print Report");
+        printButton.setActionCommand(printLabel);
+        printButton.addActionListener(this);
+        printButton.setEnabled(true);
 
         //Create a panel that uses BoxLayout.
-        JPanel buttonPane = new JPanel();
-        buttonPane.setLayout(new BoxLayout(buttonPane,BoxLayout.LINE_AXIS));
         buttonPane.add(removeButton);
         buttonPane.add(Box.createHorizontalStrut(5));
         buttonPane.add(new JSeparator(SwingConstants.VERTICAL));
         buttonPane.add(Box.createHorizontalStrut(5));
         buttonPane.add(newButton);
-
-        buttonPane.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+        buttonPane.add(Box.createRigidArea(new Dimension(5, 0)));
+        buttonPane.add(printButton);
 
         // add all controls to container
         add(dataScrollPane, BorderLayout.CENTER);
@@ -199,6 +211,51 @@ public class EmployeeManagerCard extends JPanel implements ListSelectionListener
                 removeButton.setEnabled(false);
             }
         }
+        else if (e.getActionCommand() == printLabel){
+            //TODO: Generate employee report for printing
+            //Utilize PrintService and DocPrintJob defined in Javax.print package
+            //https://www.developer.com/java/data/how-to-add-java-print-services-to-your-java-application/
+            PrintService printService = PrintHelper.PrepareForPrint(this.parentWindow);
+            if (printService != null){
+                DocPrintJob printJob = printService.createPrintJob();
+                printJob.addPrintJobListener(new PrintJobAdapter() {
+                    @Override
+                    public void printDataTransferCompleted(PrintJobEvent pje) {
+                        super.printDataTransferCompleted(pje);
+                    }
+
+                    @Override
+                    public void printJobNoMoreEvents(PrintJobEvent pje) {
+                        super.printJobNoMoreEvents(pje);
+                    }
+
+                    @Override
+                    public void printJobRequiresAttention(PrintJobEvent pje) {
+                        super.printJobRequiresAttention(pje);
+                    }
+                });
+/*
+                FileInputStream fis = new FileInputStream("C:/test.jpg");
+                Doc doc=new SimpleDoc(fis, DocFlavor.INPUT_STREAM.AUTOSENSE, null);
+                // Doc doc=new SimpleDoc(fis, DocFlavor.INPUT_STREAM.JPEG, null);
+                PrintRequestAttributeSet attrib=new HashPrintRequestAttributeSet();
+                attrib.add(new Copies(1));
+                job.print(doc, attrib); */
+            }
+
+/*
+            if (attrib.get(Destination.class) != null){
+                // here we deny to perform the save into a file
+                JOptionPane.showMessageDialog(this.parentWindow, getBundleString("error.printing"));
+                throw new PrintException("Print to file option not allowed. Action aborted!");
+            }
+            if (selectedPrintService!=null){
+
+            }
+            else
+                System.out.println("selection cancelled");
+            } */
+        }
     }
 
     /**
@@ -264,5 +321,39 @@ public class EmployeeManagerCard extends JPanel implements ListSelectionListener
                 break;
             }
         }
+    }
+
+    private void GenerateReport() {
+/*        try {
+            JasperReport jr;
+            InputStream in=getClass().getResourceAsStream(resourcefile + ".ser");
+            if (in == null) {
+                JasperDesign jd= JRXmlLoader.load(getClass().getResourceAsStream(resourcefile + ".jrxml"));
+                jr= JasperCompileManager.compileReport(jd);
+            }
+            else {
+                ObjectInputStream oin=new ObjectInputStream(in);
+                jr=(JasperReport)oin.readObject();
+                oin.close();
+            }
+            Map reportparams=new HashMap();
+            try {
+                reportparams.put("REPORT_RESOURCE_BUNDLE",ResourceBundle.getBundle(resourcefile + ".properties"));
+            }
+            catch (    MissingResourceException e) {
+            }
+            reportparams.put("TAXESLOGIC",taxeslogic);
+            Map reportfields=new HashMap();
+            reportfields.put("TICKET",ticket);
+            reportfields.put("PLACE",ticketext);
+            JasperPrint jp=JasperFillManager.fillReport(jr,reportparams,new JRMapArrayDataSource(new Object[]{reportfields}));
+            PrintService service=ReportUtils.getPrintService(m_App.getProperties().getProperty("machine.printername"));
+            JRPrinterAWT300.printPages(jp,0,jp.getPages().size() - 1,service);
+        }
+        catch (  Exception e) {
+            MessageInf msg=new MessageInf(MessageInf.SGN_WARNING,AppLocal.getIntString("message.cannotloadreport"),e);
+            msg.show(this);
+        }
+ */
     }
 }

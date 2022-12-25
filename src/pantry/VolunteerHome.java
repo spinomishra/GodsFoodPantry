@@ -49,10 +49,6 @@ public class VolunteerHome extends JFrame implements IHome, ActionListener {
      */
     @Override
     public void ShowHome() {
-        setMinimumSize(homeDimension);
-        setMaximumSize(homeDimension);
-        setPreferredSize(homeDimension);
-
         // create a panel
         Container pane = this.getContentPane();
 
@@ -78,7 +74,6 @@ public class VolunteerHome extends JFrame implements IHome, ActionListener {
     @Override
     public void Run() {
         setTitle("PantryWare - "+ pantryName);
-        setSize(800, 600);
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -94,12 +89,14 @@ public class VolunteerHome extends JFrame implements IHome, ActionListener {
             }
         });
 
-        this.pack();
-        this.setVisible(true);
+        setMinimumSize(homeDimension);
+        setVisible(true);
+        setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
+        setResizable(false);
     }
 
     /**
-     * Helper method to to construct image icon using the given image path
+     * Helper method to construct image icon using the given image path
      * @param imagePath The image path
      * @return ImageIcon object
      */

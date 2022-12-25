@@ -1,6 +1,5 @@
 package pantry.data;
 
-import pantry.donor.Donor;
 import pantry.employee.Employee;
 import pantry.helpers.StringHelper;
 import pantry.volunteer.Volunteer;
@@ -19,8 +18,7 @@ public class PantryData {
 
     // employees list
     ArrayList<Employee> employees = null;
-    // donors list
-    ArrayList<Donor> donors  = null;
+
     // volunteers list
     ArrayList<Volunteer> volunteers  = null;
 
@@ -36,12 +34,6 @@ public class PantryData {
      * @return employee list
      */
     public ArrayList<Employee>    get_Employees() {return employees;}
-
-    /**
-     * Gets Donors list
-     * @return donors list
-     */
-    public ArrayList<Donor>     get_Donors() {return donors;}
 
     /**
      * Gets volunteers list
@@ -94,7 +86,6 @@ public class PantryData {
         if (ois != null) {
             Reset() ;
             volunteers.addAll((ArrayList<Volunteer>) ois.readObject());
-            donors.addAll((ArrayList<Donor>) ois.readObject());
             employees.addAll((ArrayList<Employee>) ois.readObject());
         }
     }
@@ -107,7 +98,6 @@ public class PantryData {
     protected void WriteTo(ObjectOutputStream oos) throws IOException {
         if (oos != null) {
             oos.writeObject(volunteers);
-            oos.writeObject(donors);
             oos.writeObject(employees);
         }
     }
@@ -121,15 +111,9 @@ public class PantryData {
         else
             employees.clear();
 
-        if (donors == null)
-            donors  = new ArrayList<Donor>();
-        else
-            donors.clear();
-
         if (volunteers == null)
             volunteers  = new ArrayList<Volunteer>();
         else
             volunteers.clear();
     }
 }
-

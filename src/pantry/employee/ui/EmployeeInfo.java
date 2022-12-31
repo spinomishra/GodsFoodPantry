@@ -54,49 +54,61 @@ public class EmployeeInfo extends PersonInfo {
 	 * add controls to top panel of the UI
 	 */
 	@Override
-	protected JPanel addControlsToTopPanel()  {
-		JPanel containerPanel = super.addControlsToTopPanel();
-		GridLayout gridLayout = (GridLayout) containerPanel.getLayout();
-		gridLayout.setRows(gridLayout.getRows()+2);
+	protected void addTabs(JTabbedPane tabbedPane)  {
+		super.addTabs(tabbedPane);
 
-		JLabel empStartLabel = new JLabel("Employment Start (mm/dd/yyyy)", JLabel.LEFT);
-		JLabel ssnLabel = new JLabel("Social Security #", JLabel.LEFT);
-		try {
-			MaskFormatter dateFmt = new MaskFormatter("##/##/####");
-			empStart = new JFormattedTextField(dateFmt);
-			empStart.setColumns(11);
+		JPanel containerPanel = createNewTab(tabbedPane, "Employment Info", null);
 
-			MaskFormatter fmt = new MaskFormatter("###-##-####");
-			ssnField = new JFormattedTextField(fmt);
-			ssnField.setColumns(12);
-		} catch (ParseException e) {
-			// exception handler
+		JPanel panel ;
+
+		{
+			{
+				panel = addNewItemPanel("Social Security Number");
+				try {
+					MaskFormatter fmt = new MaskFormatter("###-##-####");
+					ssnField = new JFormattedTextField(fmt);
+					ssnField.setColumns(12);
+					panel.add(ssnField, BorderLayout.CENTER);
+				} catch (ParseException e) {
+					// exception handler
+				}
+				containerPanel.add(panel);
+			}
+
+			{
+				panel = addNewItemPanel("Employment Start (mm/dd/yyyy)");
+				try {
+					MaskFormatter dateFmt = new MaskFormatter("##/##/####");
+					empStart = new JFormattedTextField(dateFmt);
+					empStart.setColumns(11);
+					panel.add(empStart, BorderLayout.CENTER);
+				} catch (ParseException e) {
+					// exception handler
+				}
+				containerPanel.add(panel);
+			}
+
+			{
+				panel = addNewItemPanel("Employee Role");
+
+				// Role list combo box model
+				DefaultComboBoxModel<Employee.EmployeeRole> roleListModel = new DefaultComboBoxModel<>();
+				for (Employee.EmployeeRole r : Employee.EmployeeRole.values())
+					roleListModel.addElement(r);
+
+				//Create the list box to show the volunteers names
+				roleList = new JComboBox<Employee.EmployeeRole>(roleListModel);
+
+				// single item can be selected
+				roleList.setActionCommand("roleList");
+				roleList.setSelectedIndex(0);
+				roleList.addActionListener(this);
+
+				panel.add(roleList, BorderLayout.CENTER);
+				containerPanel.add(panel);
+			}
+
 		}
-		containerPanel.add(empStartLabel);
-		containerPanel.add(empStart);
-
-		containerPanel.add(ssnLabel);
-		containerPanel.add(ssnField);
-
-		// Role list combo box model
-		DefaultComboBoxModel<Employee.EmployeeRole> roleListModel = new DefaultComboBoxModel<>();
-		for (Employee.EmployeeRole r : Employee.EmployeeRole.values())
-		       roleListModel.addElement(r);
-		
-		JLabel roleLabel = new JLabel("Employee Role", JLabel.LEFT);	    	     
-		
-		//Create the list box to show the volunteers names
-		roleList = new JComboBox<Employee.EmployeeRole>(roleListModel);
-		
-		// single item can be selected
-		roleList.setActionCommand("roleList");
-		roleList.setSelectedIndex(0);
-		roleList.addActionListener(this);
-
-		containerPanel.add(roleLabel);
-		containerPanel.add(roleList);
-
-		return containerPanel;
 	}
 	
 	/**

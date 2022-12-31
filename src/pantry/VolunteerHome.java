@@ -55,12 +55,19 @@ public class VolunteerHome extends JFrame implements IHome, ActionListener {
         // main Panel
         JPanel mainPanel = new TileManager(this);
 
-        checkinTile = new Tile("Check-in", new Color(0xA38F77), getImageIcon("../images/check-in.png") );
+        final int w = 300;
+        final int h = 300;
+
+        checkinTile = new Tile("Check-in", new Color(0xA38F77), getImageIcon("../images/check-in.png", w, h) );
         checkinTile.addActionListener(this);
+        checkinTile.setMinimumSize(new Dimension(50, 50));
+        checkinTile.setPreferredSize(new Dimension(300, 300));
 
         mainPanel.add(checkinTile);
-        checkoutTile = new Tile("Check-out", new Color(0xA38F77), getImageIcon("../images/check-out.png") );
+        checkoutTile = new Tile("Check-out", new Color(0xA38F77), getImageIcon("../images/check-out.png",w ,h) );
         checkoutTile.addActionListener(this);
+        checkoutTile.setMinimumSize(new Dimension(50, 50));
+        checkoutTile.setPreferredSize(new Dimension(300, 300));
 
         mainPanel.add(checkoutTile);
         mainPanel.setVisible(true);
@@ -98,13 +105,15 @@ public class VolunteerHome extends JFrame implements IHome, ActionListener {
     /**
      * Helper method to construct image icon using the given image path
      * @param imagePath The image path
+     * @param w image icon width
+     * @param h image icon height
      * @return ImageIcon object
      */
-    private  ImageIcon getImageIcon(String imagePath)
+    private  ImageIcon getImageIcon(String imagePath, int w, int h)
     {
         var resource = getClass().getResource(imagePath);
         if (resource != null)
-            return new ImageIcon(((new ImageIcon(resource)).getImage()).getScaledInstance(300, 300, java.awt.Image.SCALE_SMOOTH));
+            return new ImageIcon(((new ImageIcon(resource)).getImage()).getScaledInstance(w, h, java.awt.Image.SCALE_SMOOTH));
 
         return null;
     }

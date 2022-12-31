@@ -2,17 +2,19 @@ package pantry.data;
 
 import pantry.employee.Employee;
 import pantry.helpers.StringHelper;
+import pantry.interfaces.IPantryData;
 import pantry.volunteer.Volunteer;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * Pantry data structure
  */
-public class PantryData {
+public class PantryData implements IPantryData {
     // pantry data is stored in pantry.rec file
     String recordsFileName = "pantry.rec";
 
@@ -82,12 +84,12 @@ public class PantryData {
      * @throws IOException Input output exception
      * @throws ClassNotFoundException Class not found exception
      */
-    protected void ReadFrom(ObjectInputStream ois) throws IOException, ClassNotFoundException {
-        if (ois != null) {
-            Reset() ;
-            volunteers.addAll((ArrayList<Volunteer>) ois.readObject());
-            employees.addAll((ArrayList<Employee>) ois.readObject());
-        }
+    public void ReadFrom(ObjectInputStream ois) throws IOException, ClassNotFoundException {
+        Objects.requireNonNull(ois);
+
+        Reset() ;
+        volunteers.addAll((ArrayList<Volunteer>) ois.readObject());
+        employees.addAll((ArrayList<Employee>) ois.readObject());
     }
 
     /**
@@ -95,11 +97,11 @@ public class PantryData {
      * @param oos output stream
      * @throws IOException input output exception
      */
-    protected void WriteTo(ObjectOutputStream oos) throws IOException {
-        if (oos != null) {
-            oos.writeObject(volunteers);
-            oos.writeObject(employees);
-        }
+    public void WriteTo(ObjectOutputStream oos) throws IOException {
+        Objects.requireNonNull(oos);
+
+        oos.writeObject(volunteers);
+        oos.writeObject(employees);
     }
 
     /**

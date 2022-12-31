@@ -1,5 +1,7 @@
 package pantry.helpers;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Calendar;
@@ -280,6 +282,11 @@ public class DateHelper {
         //for more info - https://stackoverflow.com/questions/19431234/converting-between-java-time-localdatetime-and-java-util-date
         Date dt = Date.from(local.atZone(ZoneId.systemDefault()).toInstant());
         return dt;
+    }
+
+    public static DateFormat getDateFormatter(){
+        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        return dateFormat;
     }
 
     /**

@@ -14,7 +14,7 @@ import java.util.ArrayList;
 /**
  * Class represents Volunteer information
  */
-public class VolunteerInfo  extends PersonInfo {
+public class VolunteerInfo extends PersonInfo {
     /**
      * Activities list combo box
      */
@@ -38,44 +38,51 @@ public class VolunteerInfo  extends PersonInfo {
      * {@inheritDoc}
      */
     @Override
-    protected JPanel addControlsToTopPanel(){
+    protected void addTabs(JTabbedPane tabbedPane){
+        super.addTabs(tabbedPane);
+
         if (recentActivity == null)
             recentActivity = new ActivityInfo();
 
-        JPanel containerPanel = super.addControlsToTopPanel();
-        GridLayout gridLayout = (GridLayout) containerPanel.getLayout();
-        gridLayout.setRows(gridLayout.getRows()+2);
+        JPanel identityPanel = createNewTab(tabbedPane, "Time Entry");
+        identityPanel.setPreferredSize(new Dimension(375, 150));
 
-        JLabel checkinTimeLabel = new JLabel("Check-in Time", JLabel.LEFT);
+        JLabel checkInTimeLbl = new JLabel("Check-in Time");
+        checkInTimeLbl.setFocusable(false);
+        checkInTimeLbl.setBounds(10, 20, 120, 20);
+        identityPanel.add(checkInTimeLbl);
+
         String formattedDateTime = recentActivity.getStartTime().format(DateTimeFormatter.ofPattern("MMM dd, uuuu hh:mm a"));
-        JLabel checkinTime = new JLabel(formattedDateTime);
-        containerPanel.add(checkinTimeLabel);
-        containerPanel.add(checkinTime);
+        JLabel checkInTime = new JLabel(formattedDateTime);
+        checkInTime.setBounds(135, 20, 220, 20);
+        identityPanel.add(checkInTime);
+
+        JLabel activityLabel = new JLabel("Volunteer Activity");
+        activityLabel.setFocusable(false);
+        activityLabel.setBounds(10, 45, 120, 20);
+        identityPanel.add(activityLabel);
 
         // ActivitiesList combo box model
         DefaultComboBoxModel<ActivityInfo.Activities> activitiesModel = new DefaultComboBoxModel<>();
         for (ActivityInfo.Activities r : ActivityInfo.Activities.values())
             activitiesModel.addElement(r);
 
-        JLabel activitiesLabel = new JLabel("Volunteer Activity", JLabel.LEFT);
-
         //Create the list box to show the volunteers names
         activitiesComboBox = new JComboBox<>(activitiesModel);
         activitiesComboBox.setActionCommand("activitiesList");
         activitiesComboBox.setSelectedIndex(0);
         activitiesComboBox.addActionListener(this);
-
-        containerPanel.add(activitiesLabel);
-        containerPanel.add(activitiesComboBox);
-
-        return containerPanel;
+        activitiesComboBox.setBounds(135, 45, 220, 20);
+        identityPanel.add(activitiesComboBox);
     }
 
     /**
      * Get volunteer's activity
      * @return Volunteer activity information
      */
-    public ActivityInfo getRecentActivity() { return recentActivity;}
+    public ActivityInfo getRecentActivity() {
+        return recentActivity;
+    }
 
     /**
      * {@inheritDoc}

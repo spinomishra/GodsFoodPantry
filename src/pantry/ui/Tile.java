@@ -35,25 +35,23 @@ public class Tile extends JButton {
         setOpaque(true);
 
         // text font
-        setFont(titleFont);
+        if (titleFont != null)
+            setFont(titleFont);
 
-        // control Size
-        this.setMinimumSize(new Dimension(50, 50));
-        this.setPreferredSize(new Dimension(300, 300));
+        if (background != null) {
+            // Color - foreground and background
+            if (background instanceof ImageIcon){
+                ImageIcon icon = (ImageIcon)background;
+                this.setIcon(icon);
+            }
 
-        // Color - foreground and background
-        if (background instanceof ImageIcon){
-            ImageIcon icon = (ImageIcon)background;
-            this.setIcon(icon);
-        }
-
-        if (background instanceof Color){
-            setBackground((Color) background);
+            setBackground(background instanceof Color ? (Color) background : new Color(DefaultColor));
         }
         else
             setBackground(new Color(DefaultColor));
 
-        setForeground(titleColor);
+        if (titleColor != null)
+            setForeground(titleColor);
 
         // border for the tile
         Border edge = BorderFactory.createRaisedBevelBorder();

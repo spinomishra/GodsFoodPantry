@@ -4,6 +4,9 @@
 package pantry.person.ui;
 
 import javax.swing.*;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.MaskFormatter;
@@ -18,20 +21,18 @@ import java.text.ParseException;
  *
  */
 public class PersonInfo extends JDialog implements ActionListener, DocumentListener{
-	/**
-	 * Version Id for serialization
-	 */
-	private static final long serialVersionUID = 1L;
 	protected String personName ;
 	protected String personContact ;
 	protected String personAddress ;
 	
-	JTextField nameTextBox; 
-	JTextArea addressTextBox;
-	JFormattedTextField contactTextBox;
-	JButton okButton;
-	JButton cancelButton;
-	protected int option = JOptionPane.CANCEL_OPTION;
+	protected transient JTextField nameTextBox;
+	protected transient JTextArea addressTextBox;
+	protected transient JFormattedTextField contactTextBox;
+	protected transient JButton okButton;
+	protected transient JButton cancelButton;
+	protected transient int option = JOptionPane.CANCEL_OPTION;
+	transient protected JPanel dialogPane;
+	protected transient JTabbedPane tabbedPane;
 
 	/**
 	 * @param frame - parent component
@@ -40,104 +41,222 @@ public class PersonInfo extends JDialog implements ActionListener, DocumentListe
 	public PersonInfo(Window frame, String title)
 	{	
 		super(frame, title, Dialog.ModalityType.DOCUMENT_MODAL);
-								
-		JPanel container = new JPanel();
-		BorderLayout borderLayout = new BorderLayout();
-		container.setLayout(borderLayout);
-		
-		initComponent(container);
-		
-		container.setOpaque(true); //content panes must be opaque
-	    setContentPane(container);	    	      
+
+		initializeDialog();
+		adjustSizeConstraints();
 	}
-	
+
 	/**
-	 * component initialization
-	 * @param containerComponent
+	 * Set size constraints for the dialog box
 	 */
-	protected void initComponent(JPanel containerComponent)
+	protected void adjustSizeConstraints(){
+		//setSize(460, 300);
+		//setPreferredSize(new Dimension(460, 300));
+		//setResizable(false);
+	}
+
+	/**
+	 * Dialog initialization - adds controls to the dialog, sets style and size for the dialog box.
+	 *
+	 */
+	protected void initializeDialog()
 	{
-		setSize(460, 300);
-		setPreferredSize(new Dimension(460, 300));
+		var contentPane = getContentPane();
+		contentPane.setLayout(new BorderLayout());
 
-		setResizable(false); 
+		dialogPane = new JPanel();
+
+		// set borders for the dialog pane
+		dialogPane.setBorder(new EmptyBorder(12, 12, 12, 12));
+		dialogPane.setBorder(new CompoundBorder(
+				new TitledBorder(new EmptyBorder(0,0,0,0), "",
+						TitledBorder.CENTER, TitledBorder.BOTTOM,
+						new Font("Dialog", java.awt.Font.BOLD,12),
+						Color.red),dialogPane. getBorder()));
+		dialogPane.setLayout(new BorderLayout());
+
+		// tabbed pane
+		tabbedPane = new JTabbedPane();
+
+		// add tabs to the tabbed pane
+		addTabs(tabbedPane) ;
+		dialogPane.add(tabbedPane, BorderLayout.NORTH);
+
+		// add buttons
+		JPanel buttonPanel = addActionControls() ;
+		dialogPane.add(buttonPanel, BorderLayout.SOUTH);
+
+		// add dialog pane to content
+		contentPane.add(dialogPane, BorderLayout.CENTER);
+
+		pack();
 		setLocationRelativeTo(getParent());
+	}
 
-		JPanel containerPanel = addControlsToTopPanel();
-		
-		JPanel containerPanel2 = new JPanel();		
-		GridLayout layout2 = new GridLayout(1,2,5,5);
-		containerPanel2.setLayout(layout2);
-		containerPanel2.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
-		
-	    JLabel addressLabel = new JLabel("Address ", JLabel.LEFT);	    	     
-	    addressTextBox = new JTextArea(3,1);
-	    JScrollPane sp = new JScrollPane(addressTextBox);
-	    Dimension minimalSize = new Dimension(120, 80);
-	    addressTextBox.setWrapStyleWord(true);
-	    addressTextBox.setPreferredSize(minimalSize);
-	    addressTextBox.setSize(minimalSize);                    
-	    addressTextBox.getDocument().addDocumentListener(this);
-	    containerPanel2.add(addressLabel);
-	    containerPanel2.add(sp);
-	    
+	/**
+	 * Add default action buttons (OK and Cancel) to the dialog box.
+	 * @return  A JPanel object
+	 */
+	protected JPanel addActionControls(){
 		//Create a panel that uses BoxLayout.
 		JPanel buttonPane = new JPanel();
+
 		buttonPane.add(Box.createHorizontalStrut(5));
 		buttonPane.add(new JSeparator(SwingConstants.VERTICAL));
 		buttonPane.add(Box.createHorizontalStrut(5));
 		buttonPane.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
 
+		Dimension btnSize = new Dimension(78, 30);
 		okButton = new JButton("OK");
 		okButton.setActionCommand("OK");
+		okButton.setMinimumSize(btnSize);
+		okButton.setMaximumSize(btnSize);
+		okButton.setPreferredSize(btnSize);
+		okButton.setSize(btnSize);
 		okButton.addActionListener(this);
 		okButton.setEnabled(false);
-		
+
 		cancelButton = new JButton("Cancel");
 		cancelButton.setActionCommand("Cancel");
 		cancelButton.addActionListener(this);
-		cancelButton.setEnabled(true);		
+		cancelButton.setEnabled(true);
+		cancelButton.setMinimumSize(btnSize);
+		cancelButton.setMaximumSize(btnSize);
+		cancelButton.setPreferredSize(btnSize);
+		cancelButton.setSize(btnSize);
 
 		buttonPane.add(okButton);
 		buttonPane.add(cancelButton);
 
-		containerComponent.add(containerPanel, BorderLayout.NORTH);
-		containerComponent.add(containerPanel2, BorderLayout.CENTER);
-		containerComponent.add(buttonPane, BorderLayout.PAGE_END);	
+		return buttonPane;
 	}
 
 	/**
-	 * adding controls to top panel
-	 * @return JPanel the content Panel
+	 * Creates new panel and adds it as a pane to the specified tabbed pane.
+	 *
+	 * @param tabbedPane The tabbed pane
+	 * @param tabTitle The tab title
+	 * @param layout a layout manager, if null BoxLayout manager is set as default layout for the pabel
+	 * @return a JPanel object where controls for this tab could be added
 	 */
-	protected JPanel addControlsToTopPanel() {
-		JPanel containerPanel = new JPanel();
-		GridLayout layout = new GridLayout(2,2,5,5);
-		containerPanel.setLayout(layout);
-		containerPanel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+	protected JPanel createNewTab(JTabbedPane tabbedPane, String tabTitle, LayoutManager layout){
+		JPanel contentPanel = new JPanel();
 
-		JLabel nameLabel = new JLabel("Name", JLabel.LEFT);
-	    nameTextBox = new JTextField(10);
-		nameTextBox.addActionListener(this);
-		nameTextBox.getDocument().addDocumentListener(this);
-		containerPanel.add(nameLabel);
-		containerPanel.add(nameTextBox);
-		
-	    JLabel phoneLabel = new JLabel("Contact Phone #", JLabel.LEFT);
-		MaskFormatter fmt = null;
-		try {
-			fmt = new MaskFormatter("(###)###-####");
-		} catch (ParseException e) {
+		// By default, use boxlayout for the content panel along Y Axis
+		if (layout == null)
+			contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+		else
+			contentPanel.setLayout(layout);
 
+		tabbedPane.addTab(tabTitle, contentPanel);
+
+		return contentPanel;
+	}
+
+	/**
+	 * Creates new panel and adds it as a pane to the specified tabbed pane.
+	 *
+	 * @param tabbedPane The tabbed pane
+	 * @param tabTitle The tab title
+	 * @return a JPanel object where controls for this tab could be added. This object has no default layout manager.
+	 */
+	protected JPanel createNewTab(JTabbedPane tabbedPane, String tabTitle){
+		JPanel contentPanel = new JPanel();
+		contentPanel.setLayout(null);
+		tabbedPane.addTab(tabTitle, contentPanel);
+		return contentPanel;
+	}
+
+	/**
+	 * Add tabs to the dialog box. Additional tabs could be added by overriding this method.
+	 * @param tabbedPane The tabbed pane control.
+	 */
+	protected void addTabs(JTabbedPane tabbedPane) {
+		JPanel contentPanel = createNewTab(tabbedPane, "Basic Information");
+
+		if (contentPanel == null)
+			return;
+
+		contentPanel.setPreferredSize(new Dimension(375, 150));
+
+		{
+			JLabel label = new JLabel("Name:");
+			label.setFocusable(false);
+			label.setBounds(10, 20, 120, 20);
+			contentPanel.add(label);
+
+			nameTextBox = new JTextField(30);
+			nameTextBox.addActionListener(this);
+			nameTextBox.getDocument().addDocumentListener(this);
+			nameTextBox.setBounds(135, 20, 220, 20);
+
+			contentPanel.add(nameTextBox);
 		}
-		contactTextBox = new JFormattedTextField(fmt);
-		contactTextBox.setColumns(12);
-	    contactTextBox.addActionListener(this);
-	    contactTextBox.getDocument().addDocumentListener(this);
-	    containerPanel.add(phoneLabel);
-	    containerPanel.add(contactTextBox );
 
-		return containerPanel;
+		{
+			JLabel label = new JLabel("Phone #:");
+			label.setFocusable(false);
+			label.setBounds(10, 45, 120, 20);
+			contentPanel.add(label);
+
+			MaskFormatter fmt = null;
+			try {
+				fmt = new MaskFormatter("(###)###-####");
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+
+			contactTextBox = new JFormattedTextField(fmt);
+			contactTextBox.setColumns(12);
+			contactTextBox.addActionListener(this);
+			contactTextBox.getDocument().addDocumentListener(this);
+			contactTextBox.setBounds(135, 45, 220, 20);
+			contentPanel.add(contactTextBox);
+		}
+
+		{
+			JLabel label = new JLabel("Mailing Address:");
+			label.setFocusable(false);
+			label.setBounds(10, 70, 120, 20);
+			contentPanel.add(label);
+
+			addressTextBox = new JTextArea(3,1);
+			Dimension minimalSize = new Dimension(120, 40);
+			addressTextBox.setWrapStyleWord(true);
+			addressTextBox.setPreferredSize(minimalSize);
+			addressTextBox.setAutoscrolls(true);
+			addressTextBox.getDocument().addDocumentListener(this);
+			addressTextBox.setBounds(135, 70, 220, 60);
+			contentPanel.add(addressTextBox);
+		}
+
+		// add filler control
+		//Dimension minSize = new Dimension(5, 150);
+		//Dimension prefSize = new Dimension(5, 150);
+		//Dimension maxSize = new Dimension(Short.MAX_VALUE, Short.MAX_VALUE);
+		//contentPanel.add(new Box.Filler(minSize, prefSize, maxSize));
+	}
+
+	/**
+	 * Adds a new label (with default size of (60X16) inside a new JPanel object that uses Borderlayout manager.
+	 * @param itemLabelText The title of the label
+	 * @return A JPanel object
+	 */
+	protected JPanel addNewItemPanel(String itemLabelText){
+		JPanel panel = new JPanel();
+		panel.setLayout(new BorderLayout(5, 5));
+
+		// add some vertical space at the beginning
+		panel.add(new JPanel(null), BorderLayout.NORTH);
+
+		var lblDim = new Dimension(160, 16);
+
+		JLabel label = new JLabel(itemLabelText, JLabel.LEFT);
+		label.setMinimumSize(lblDim);
+		label.setPreferredSize(lblDim);
+		panel.add(label, BorderLayout.WEST);
+
+		return panel;
 	}
 
 	/**
@@ -177,12 +296,22 @@ public class PersonInfo extends JDialog implements ActionListener, DocumentListe
 		
 		if (e.getActionCommand() == "OK") {
 			option = JOptionPane.OK_OPTION;
-			personName = nameTextBox.getText().trim();
-			personContact = contactTextBox.getText().trim();
-			personAddress = addressTextBox.getText().trim();
+
+			onOKButtonClicked(e) ;
 
 			this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
 		}		
+	}
+
+	/**
+	 * Handles OK Button click
+	 * Always call super before you override this
+	 * @param e The ActionEvent object
+	 */
+	protected void onOKButtonClicked(ActionEvent e) {
+		personName = nameTextBox.getText().trim();
+		personContact = contactTextBox.getText().trim();
+		personAddress = addressTextBox.getText().trim();
 	}
 
 	/**
@@ -206,6 +335,6 @@ public class PersonInfo extends JDialog implements ActionListener, DocumentListe
 	 */
 	@Override
 	public void changedUpdate(DocumentEvent e) {
-		// TODO Auto-generated method stub		
+
 	}
 }

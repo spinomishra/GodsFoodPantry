@@ -1,15 +1,18 @@
 package pantry.data;
 
 import pantry.interfaces.IDataConnector;
+import pantry.interfaces.IPantryData;
+
 import java.io.*;
+import java.util.Objects;
 
 /**
- * Persistent record in a local file
+ * Persistent records in a local file
  */
-public class FileAdapter extends PantryData implements IDataConnector {
+public class FileAdapter implements IDataConnector {
     String fileName ;
     FileInputStream fis;
-    PantryData pantryData;
+    IPantryData pantryData;
     ObjectInputStream ois;
 
     /**
@@ -17,7 +20,10 @@ public class FileAdapter extends PantryData implements IDataConnector {
      * @param fn filename
      * @param data pantry data
      */
-    public FileAdapter(String fn, PantryData data){
+    public FileAdapter(String fn, IPantryData data){
+        Objects.requireNonNull(fn, "Requires filename");
+        Objects.requireNonNull(data, "Requires pantry data object");
+
         fileName = fn;
         pantryData = data;
     }

@@ -14,14 +14,9 @@ import java.awt.event.ActionEvent;
 import java.text.ParseException;
 
 /**
- * Employee information
+ * UI to collect and display employee information
  */
 public class EmployeeInfo extends PersonInfo {
-	/**
-	 * Version Id for serialization
-	 */
-	private static final long serialVersionUID = 1L;
-
 	/**
 	 * Roles list combo box
 	 */

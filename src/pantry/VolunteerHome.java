@@ -80,7 +80,7 @@ public class VolunteerHome extends JFrame implements IHome, ActionListener {
      */
     @Override
     public void Run() {
-        setTitle("PantryWare - "+ pantryName);
+        setTitle("PantryWare - Volunteer Time Management - "+ pantryName);
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);

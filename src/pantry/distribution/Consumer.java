@@ -1,11 +1,16 @@
 package pantry.distribution;
 
 import pantry.distribution.ui.ConsumerInfo;
+import pantry.helpers.DateHelper;
 import pantry.helpers.State;
+import pantry.helpers.StringHelper;
 import pantry.person.Identity;
 import pantry.person.Person;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.awt.*;
+import java.io.ByteArrayInputStream;
 import java.util.Date;
 
 /**
@@ -64,8 +69,12 @@ public class Consumer extends Person {
         //if (!StringHelper.isNullOrEmpty(issuedOn.getText()))
         try {
             if (info.issuedOn.getValue() != null) {
-                Date value = (Date) info.issuedOn.getValue();
-                this.identityInfo.IssuedOn = value.toString();
+                var c = info.issuedOn.getValue().getClass();
+                if (c == Date.class)
+                {
+                    var formatter = DateHelper.getDateFormatter();
+                    this.identityInfo.IssuedOn = formatter.format((Date)info.issuedOn.getValue());
+                }
             }
         }
         catch (Exception ex){
@@ -74,8 +83,12 @@ public class Consumer extends Person {
 
         try {
             if (info.expiryFld.getValue() != null) {
-                Date value = (Date)info.expiryFld.getValue() ;
-                this.identityInfo.ExpiresOn = value.toString();
+                var c = info.expiryFld.getValue().getClass();
+                if (c == Date.class)
+                {
+                    var formatter = DateHelper.getDateFormatter();
+                    this.identityInfo.ExpiresOn = formatter.format((Date)info.expiryFld.getValue());
+                }
             }
         }
         catch (Exception ex){
@@ -96,5 +109,46 @@ public class Consumer extends Person {
             signature = info.deskSign1.getString();
             signaturePNG = info.deskSign1.getPNGString(signature, 160, 120, false);
         }
+    }
+
+    /**
+     * Gets consumer's identity information object
+     * @return The Identity Information
+     */
+    public Identity getIdentityInfo() {return identityInfo;}
+
+    /**
+     * Gets Group flag for the consumer
+     * @return true if food is collected on behalf of group
+     */
+    public boolean isGroupFlagged() {return group;}
+
+    /**
+     * Gets group member count information
+     * @return Group member count
+     */
+    public int getGroupMemberCount() { return groupMember;}
+
+    /**
+     * Gets signature image
+     * @return Image object
+     */
+    public Image getSignatureImage() {
+        Image image = null;
+        if (!StringHelper.isNullOrEmpty(signaturePNG)){
+            try {
+                var b64fmt = new integrisign.desktop.Base64Format();
+                byte[] pngBytes = b64fmt.decode64(signaturePNG);
+                var inStream = new ByteArrayInputStream(pngBytes);
+                if (inStream != null){
+                    image = ImageIO.read(inStream);
+                    //ImageIO.write((BufferedImage)image, "png", new File("image.png"));
+                }
+            } catch(Exception ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage());
+            }
+        }
+
+        return image ;
     }
 }

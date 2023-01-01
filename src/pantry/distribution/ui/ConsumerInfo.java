@@ -4,11 +4,9 @@ import integrisign.IGrabber;
 import pantry.distribution.Consumer;
 import pantry.helpers.DateHelper;
 import pantry.helpers.State;
-import pantry.helpers.StringHelper;
 import pantry.person.Identity;
 import pantry.person.ui.PersonInfo;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import java.awt.*;
@@ -16,7 +14,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.io.ByteArrayInputStream;
 
 /**
  * ConsumerInfo class represents individuals/groups that receive the food distribution.
@@ -292,27 +289,6 @@ public class ConsumerInfo extends PersonInfo implements integrisign.IDocInfo{
      */
     protected void onOKButtonClicked(ActionEvent e){
         super.onOKButtonClicked(e);
-    }
-
-    private Image getSignatureImage(String signaturePNG){
-        Image image = null;
-        if (!StringHelper.isNullOrEmpty(signaturePNG)){
-            try {
-                    var b64fmt = new integrisign.desktop.Base64Format();
-                    byte[] pngbytes = b64fmt.decode64(signaturePNG);
-                    var inStreambj = new ByteArrayInputStream(pngbytes);
-                    if (inStreambj != null){
-                        image = ImageIO.read(inStreambj);
-                        //ImageIO.write((BufferedImage)image, "png", new File("image.png"));
-                    }
-
-                    return image ;
-            } catch(Exception ex) {
-                JOptionPane.showMessageDialog(getParent(), ex.getMessage());
-            }
-        }
-
-        return image ;
     }
 
     /**

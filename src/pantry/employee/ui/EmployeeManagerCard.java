@@ -27,29 +27,64 @@ import java.util.List;
  * Class to manage employees
  */
 public class EmployeeManagerCard extends JPanel implements ListSelectionListener, TableModelListener, ActionListener {
+    /**
+     * Card Title for Employee Management
+     */
     public static final String Title = "Employee Manager";
 
-    // Version Id for serialization
-    private static final long serialVersionUID = 1L;
-
-    // Labels for various buttons
+    /**
+     * Add label text
+     */
     private static final String addNew = "Add";
+
+    /**
+     * Remove label text
+     */
     private static final String removeLabel = "Delete";
+
+    /**
+     * Print label text
+     */
     private static final String printLabel = "Print";
 
+    /**
+     * Employee object model
+     */
     private EmployeeTableModel employeeModel;
+
+    /**
+     * Model use for employee role list
+     */
     private ListSelectionModel employeeTableListModel;
+
+    /**
+     * Employee Table control
+     */
     private JTable employeeTable ;
 
-    // buttons
+    /**
+     * New button control
+     */
     private	JButton newButton;
+
+    /**
+     * Remove button control
+     */
     private JButton removeButton;
+
+    /**
+     * Print button control
+     */
     private JButton printButton;
 
-    // reference to employees list
+    /**
+     * Reference to the employees list
+     */
     private ArrayList<Employee> employees;
 
-    // parent window
+    /**
+     * Parent window object
+     */
     private Window  parentWindow;
 
     /**

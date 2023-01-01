@@ -3,20 +3,18 @@ package pantry;
 import pantry.data.FileAdapter;
 import pantry.distribution.Consumer;
 import pantry.distribution.ui.ConsumerInfo;
+import pantry.distribution.ui.ConsumerTable;
 import pantry.interfaces.IHome;
 import pantry.ui.Tile;
 import pantry.ui.TileManager;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -35,6 +33,15 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
      * Today's consumers list
      */
     private ArrayList<Consumer> todaysConsumers = null;
+
+    /**
+     * Table of consumer records
+     */
+    private ConsumerTable consumerTable = null;
+
+    private ArrayList<Consumer> oldConsumers=null;
+
+    private ArrayList<Consumer> refReadList=null;
 
     public DistributionHome(String pn) {
         pantryName = pn;
@@ -55,18 +62,87 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
         topPanel.setLayout(topPanelLayout);
         topPanel.add(addTiles(), BorderLayout.LINE_START);
 
-        pane.add(topPanel, BorderLayout.PAGE_START);
-        pane.add(addTable(), BorderLayout.PAGE_END);
+        pane.add(topPanel, BorderLayout.NORTH);
+        pane.add(addTable(), BorderLayout.CENTER);
     }
 
     private JPanel addTable() {
         var screenSize = getDefaultToolkit().getScreenSize();
 
         var tablePanel = new JPanel() ;
-        var tablePanelDim = new Dimension(screenSize.width, screenSize.height-150);
+        var topPanelLayout = new BorderLayout();
+        tablePanel.setLayout(topPanelLayout);
+        tablePanel.setOpaque(true);
+        tablePanel.setBorder(BorderFactory.createStrokeBorder(new BasicStroke(5.0f)));
 
-        Border tablePanelBorder = BorderFactory.createLineBorder(Color.GRAY);
-        tablePanel.setBorder(tablePanelBorder);
+        {
+            consumerTable = new ConsumerTable(todaysConsumers);
+            JScrollPane scrollPane = new JScrollPane(consumerTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            consumerTable.setFillsViewportHeight(true);
+            tablePanel.add(scrollPane, BorderLayout.CENTER);
+
+            {
+                JPanel panel = new JPanel();
+                JLabel label = new JLabel("Food Distribution Consumer Records");
+                Font labelFont = new Font("Serif", Font.BOLD|Font.ITALIC, 14);
+                label.setFont(labelFont);
+                label.setHorizontalTextPosition(JLabel.CENTER);
+                panel.add(label, BorderLayout.CENTER);
+
+                String[] recordChoices = {"Today's", "Previous unconsolidated records"};
+                JComboBox comboBox = new JComboBox(recordChoices);
+                comboBox.setSelectedIndex(0);
+                comboBox.setMaximumSize(new Dimension(200, 80));
+                comboBox.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        switch (comboBox.getSelectedIndex()){
+                            case 0:
+                                consumerTable.ChangeDataModel(todaysConsumers);
+                                break ;
+
+                            case 1:
+                                if (oldConsumers == null)
+                                    oldConsumers = LoadOldConsumers();
+                                consumerTable.ChangeDataModel(oldConsumers);
+                                break ;
+                        }
+                    }
+                });
+                panel.add(comboBox, BorderLayout.SOUTH);
+
+                tablePanel.add(panel, BorderLayout.NORTH);
+            }
+        }
+
+        {
+            JPanel signaturePanel = new JPanel(new BorderLayout());
+            signaturePanel.setOpaque(true);
+            signaturePanel.setBorder(BorderFactory.createStrokeBorder(new BasicStroke(1.2f)));
+
+            {
+                JPanel panel = new JPanel();
+                JLabel signatureDisplayControl = new JLabel();
+                Dimension dim = new Dimension(200, 200);
+                signatureDisplayControl.setMinimumSize(dim);
+                signatureDisplayControl.setPreferredSize(dim);
+                panel.add(signatureDisplayControl, BorderLayout.CENTER);
+                consumerTable.setSignatureDisplayControl(signatureDisplayControl);
+                signaturePanel.add(panel, BorderLayout.CENTER);
+            }
+
+            {
+                JPanel panel = new JPanel();
+                JLabel label = new JLabel("Signature Display");
+                Font labelFont = new Font("Serif", Font.BOLD|Font.ITALIC, 14);
+                label.setFont(labelFont);
+                label.setHorizontalTextPosition(JLabel.CENTER);
+                panel.add(label, BorderLayout.CENTER);
+                signaturePanel.add(panel, BorderLayout.NORTH);
+            }
+
+            tablePanel.add(signaturePanel, BorderLayout.EAST);
+        }
 
         return tablePanel ;
     }
@@ -119,7 +195,7 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
      */
     @Override
     public void Run() {
-        setTitle("PantryWare - "+ pantryName);
+        setTitle("PantryWare - Food Distribution Management - "+ pantryName);
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -151,6 +227,7 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
                     try{
                         todaysConsumers.add(consumer);
                         SaveConsumers();
+                        consumerTable.add(consumer);
                     }
                     catch (Exception ex){
                         JOptionPane.showMessageDialog(this, ex.getMessage(), "Food Distribution - Exception", JOptionPane.ERROR_MESSAGE);
@@ -158,6 +235,12 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
                 }
             }
             break;
+
+            case "ScanId":
+                String info = "This option requires Barcode scanner with support to scan IDs";
+                String msg = "<html><body><p style='width: 200px;'>"+info+"</p></body></html>";
+                JOptionPane.showMessageDialog(this, msg, "Food Distribution", JOptionPane.OK_OPTION| JOptionPane.INFORMATION_MESSAGE);
+                break;
         }
     }
 
@@ -216,6 +299,9 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
         recordsFile.Load();
     }
 
+    /**
+     * Save consumers to file
+     */
     private void SaveConsumers(){
         if (todaysConsumers != null && todaysConsumers.size()>0) {
             String filename = "food.distribution.consumers." + LocalDateTime.now().format(DateTimeFormatter.ofPattern("MMddyyyy")).toString() + ".rec";
@@ -223,4 +309,49 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
             recordsFile.Save();
         }
     }
+
+    /**
+     * Load previous consumer records that have still not been consolidated
+     * @return list of old consumers
+     */
+    private ArrayList<Consumer> LoadOldConsumers() {
+        String todaysFile = "food.distribution.consumers." + LocalDateTime.now().format(DateTimeFormatter.ofPattern("MMddyyyy")).toString() + ".rec";
+
+        File dir = new File(".\\");
+        File [] files = dir.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.endsWith(".rec") && name.startsWith("food.distribution.consumers.");
+            }
+        });
+
+        ArrayList<Consumer>  records = new ArrayList<>();
+        for (File file:files){
+            if (!todaysFile.equals(file.getName())){
+                try
+                {
+                    var fis = new FileInputStream(file);
+                    var ois = new ObjectInputStream(fis);
+
+                    if (ois != null) {
+                        records.addAll ((ArrayList<Consumer>) ois.readObject());
+                    }
+
+                    ois.close();
+                    fis.close();
+                }
+                catch (FileNotFoundException fife){
+                    System.out.println("No records exist");
+                }
+                catch (IOException ioe){
+                    ioe.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return records;
+    }
+
 }

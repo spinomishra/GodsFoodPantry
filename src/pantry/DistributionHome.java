@@ -5,10 +5,12 @@ import pantry.distribution.Consumer;
 import pantry.distribution.ui.ConsumerInfo;
 import pantry.distribution.ui.ConsumerTable;
 import pantry.interfaces.IHome;
+import pantry.interfaces.ITableSelectionChangeListener;
 import pantry.ui.Tile;
 import pantry.ui.TileManager;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -25,9 +27,11 @@ import static java.awt.Toolkit.getDefaultToolkit;
 /**
  * Home screen for mode where food distribution is managed
  */
-public class DistributionHome extends JFrame implements IHome, ActionListener, pantry.interfaces.IPantryData  {
-    // pantry name
-    String pantryName;
+public class DistributionHome extends JFrame implements IHome, ActionListener, pantry.interfaces.IPantryData, ITableSelectionChangeListener {
+    /**
+     * Pantry Name
+     */
+    private String pantryName;
 
     /**
      * Today's consumers list
@@ -39,10 +43,25 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
      */
     private ConsumerTable consumerTable = null;
 
+    /**
+     * Previously recorded food consumers
+     */
     private ArrayList<Consumer> oldConsumers=null;
 
-    private ArrayList<Consumer> refReadList=null;
+    /**
+     * Allows record to be deleted
+     */
+    JButton deleteBtn;
 
+    /**
+     * Record choice combo box
+     */
+    JComboBox comboBox;
+
+    /**
+     * Constructor
+     * @param pn Pantry Name
+     */
     public DistributionHome(String pn) {
         pantryName = pn;
         todaysConsumers = new ArrayList<Consumer>();
@@ -64,8 +83,57 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
 
         pane.add(topPanel, BorderLayout.NORTH);
         pane.add(addTable(), BorderLayout.CENTER);
+        pane.add(addActionButtons(), BorderLayout.SOUTH);
     }
 
+    /**
+     * Adds panel to contain buttons
+     * @return The button panel object
+     */
+    private JPanel addActionButtons() {
+        var buttonPanel = new JPanel(new BorderLayout(5,5)) ;
+        buttonPanel.setBorder(new EmptyBorder(6,6,6,6));
+        deleteBtn = new JButton("Delete Record");
+        deleteBtn.setEnabled(false);
+        deleteBtn.setMinimumSize(new Dimension(200, 100));
+        var deleteButtonIcon = getImageIcon("../images/recyclebin.png", 12,12);
+        deleteBtn.setIcon(deleteButtonIcon);
+
+        consumerTable.addSelectionChangeListener(this);
+
+        var This = this;
+        deleteBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (comboBox.getSelectedIndex() == 0) {
+                    int[] selectedRows = consumerTable.getSelectedRows();
+                    if (selectedRows.length > 0) {
+                        for (var i : selectedRows) {
+                            todaysConsumers.remove(i);
+                        }
+                        SaveConsumers();
+                        deleteBtn.setEnabled(false);
+                    }
+                    consumerTable.deleteSelectedRows();
+                }
+                else {
+                    String info = "Previous records are now sealed and cannot be altered. Only Today's records can be deleted.";
+                    String msg = "<html><body><p style='width: 300px; '>"+info+"</p></body></html>";
+
+                    JOptionPane.showMessageDialog(This, msg, "Consumer Records", JOptionPane.INFORMATION_MESSAGE| JOptionPane.OK_OPTION);
+                }
+            }
+        });
+
+       buttonPanel.add(deleteBtn, BorderLayout.WEST);
+
+       return buttonPanel;
+    }
+
+    /**
+     * Adds Consumer records table to home page
+     * @return The Table panel
+     */
     private JPanel addTable() {
         var screenSize = getDefaultToolkit().getScreenSize();
 
@@ -90,12 +158,13 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
                 panel.add(label, BorderLayout.CENTER);
 
                 String[] recordChoices = {"Today's", "Previous unconsolidated records"};
-                JComboBox comboBox = new JComboBox(recordChoices);
+                comboBox = new JComboBox(recordChoices);
                 comboBox.setSelectedIndex(0);
                 comboBox.setMaximumSize(new Dimension(200, 80));
                 comboBox.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
+                        deleteBtn.setEnabled(false);
                         switch (comboBox.getSelectedIndex()){
                             case 0:
                                 consumerTable.ChangeDataModel(todaysConsumers);
@@ -147,6 +216,10 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
         return tablePanel ;
     }
 
+    /**
+     * Add tiles to the home page
+     * @return The Tile Manager object
+     */
     private JPanel addTiles() {
         final int w = 100;
         final int h = 100 ;
@@ -218,6 +291,10 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
         setResizable(false);
     }
 
+    /**
+     * {@inheritDoc}
+     * @param e the event to be processed
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()){
@@ -245,7 +322,7 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
     }
 
     /**
-     *
+     * {@inheritDoc}
      * @param ois  ObjectInputStream object
      * @throws IOException
      * @throws ClassNotFoundException
@@ -354,4 +431,14 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
         return records;
     }
 
+    /**
+     * Consumer Table selection change listener
+     * @param table Table raising the event
+     * @param row selected row
+     * @param col selected col
+     */
+    @Override
+    public void SelectionChanged(JTable table, int row, int col) {
+        deleteBtn.setEnabled(true);
+    }
 }

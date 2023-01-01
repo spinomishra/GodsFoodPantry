@@ -1,6 +1,7 @@
 package pantry.distribution.ui;
 
 import pantry.distribution.Consumer;
+import pantry.interfaces.ITableSelectionChangeListener;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -31,10 +32,21 @@ public class ConsumerTable extends JTable implements ListSelectionListener, Tabl
     private static final Color selectedRowColor = new Color(110, 181, 155);
 
     /**
+     * Selection Change listener
+     */
+    private ITableSelectionChangeListener selectionChangeListener;
+
+    /**
+     * Reference to today's recorded consumers
+     */
+    private ArrayList<Consumer> consumers;
+
+    /**
      * Constructors
      */
     public ConsumerTable(ArrayList<Consumer> consumers){
         super (new ConsumerTableModel());
+        this.consumers = consumers;
 
         setRowSelectionAllowed(true);
         setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -137,6 +149,7 @@ public class ConsumerTable extends JTable implements ListSelectionListener, Tabl
                 // Following 2 lines of code allows me to highlight selected row using selected row Color
                 addRowSelectionInterval(selectedRowIndex, selectedRowIndex);
                 setColumnSelectionInterval(0, this.getColumnCount()-1);
+                selectionChangeListener.SelectionChanged(this, selectedRowIndex, 0);
 
                 Consumer consumer =  consumerModel.getRow(selectedRowIndex);
                 Image image = consumer.getSignatureImage();
@@ -179,7 +192,25 @@ public class ConsumerTable extends JTable implements ListSelectionListener, Tabl
             consumerModel.addRow(consumer);
         }
 
-        // raise the data table chaneg notification
+        // raise the data table change notification
         consumerModel.fireTableDataChanged();
+    }
+
+    /**
+     * Adds selection change listener object
+     * @param listener The listener object
+     */
+    public void addSelectionChangeListener(ITableSelectionChangeListener listener){
+        selectionChangeListener = listener;
+    }
+
+    public void deleteSelectedRows() {
+        int[] selectedRows = getSelectedRows();
+        if (selectedRows.length > 0){
+            consumerModel.removeRows(selectedRows);
+
+            // raise the data table change notification
+            consumerModel.fireTableDataChanged();
+        }
     }
 }

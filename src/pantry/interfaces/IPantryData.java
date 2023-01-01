@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+/**
+ * IPantryData interface
+ * This interface implementation is used by Data holders that save or load serialized data from files
+ */
 public interface IPantryData {
     /**
      * Read from input stream

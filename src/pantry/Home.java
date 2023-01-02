@@ -2,9 +2,10 @@ package pantry;
 
 import pantry.helpers.StringHelper;
 import pantry.interfaces.IHome;
+import pantry.ui.ExecutionModeSelection;
 
-import javax.swing.*;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -21,43 +22,46 @@ public abstract class Home {
     public static void main(String[] args) {
         IHome home = null;
         String mode = System.getProperty("mode");
+
         /*
             Load properties from config.properties
             e.g. pantry title
          */
         String pantryName = "";
+        boolean rememberMe=false;
 
-        try {
-            String configFilePath = "src/config.properties";
-            FileInputStream propsInput = new FileInputStream(configFilePath);
-
-            Properties prop = new Properties();
-            prop.load(propsInput);
-
+        Properties prop = LoadConfiguration() ;
+        if (prop != null) {
             pantryName = prop.getProperty("PANTRY_NAME");
             mode = prop.getProperty("EXECUTION_MODE");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        if (StringHelper.isNullOrEmpty(mode)) {
-            int response = JOptionPane.showConfirmDialog(null, "Are you an employee? Press Cancel if you want to exit. ", "Pantryware", JOptionPane.YES_NO_CANCEL_OPTION);
-            switch (response) {
-                case JOptionPane.YES_OPTION: {
-                    mode = "manage";
-                }
-                break;
-
-                case JOptionPane.NO_OPTION: {
-                    mode = "volunteer";
-                }
-                break;
-
-                case JOptionPane.CANCEL_OPTION:
-                    System.exit(0);
-                    break;
+            var tempStr = prop.getProperty("REMEMBER_ME");
+            if (!StringHelper.isNullOrEmpty(tempStr)){
+                rememberMe = (Integer.parseInt(tempStr) == 1) ? true : false;
             }
         }
+
+        if (StringHelper.isNullOrEmpty(mode) || rememberMe == false) {
+            ExecutionModeSelection modeSelector = new ExecutionModeSelection(mode, "Pantryware");
+            modeSelector.setVisible(true);
+            mode = modeSelector.executionMode;
+
+            if (!StringHelper.isNullOrEmpty(mode)) {
+                prop.setProperty("EXECUTION_MODE", mode);
+
+                if (modeSelector.rememberMe) {
+                    // persist the mode information
+                    if (prop == null)
+                        prop = new Properties();
+
+                    prop.setProperty("REMEMBER_ME", "1");
+                }
+
+                SaveConfiguration(prop);
+            }
+
+            modeSelector.dispose();
+        }
+
 
         switch (mode){
             case "manage": {
@@ -74,6 +78,10 @@ public abstract class Home {
                 home = new DistributionHome(pantryName);
             }
             break;
+
+            default:
+                System.exit(0);
+                break;
         }
 
         Pantry.getInstance().Open();
@@ -86,5 +94,36 @@ public abstract class Home {
                 finalHome.Run();
             }
         });
+    }
+
+    /**
+     * Load configuration properties from file config.properties
+     * @return Properties object
+     */
+    private static Properties LoadConfiguration(){
+        String currentDirectory = System.getProperty("user.dir");
+        Properties prop = null;
+        try {
+            String configFilePath = "config.properties";
+            FileInputStream propsInput = new FileInputStream(configFilePath);
+            prop = new Properties();
+            prop.load(propsInput);
+            propsInput.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return prop;
+    }
+
+    private static void SaveConfiguration(Properties prop){
+        try {
+            String configFilePath = "config.properties";
+            var propsOutput = new FileOutputStream(configFilePath);
+            prop.store(propsOutput, null);
+            propsOutput.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

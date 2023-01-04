@@ -13,15 +13,18 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
+import javax.swing.text.MaskFormatter;
 import java.awt.*;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Comparator;
 
 /**
  * This class extends JTable to support consumer record display
  */
-public class VolunteerTable extends JTable implements ListSelectionListener, TableModelListener {
+public class VolunteerTable extends JTable implements ListSelectionListener{
     /**
      * Employee object model
      */
@@ -51,15 +54,23 @@ public class VolunteerTable extends JTable implements ListSelectionListener, Tab
         setSelectionBackground(selectedRowColor);
         setSelectionForeground(Color.WHITE);
 
-        // data model change listener
-        getModel().addTableModelListener(this);
-
-        // selection listener
         var selectionModel = this.getSelectionModel();
         selectionModel.addListSelectionListener(this);
 
         setColumnWidths();
         createRowSorter() ;
+
+        // setting cell editor for phone column
+        JFormattedTextField ftext = new JFormattedTextField();
+        MaskFormatter mask;
+        try {
+            mask = new MaskFormatter("(###)###-####");
+            mask.install(ftext);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        getColumnModel().getColumn(2).setCellEditor(new DefaultCellEditor(ftext));
     }
 
     /**
@@ -218,36 +229,10 @@ public class VolunteerTable extends JTable implements ListSelectionListener, Tab
         VolunteerTableModel model = (VolunteerTableModel)getModel();
         int[] selectedRows = getSelectedRows();
         if (selectedRows.length > 0){
-            model.removeRows(selectedRows);
-
-            // raise the data table change notification
+            // first raise the data table change notification.. this would give the chance for the original data to be modified
             model.fireTableDataChanged();
-        }
-    }
-
-    /**
-     * Table model listener method implementation
-     * @param e a {@code TableModelEvent} to notify listener that a table model
-     *          has changed
-     */
-    @Override
-    public void tableChanged(TableModelEvent e) {
-        int firstRow = e.getFirstRow();
-        int lastRow = e.getLastRow();
-        int index = e.getColumn();
-
-        switch (e.getType()){
-            case TableModelEvent.UPDATE:
-                if (firstRow != TableModelEvent.HEADER_ROW && lastRow != TableModelEvent.HEADER_ROW) {
-                    for (int i = firstRow; i <= lastRow; i++) {
-                        if (index == TableModelEvent.ALL_COLUMNS) {
-                            System.out.println("ROW: "+ i + ": All columns have changed");
-                        } else {
-                            System.out.println(index);
-                        }
-                    }
-                }
-                break;
+            // now delete the data from the table model which is referencing the objects in the original data list.
+            model.removeRows(selectedRows);
         }
     }
 }

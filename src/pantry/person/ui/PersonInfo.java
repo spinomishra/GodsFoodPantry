@@ -87,9 +87,10 @@ public class PersonInfo extends JDialog implements ActionListener, DocumentListe
 	 * This can be overridden by subclasses
 	 */
 	protected void adjustSizeConstraints(){
-		//setSize(460, 300);
-		//setPreferredSize(new Dimension(460, 300));
-		//setResizable(false);
+	//	setSize(460, 300);
+	//	setMinimumSize(new Dimension(760, 500));
+	//	setPreferredSize(new Dimension(760, 500));
+	//	setResizable(false);
 	}
 
 	/**

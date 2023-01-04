@@ -22,14 +22,18 @@ import java.util.Map;
  * Home screen for Food Pantry Management
  */
 public class ManagementHome extends JFrame implements IHome {
+    /**
+     * Pantry Name
+     */
     String pantryName;
+
     /**
      * Main Panel
      */
     MainPanel mainPanel;
 
     /**
-     * Card for main panel
+     * Map of cards for main panel
      */
     Map<String, JPanel>  mainPanelCards ;
 
@@ -37,6 +41,7 @@ public class ManagementHome extends JFrame implements IHome {
      * Side Menu Panel
      */
     SideMenuPanel sideMenuPanel;
+
     /**
      * Panel1
      */

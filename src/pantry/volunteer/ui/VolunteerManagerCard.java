@@ -1,6 +1,7 @@
 package pantry.volunteer.ui;
 
 import pantry.Pantry;
+import pantry.data.PantryData;
 import pantry.helpers.DateHelper;
 import pantry.interfaces.ITableSelectionChangeListener;
 import pantry.volunteer.Volunteer;
@@ -16,7 +17,7 @@ import java.util.ArrayList;
 /**
  * Volunteer management card
  */
-public class VolunteerManagerCard extends JPanel implements  ActionListener, ITableSelectionChangeListener {
+public class VolunteerManagerCard extends JPanel implements  ActionListener, ITableSelectionChangeListener, TableModelListener {
     /**
      * Remove button label
      */
@@ -101,7 +102,7 @@ public class VolunteerManagerCard extends JPanel implements  ActionListener, ITa
                     JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
             volunteerTable.setFillsViewportHeight(true);
             volunteerTable.addSelectionChangeListener(this);
-
+            volunteerTable.getModel().addTableModelListener(this);
             add(scrollPane, BorderLayout.CENTER);
         }
 
@@ -171,5 +172,33 @@ public class VolunteerManagerCard extends JPanel implements  ActionListener, ITa
     @Override
     public void SelectionChanged(JTable table, int row, int col) {
         removeButton.setEnabled(true);
+    }
+
+
+    /**
+     * Table model listener method implementation
+     * @param e a {@code TableModelEvent} to notify listener that a table model
+     *          has changed
+     */
+    @Override
+    public void tableChanged(TableModelEvent e) {
+        int firstRow = e.getFirstRow();
+        int lastRow = e.getLastRow();
+        int index = e.getColumn();
+
+        switch (e.getType()){
+            case TableModelEvent.DELETE:
+            {
+                var volunteers = Pantry.getInstance().get_Data().get_Volunteers();
+                VolunteerTableModel model = (VolunteerTableModel)e.getSource();
+                if (firstRow < model.getRowCount()) {
+                    Volunteer v = model.getRow(firstRow);
+                    volunteers.remove(v);
+                }
+                // save the records
+                Pantry.getInstance().get_Data().Save();
+            }
+            break ;
+        }
     }
 }

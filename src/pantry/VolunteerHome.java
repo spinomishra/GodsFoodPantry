@@ -21,20 +21,26 @@ import static java.awt.Toolkit.getDefaultToolkit;
  * Home screen for Volunteering mode for food pantry
  */
 public class VolunteerHome extends JFrame implements IHome, ActionListener {
-    // pantry name
+    /**
+     * Pantry Name
+     */
     String pantryName;
 
-    // check-in Tile
+    /**
+     * Check-in Tile control
+     */
     private Tile checkinTile ;
 
-    // check-out Tile
+    /**
+     * Check-out Tile control
+     */
     private Tile checkoutTile;
 
-    // list of volunteers that recently checked-in
+    /**
+     * List of volunteers that recently checked-in
+     */
     private ArrayList<Volunteer> recentVolunteers;
 
-    // dimension for the volunteer home screen
-    private static final Dimension homeDimension = getDefaultToolkit().getScreenSize();
 
     /**
      * Constructor
@@ -70,7 +76,6 @@ public class VolunteerHome extends JFrame implements IHome, ActionListener {
         checkoutTile.setPreferredSize(new Dimension(300, 300));
 
         mainPanel.add(checkoutTile);
-        mainPanel.setVisible(true);
 
         pane.add(mainPanel);
     }
@@ -83,7 +88,6 @@ public class VolunteerHome extends JFrame implements IHome, ActionListener {
         setTitle("PantryWare - Volunteer Time Management - "+ pantryName);
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
 
         this.addWindowListener(new WindowAdapter() {
             /**
@@ -96,9 +100,9 @@ public class VolunteerHome extends JFrame implements IHome, ActionListener {
             }
         });
 
-        setMinimumSize(homeDimension);
-        setVisible(true);
+        setLocationRelativeTo(null);
         setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
+        setVisible(true);
         setResizable(false);
     }
 

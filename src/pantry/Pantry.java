@@ -6,8 +6,14 @@ import pantry.data.PantryData;
  * Pantry class ... Singleton class
  */
 public class Pantry {
-  // Singleton instance of pantry manager object
+  /**
+   * Singleton instance of pantry manager object
+   */
   static Pantry instance ;
+
+  /**
+   * Pantry data records
+   */
   PantryData pantryRecords ;
 
   /**

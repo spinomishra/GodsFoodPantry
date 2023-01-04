@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 /**
- * home class - entry point for the application
+ * Home class is the entry point for the PantryWare application
  * This singleton class controls the main dashboard of the application
  */
 public abstract class Home {
@@ -121,6 +121,10 @@ public abstract class Home {
         return prop;
     }
 
+    /**
+     * Save application configuration properties
+     * @param prop Configuration properties
+     */
     private static void SaveConfiguration(Properties prop){
         try {
             String configFilePath = "config.properties";

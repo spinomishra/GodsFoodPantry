@@ -78,33 +78,39 @@ public class VolunteerTableModel extends RowTableModel<Volunteer> {
      */
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        Volunteer volunteer = getRow(rowIndex);
+        if (rowIndex < modelData.size()) {
+            Volunteer volunteer = getRow(rowIndex);
 
-        switch (columnIndex){
-            case 0: return rowIndex+1;
-            case 1: return volunteer.getName();
-            case 2: return volunteer.getContactNumber();
-            case 3: return volunteer.getAddress();
-            case 4:
-            case 5:
-            case 6:
-                    if (volunteer.getActivityHistory() !=null) {
-                       var activityInfo = volunteer.getActivityHistory().get(0);
-                       if (activityInfo != null)
-                       {
-                           if (columnIndex == 4) {
-                               return (activityInfo.getStartTime() != null) ? DateHelper.fromLocalDateTime(activityInfo.getStartTime()) : null;
-                           }
-                           else if (columnIndex == 5)
-                               return (activityInfo.getEndTime() != null) ? DateHelper.fromLocalDateTime(activityInfo.getEndTime()) : null;
-                           else if (columnIndex == 6)
-                               return activityInfo.getActivity() ;
-                       }
+            switch (columnIndex) {
+                case 0:
+                    return rowIndex + 1;
+                case 1:
+                    return volunteer.getName();
+                case 2:
+                    return volunteer.getContactNumber();
+                case 3:
+                    return volunteer.getAddress();
+                case 4:
+                case 5:
+                case 6:
+                    if (volunteer.getActivityHistory() != null) {
+                        var activityInfo = volunteer.getActivityHistory().get(0);
+                        if (activityInfo != null) {
+                            if (columnIndex == 4) {
+                                return (activityInfo.getStartTime() != null) ? DateHelper.fromLocalDateTime(activityInfo.getStartTime()) : null;
+                            } else if (columnIndex == 5)
+                                return (activityInfo.getEndTime() != null) ? DateHelper.fromLocalDateTime(activityInfo.getEndTime()) : null;
+                            else if (columnIndex == 6)
+                                return activityInfo.getActivity();
+                        }
                     }
                     return "";
 
-            default: return "";
+                default:
+                    return "";
+            }
         }
+        return null;
     }
 
     /**
@@ -116,7 +122,23 @@ public class VolunteerTableModel extends RowTableModel<Volunteer> {
     @Override
     public void setValueAt(Object value, int row, int column)
     {
-        Volunteer e = getRow(row);
-        fireTableCellUpdated(row, column);
+        if (row < modelData.size()) {
+            Volunteer e = getRow(row);
+
+            switch (column) {
+                case 2:
+                    e.setContactPhone((String) value);
+                    break;
+                case 3:
+                    e.setAddress((String) value);
+                    break;
+                case 4: {
+                    e.getActivityHistory();
+                }
+                break;
+            }
+
+            fireTableCellUpdated(row, column);
+        }
     }
 }

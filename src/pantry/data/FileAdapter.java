@@ -7,7 +7,7 @@ import java.io.*;
 import java.util.Objects;
 
 /**
- * Persistent records in a local file
+ * Class represents methods that assist with data record's persistence to a local file
  */
 public class FileAdapter implements IDataConnector {
     String fileName ;
@@ -29,7 +29,7 @@ public class FileAdapter implements IDataConnector {
     }
 
     /**
-     * Load persistence records
+     * Load persisted records
      */
     @Override
     public void Load() {
@@ -77,7 +77,7 @@ public class FileAdapter implements IDataConnector {
     }
 
     /**
-     * Close the connection
+     * Close the connection. Initiates Save operation to ensure data is persisted.
      */
     @Override
     public void Close() {

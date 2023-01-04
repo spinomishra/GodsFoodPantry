@@ -172,28 +172,13 @@ public class ManagementHome extends JFrame implements IHome {
         try {
             menuItems.add(new SideMenuItem("", "", SideMenuItem.MENUITEM_WIDTH, 10));
 
-            menuItems.add(new SideMenuItem("Employees", "../../images/employees.png", new ActionListener() {
+            menuItems.add(new SideMenuItem("Employees", "/images/employees.png", new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     mainPanel.Show(EmployeeManagerCard.Title);
                 }
             }));
 
-            menuItems.add(new SideMenuItem("Inventory", "../../images/inventory.png", new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    OnManageInventory(e);
-                }
-
-                private void OnManageInventory(ActionEvent e) {
-                }
-            }));
-
-            menuItems.add(new SideMenuItem("Donations", "../../images/donations.png", new ActionListener() {
-                public void actionPerformed(ActionEvent e) { OnManageDonations(e); }
-                private void OnManageDonations(ActionEvent e) {
-                }
-            }));
-
-            menuItems.add(new SideMenuItem("Volunteers", "../../images/volunteer.png", new ActionListener() {
+            menuItems.add(new SideMenuItem("Volunteers", "/images/volunteer.png", new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     mainPanel.Show(VolunteerManagerCard.Title);
                 }

@@ -4,6 +4,7 @@ import pantry.helpers.StringHelper;
 import pantry.interfaces.IHome;
 import pantry.ui.ExecutionModeSelection;
 
+import javax.swing.*;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -45,14 +46,14 @@ public abstract class Home {
             modeSelector.setVisible(true);
             mode = modeSelector.executionMode;
 
+            // persist properties
             if (!StringHelper.isNullOrEmpty(mode)) {
+                if (prop == null)
+                    prop = new Properties();
+
                 prop.setProperty("EXECUTION_MODE", mode);
 
                 if (modeSelector.rememberMe) {
-                    // persist the mode information
-                    if (prop == null)
-                        prop = new Properties();
-
                     prop.setProperty("REMEMBER_ME", "1");
                 }
 
@@ -111,6 +112,10 @@ public abstract class Home {
             propsInput.close();
         } catch (IOException e) {
             e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Config.properties couldn't be found at "+currentDirectory);
+        }
+        catch (Exception e){
+            JOptionPane.showMessageDialog(null, e.getMessage());
         }
 
         return prop;

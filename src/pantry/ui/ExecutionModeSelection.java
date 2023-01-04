@@ -33,7 +33,7 @@ public class ExecutionModeSelection extends JDialog implements ActionListener {
      */
     public ExecutionModeSelection(String mode, String title){
         super(null, title, Dialog.ModalityType.DOCUMENT_MODAL);
-        executionMode = mode ;
+        executionMode = (mode!=null?mode:"") ;
         initComponents();
     }
 

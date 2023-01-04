@@ -1,104 +1,132 @@
 package pantry.volunteer.ui;
 
 import pantry.Pantry;
+import pantry.helpers.DateHelper;
+import pantry.interfaces.ITableSelectionChangeListener;
 import pantry.volunteer.Volunteer;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+import javax.swing.event.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 /**
- * Volunteer manager card
+ * Volunteer management card
  */
-public class VolunteerManagerCard
-        extends JPanel
-        implements ListSelectionListener, ActionListener, DocumentListener {
-    private final JList list;
-    private final DefaultListModel listModel;
-
-    //Labels to identify the fields
-    private static final String addNew = "New";
-    private final JButton newButton;
-
+public class VolunteerManagerCard extends JPanel implements  ActionListener, ITableSelectionChangeListener {
+    /**
+     * Remove button label
+     */
     private static final String removeLabel = "Delete";
+
+    /**
+     * Remove button control
+     */
     private final JButton removeButton;
 
-    private final JTextField nameTextBox;
+    /**
+     * Volunteer records table control
+     */
+    private VolunteerTable volunteerTable ;
 
-    ArrayList<Volunteer> Volunteers ;
-    private final JButton scheduleActivityButton  ;
+    /**
+     * Record choice combo box
+     */
+    JComboBox comboBox;
 
+    /**
+     * Title of the volunteer page
+     */
     public static final String Title = "Volunteer Manager";
+
+    /**
+     * Constructor
+     * @param parentWindow The Parent window
+     */
     public VolunteerManagerCard(JFrame parentWindow) {
         super(new BorderLayout());
         setOpaque(true);
 
-        listModel = new DefaultListModel();
-        Volunteers = Pantry.getInstance().get_Data().get_Volunteers();
+        var volunteers = Pantry.getInstance().get_Data().get_Volunteers();
 
-        if (Volunteers != null) {
-            for (int i=0; i<Volunteers.size(); i++){
-                listModel.addElement(Volunteers.get(i).getName());
-            }
+        {
+            JPanel panel = new JPanel();
+            JLabel label = new JLabel("Show Volunteer Records");
+
+            Font labelFont = new Font("Serif", Font.BOLD|Font.ITALIC, 14);
+            label.setFont(labelFont);
+            label.setHorizontalTextPosition(JLabel.CENTER);
+            panel.add(label, BorderLayout.CENTER);
+            String[] recordChoices = {"All", "Today's", "Last 30 days"};
+            comboBox = new JComboBox(recordChoices);
+            comboBox.setSelectedIndex(0);
+            comboBox.setMaximumSize(new Dimension(200, 80));
+            comboBox.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    removeButton.setEnabled(false);
+                    switch (comboBox.getSelectedIndex()){
+                        case 0:
+                            volunteerTable.ChangeDataModel(volunteers);
+                            break ;
+
+                        case 1: {
+                            // search all records for last 1 day
+                            var records = Pantry.getInstance().get_Data().searchVolunteers(1);
+                            volunteerTable.ChangeDataModel(records);
+                        }
+                        break ;
+
+                        case 2: {
+                            // search all records for last 30 days
+                            var records = Pantry.getInstance().get_Data().searchVolunteers(30);
+                            volunteerTable.ChangeDataModel(records);
+                        }
+                        break ;
+                    }
+                }
+            });
+            panel.add(comboBox, BorderLayout.SOUTH);
+            add(panel, BorderLayout.NORTH);
         }
 
-        //Create the list and put it in a scroll pane.
-        list = new JList(listModel);
-        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        list.setSelectedIndex(0);
-        list.addListSelectionListener(this);
-        list.setVisibleRowCount(5);
-        JScrollPane listScrollPane = new JScrollPane(list);
+        //Create the table and put it in a scroll pane and add scroll panel to the card
+        {
+            volunteerTable = new VolunteerTable(volunteers);
+            JScrollPane scrollPane = new JScrollPane(volunteerTable,
+                    JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                    JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            volunteerTable.setFillsViewportHeight(true);
+            volunteerTable.addSelectionChangeListener(this);
 
-        newButton = new JButton(addNew);
-        newButton.setActionCommand(addNew);
-        newButton.addActionListener(this);
-        newButton.setEnabled(false);
-
-        removeButton = new JButton(removeLabel);
-        removeButton.setActionCommand(removeLabel);
-        removeButton.addActionListener(this);
-        removeButton.setEnabled(false);
-
-        nameTextBox = new JTextField(10);
-        nameTextBox.getDocument().putProperty("owner", nameTextBox);
-        nameTextBox.getDocument().addDocumentListener(this);
-
-        scheduleActivityButton = new JButton("Schedule Activity");
-        scheduleActivityButton.setActionCommand(removeLabel);
-        scheduleActivityButton.addActionListener(this);
-        scheduleActivityButton.setEnabled(false);
-
-        int selection = list.getSelectedIndex() ;
-        if (selection != -1) {
-            removeButton.setEnabled(true);
-            scheduleActivityButton.setEnabled(true);
+            add(scrollPane, BorderLayout.CENTER);
         }
 
-        //Create a panel that uses BoxLayout.
-        JPanel buttonPane = new JPanel();
-        buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.LINE_AXIS));
-        buttonPane.add(removeButton);
-        buttonPane.add(Box.createHorizontalStrut(5));
-        buttonPane.add(new JSeparator(SwingConstants.VERTICAL));
-        buttonPane.add(Box.createHorizontalStrut(5));
-        buttonPane.add(nameTextBox);
-        buttonPane.add(newButton);
-        buttonPane.add(Box.createHorizontalStrut(5));
-        buttonPane.add(new JSeparator(SwingConstants.VERTICAL));
-        buttonPane.add(Box.createHorizontalStrut(5));
-        buttonPane.add(scheduleActivityButton);
+        { // Action buttons
 
-        buttonPane.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+            //Create a panel that uses BoxLayout.
+            JPanel buttonPane = new JPanel();
+            buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.LINE_AXIS));
 
-        add(listScrollPane, BorderLayout.CENTER);
-        add(buttonPane, BorderLayout.PAGE_END);
+            removeButton = new JButton(removeLabel);
+            removeButton.setActionCommand(removeLabel);
+            removeButton.addActionListener(this);
+            removeButton.setEnabled(false);
+            var removeButtonIcon = getImageIcon("/images/recyclebin.png", 12, 12);
+            removeButton.setIcon(removeButtonIcon);
+            removeButton.setEnabled(false);
+
+            buttonPane.add(removeButton);
+            buttonPane.add(Box.createHorizontalStrut(5));
+            buttonPane.add(new JSeparator(SwingConstants.VERTICAL));
+            buttonPane.add(Box.createHorizontalStrut(5));
+
+            buttonPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+            add(buttonPane, BorderLayout.PAGE_END);
+        }
     }
 
     /**
@@ -110,105 +138,38 @@ public class VolunteerManagerCard
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == removeButton) {
             //This method can be called only if
-            //there's a valid selection
-            //so go ahead and remove whatever's selected.
-            int index = list.getSelectedIndex();
-            if (index != -1)
-                listModel.remove(index);
-
-            int size = listModel.getSize();
-            if (size == 0) { //Nobody's left, disable firing.
-                removeButton.setEnabled(false);
-            } else { //Select an index.
-                if (index == listModel.getSize()) {
-                    //removed item in last position
-                    index--;
-                }
-
-                list.setSelectedIndex(index);
-                list.ensureIndexIsVisible(index);
-            }
-        }
-        else if (e.getSource() == scheduleActivityButton) {
-
-        }
-        else if (e.getSource() == newButton) {
-            String name = nameTextBox.getText();
-
-            //User didn't type in a unique name...
-            if (name.equals("") || alreadyInList(name)) {
-                Toolkit.getDefaultToolkit().beep();
-                nameTextBox.requestFocusInWindow();
-                nameTextBox.selectAll();
-                return;
-            }
-
-            int index = list.getSelectedIndex(); //get selected index
-            if (index == -1) { //no selection, so insert at beginning
-                index = 0;
-            } else {           //add after the selected item
-                index++;
-            }
-
-            //listModel.insertElementAt(nameTextBox.getText(), index);
-            //If we just wanted to add to the end, we'd do this:
-            listModel.addElement(nameTextBox.getText());
-            Volunteers.add(new Volunteer(nameTextBox.getText()));
-
-            //Reset the text field.
-            nameTextBox.requestFocusInWindow();
-            nameTextBox.setText("");
-
-            //Select the new item and make it visible.
-            list.setSelectedIndex(index);
-            list.ensureIndexIsVisible(index);
-            scheduleActivityButton.setEnabled(true);
+            //there's a valid selection so go
+            //ahead and remove whatever is selected.
+            volunteerTable.deleteSelectedRows();
+            removeButton.setEnabled(false);
         }
     }
 
-    //This method tests for string equality. You could certainly
-    //get more sophisticated about the algorithm.  For example,
-    //you might want to ignore white space and capitalization.
-    protected boolean alreadyInList(String name) {
-        return listModel.contains(name);
-    }
-
-
-    //This method is required by ListSelectionListener.
-    public void valueChanged(ListSelectionEvent e) {
-        if (e.getValueIsAdjusting() == false) {
-
-            if (list.getSelectedIndex() == -1) {
-                //No selection, disable button.
-                removeButton.setEnabled(false);
-                scheduleActivityButton.setEnabled(false);
-
-            } else {
-                //Selection, enable the button.
-                removeButton.setEnabled(true);
-                scheduleActivityButton.setEnabled(true);
-            }
+    /**
+     * Helper method to construct image icon using the given image path
+     * @param imagePath The image path
+     * @param w image icon width
+     * @param h image icon height
+     * @return ImageIcon object
+     */
+    private  ImageIcon getImageIcon(String imagePath, int w, int h)
+    {
+        var resource = getClass().getResource(imagePath);
+        if (resource != null) {
+            var img = ((new ImageIcon(resource)).getImage()).getScaledInstance(w, h, java.awt.Image.SCALE_SMOOTH);
+            return new ImageIcon(img);
         }
+        return null;
     }
 
-    public void insertUpdate(DocumentEvent e) {
-        handleDocumentEvent(e);
-    }
-
-    //Required by DocumentListener.
-    public void removeUpdate(DocumentEvent e) {
-        handleDocumentEvent(e);
-    }
-
-    //Required by DocumentListener.
-    public void changedUpdate(DocumentEvent e) {
-            handleDocumentEvent(e);
-    }
-
-    private void handleDocumentEvent(DocumentEvent e) {
-        Object owner = e.getDocument().getProperty("owner");
-        if (owner == nameTextBox) {
-            newButton.setEnabled(e.getDocument().getLength() > 0);
-        }
+    /**
+     * Volunteer Table selection change listener
+     * @param table Table raising the event
+     * @param row selected row
+     * @param col selected col
+     */
+    @Override
+    public void SelectionChanged(JTable table, int row, int col) {
+        removeButton.setEnabled(true);
     }
 }

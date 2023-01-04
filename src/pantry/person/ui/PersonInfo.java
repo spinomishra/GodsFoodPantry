@@ -21,20 +21,56 @@ import java.text.ParseException;
  *
  */
 public class PersonInfo extends JDialog implements ActionListener, DocumentListener{
+	/**
+	 * Person Name
+	 */
 	protected String personName ;
+	/**
+	 * Person's contact number
+	 */
 	protected String personContact ;
+	/**
+	 * Person's mailing address
+	 */
 	protected String personAddress ;
-	
+
+	////////////////// CONTROLS ////////////////
+	/**
+	 * Name text field
+	 */
 	protected transient JTextField nameTextBox;
+	/**
+	 * address text area
+	 */
 	protected transient JTextArea addressTextBox;
+	/**
+	 * Formatted text field for Phone number
+	 */
 	protected transient JFormattedTextField contactTextBox;
+	/**
+	 * OK Button
+	 */
 	protected transient JButton okButton;
+	/**
+	 * Cancel button
+	 */
 	protected transient JButton cancelButton;
+
+	/**
+	 * Action option
+	 */
 	protected transient int option = JOptionPane.CANCEL_OPTION;
+	/**
+	 * JPanel object inside the dialog box. This panel would contain various tabs
+	 */
 	transient protected JPanel dialogPane;
+	/**
+	 * Tabbed pane where tabs will be added
+	 */
 	protected transient JTabbedPane tabbedPane;
 
 	/**
+	 * Constructor
 	 * @param frame - parent component
 	 * @param title - dialog title box
 	 */
@@ -48,6 +84,7 @@ public class PersonInfo extends JDialog implements ActionListener, DocumentListe
 
 	/**
 	 * Set size constraints for the dialog box
+	 * This can be overridden by subclasses
 	 */
 	protected void adjustSizeConstraints(){
 		//setSize(460, 300);
@@ -57,7 +94,6 @@ public class PersonInfo extends JDialog implements ActionListener, DocumentListe
 
 	/**
 	 * Dialog initialization - adds controls to the dialog, sets style and size for the dialog box.
-	 *
 	 */
 	protected void initializeDialog()
 	{
@@ -95,7 +131,7 @@ public class PersonInfo extends JDialog implements ActionListener, DocumentListe
 
 	/**
 	 * Add default action buttons (OK and Cancel) to the dialog box.
-	 * @return  A JPanel object
+	 * @return  The Button container panel object
 	 */
 	protected JPanel addActionControls(){
 		//Create a panel that uses BoxLayout.
@@ -220,8 +256,9 @@ public class PersonInfo extends JDialog implements ActionListener, DocumentListe
 			label.setBounds(10, 70, 120, 20);
 			contentPanel.add(label);
 
-			addressTextBox = new JTextArea(3,1);
 			Dimension minimalSize = new Dimension(120, 40);
+
+			addressTextBox = new JTextArea(3,1);
 			addressTextBox.setWrapStyleWord(true);
 			addressTextBox.setPreferredSize(minimalSize);
 			addressTextBox.setAutoscrolls(true);
@@ -229,12 +266,6 @@ public class PersonInfo extends JDialog implements ActionListener, DocumentListe
 			addressTextBox.setBounds(135, 70, 220, 60);
 			contentPanel.add(addressTextBox);
 		}
-
-		// add filler control
-		//Dimension minSize = new Dimension(5, 150);
-		//Dimension prefSize = new Dimension(5, 150);
-		//Dimension maxSize = new Dimension(Short.MAX_VALUE, Short.MAX_VALUE);
-		//contentPanel.add(new Box.Filler(minSize, prefSize, maxSize));
 	}
 
 	/**
@@ -329,12 +360,12 @@ public class PersonInfo extends JDialog implements ActionListener, DocumentListe
 	public void removeUpdate(DocumentEvent e) {
 		okButton.setEnabled(nameTextBox.getText().trim().length() != 0);
 	}	
-	  
+
 	/**
-	 * change handler
+	 * Change handler - called when name, address or phone number controls text changes
 	 */
 	@Override
 	public void changedUpdate(DocumentEvent e) {
-
+		// Nothing to handle
 	}
 }

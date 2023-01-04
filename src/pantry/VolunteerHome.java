@@ -58,13 +58,13 @@ public class VolunteerHome extends JFrame implements IHome, ActionListener {
         final int w = 300;
         final int h = 300;
 
-        checkinTile = new Tile("Check-in", new Color(0xA38F77), getImageIcon("../images/check-in.png", w, h) );
+        checkinTile = new Tile("Check-in", new Color(0xA38F77), getImageIcon("/images/check-in.png", w, h) );
         checkinTile.addActionListener(this);
         checkinTile.setMinimumSize(new Dimension(50, 50));
         checkinTile.setPreferredSize(new Dimension(300, 300));
 
         mainPanel.add(checkinTile);
-        checkoutTile = new Tile("Check-out", new Color(0xA38F77), getImageIcon("../images/check-out.png",w ,h) );
+        checkoutTile = new Tile("Check-out", new Color(0xA38F77), getImageIcon("/images/check-out.png",w ,h) );
         checkoutTile.addActionListener(this);
         checkoutTile.setMinimumSize(new Dimension(50, 50));
         checkoutTile.setPreferredSize(new Dimension(300, 300));

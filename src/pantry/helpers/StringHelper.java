@@ -5,6 +5,11 @@ package pantry.helpers;
  */
 public class StringHelper {
     /**
+     * Empty string literal
+     */
+    public static final String Empty = "";
+
+    /**
      * Is String null or empty?
      * @param str input string
      * @return true if input string is null or empty; otherwise false

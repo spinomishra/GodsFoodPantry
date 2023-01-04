@@ -21,4 +21,32 @@ public class PhoneHelper {
         Matcher match = phonePattern.matcher(str);
         return (match.find() && match.group().equals(str));
     }
+
+    /**
+     * Compare 2 phone number strings
+     * @param ph1 Phone number 1
+     * @param ph2 Phone number 2
+     * @return  0 if Phone  number 1 is same as Phone number 2,
+     *          -1 if Phone  number 1 is less than Phone number 2
+     *          1 if Phone  number 1 is greater than Phone number 2
+     */
+    public static int compare(String ph1, String ph2) {
+        class OptimizeNumber{
+             String Optimize(String phoneNumber) {
+                String actualNumber = phoneNumber;
+
+                actualNumber = actualNumber.replace("(", StringHelper.Empty);
+                actualNumber = actualNumber.replace(")", StringHelper.Empty);
+                actualNumber = actualNumber.replace("+", StringHelper.Empty);
+                actualNumber = actualNumber.replace("-", StringHelper.Empty);
+                actualNumber = actualNumber.replace(" ", StringHelper.Empty);
+                actualNumber = actualNumber.replace(".", StringHelper.Empty);
+
+                return actualNumber;
+            }
+        }
+
+        OptimizeNumber o = new OptimizeNumber();
+        return (o.Optimize(ph1).compareTo(o.Optimize(ph2)));
+    }
 }

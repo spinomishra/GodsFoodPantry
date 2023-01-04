@@ -87,6 +87,36 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void Run() {
+        setTitle("PantryWare - Food Distribution Management - "+ pantryName);
+
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+        this.addWindowListener(new WindowAdapter() {
+            /**
+             * Invoked when a window is in the process of being closed.
+             * @param e window event
+             */
+            @Override
+            public void windowClosing(WindowEvent e) {
+                Pantry.getInstance().get_Data().Save();
+                SaveConsumers();
+            }
+        });
+
+        setMinimumSize(getDefaultToolkit().getScreenSize());
+        setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
+
+        setLocationRelativeTo(null);
+        setVisible(true);
+        setResizable(false);
+
+    }
+
+    /**
      * Adds panel to contain buttons
      * @return The button panel object
      */
@@ -96,7 +126,7 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
         deleteBtn = new JButton("Delete Record");
         deleteBtn.setEnabled(false);
         deleteBtn.setMinimumSize(new Dimension(200, 100));
-        var deleteButtonIcon = getImageIcon("../images/recyclebin.png", 12,12);
+        var deleteButtonIcon = getImageIcon("/images/recyclebin.png", 12,12);
         deleteBtn.setIcon(deleteButtonIcon);
 
         consumerTable.addSelectionChangeListener(this);
@@ -233,21 +263,19 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
         Font tileFont = new Font("Serif", Font.BOLD|Font.ITALIC, 14);
         Dimension minDim = new Dimension(50, 50) ;
         Dimension prefDim = new Dimension(w, h);
-        Tile manualEntryTile = new Tile("Manual Entry", Color.BLACK, getImageIcon("../images/manual-entry.png", w-20,h-20) );
+        Tile manualEntryTile = new Tile("Manual Entry", Color.BLACK, getImageIcon("/images/manual-entry.png", w-20,h-20) );
         manualEntryTile.setFont(tileFont);
         manualEntryTile.setActionCommand("Manual-Entry");
         manualEntryTile.addActionListener(this);
         manualEntryTile.setMinimumSize(minDim);
         manualEntryTile.setPreferredSize(prefDim);
-
         // text positioning and alignment
         manualEntryTile.setVerticalTextPosition(JLabel.TOP);
         manualEntryTile.setHorizontalTextPosition(JLabel.CENTER);
         manualEntryTile.setVerticalAlignment(JLabel.BOTTOM);
-
         tilePanel.add(manualEntryTile);
 
-        Tile scanEntryTile = new Tile("Scan Identity", Color.BLACK, getImageIcon("../images/scan-id.png", w-20,h-20) );
+        Tile scanEntryTile = new Tile("Scan Identity", Color.BLACK, getImageIcon("/images/scan-id.png", w-20,h-20) );
         scanEntryTile.setFont(tileFont);
         scanEntryTile.setActionCommand("ScanId");
         scanEntryTile.addActionListener(this);
@@ -256,39 +284,9 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
         scanEntryTile.setVerticalTextPosition(JLabel.TOP);
         scanEntryTile.setHorizontalTextPosition(JLabel.CENTER);
         scanEntryTile.setVerticalAlignment(JLabel.BOTTOM);
-
         tilePanel.add(scanEntryTile);
 
-        tilePanel.setVisible(true);
         return tilePanel;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void Run() {
-        setTitle("PantryWare - Food Distribution Management - "+ pantryName);
-
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-
-        this.addWindowListener(new WindowAdapter() {
-            /**
-             * Invoked when a window is in the process of being closed.
-             * @param e window event
-             */
-            @Override
-            public void windowClosing(WindowEvent e) {
-                Pantry.getInstance().get_Data().Save();
-            }
-        });
-
-        setMinimumSize(getDefaultToolkit().getScreenSize());
-        setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
-
-        setVisible(true);
-        setResizable(false);
     }
 
     /**

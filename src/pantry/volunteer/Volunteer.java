@@ -11,6 +11,11 @@ import java.util.ListIterator;
 public class Volunteer extends Person
 {
   /**
+   * Version number for serialization purposes
+   */
+  private static final long serialVersionUID = -4310261792334880336L;
+
+  /**
    * Volunteer activity history
    */
   private ArrayList<ActivityInfo> activityHistory ;
@@ -55,6 +60,8 @@ public class Volunteer extends Person
   public ActivityInfo getOngoingActivity() {
     if (!activityHistory.isEmpty())
     {
+      // search activity from reverse to identify activities that
+      // started today but haven't been recorded as complete
       ListIterator<ActivityInfo> it = activityHistory.listIterator(activityHistory.size());
       while (it.hasPrevious()){
         ActivityInfo aInfo = it.previous();
@@ -66,6 +73,11 @@ public class Volunteer extends Person
     return null;
   }
 
+  /**
+   * Gets activity history for this volunteer
+   * @return The activity history
+   */
+  public ArrayList<ActivityInfo> getActivityHistory() {return activityHistory;}
   /**
    * Records new activity information
    * @param activityInfo

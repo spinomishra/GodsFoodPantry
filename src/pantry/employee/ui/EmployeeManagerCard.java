@@ -323,20 +323,6 @@ public class EmployeeManagerCard extends JPanel implements ListSelectionListener
             int index = e.getColumn();
 
             switch (e.getType()){
-                case TableModelEvent.INSERT: {
-                    for (int i= firstRow; i<=lastRow; i++){
-
-                    }
-                }
-                break;
-
-                case TableModelEvent.DELETE: {
-                    for (int i= firstRow; i<=lastRow; i++){
-
-                    }
-                }
-                break;
-
                 case TableModelEvent.UPDATE:
                     if (firstRow == TableModelEvent.HEADER_ROW) {
                     if (index == TableModelEvent.ALL_COLUMNS) {

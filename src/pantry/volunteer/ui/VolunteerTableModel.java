@@ -5,6 +5,8 @@ import pantry.distribution.Consumer;
 import pantry.distribution.ui.ConsumerTableModel;
 import pantry.employee.Employee;
 import pantry.helpers.DateHelper;
+import pantry.helpers.PhoneHelper;
+import pantry.helpers.StringHelper;
 import pantry.person.Identity;
 import pantry.volunteer.ActivityInfo;
 import pantry.volunteer.Volunteer;
@@ -87,7 +89,7 @@ public class VolunteerTableModel extends RowTableModel<Volunteer> {
                 case 1:
                     return volunteer.getName();
                 case 2:
-                    return volunteer.getContactNumber();
+                    return (PhoneHelper.isNullOrEmpty(volunteer.getContactNumber())) ? StringHelper.Empty : volunteer.getContactNumber();
                 case 3:
                     return volunteer.getAddress();
                 case 4:
@@ -127,7 +129,7 @@ public class VolunteerTableModel extends RowTableModel<Volunteer> {
 
             switch (column) {
                 case 2:
-                    e.setContactPhone((String) value);
+                    e.setContactPhone((String)value);
                     break;
                 case 3:
                     e.setAddress((String) value);

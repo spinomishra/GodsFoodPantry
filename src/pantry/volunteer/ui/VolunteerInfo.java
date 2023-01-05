@@ -1,13 +1,17 @@
 package pantry.volunteer.ui;
 
 import pantry.Pantry;
+import pantry.helpers.PhoneHelper;
+import pantry.helpers.StringHelper;
 import pantry.person.ui.PersonInfo;
 import pantry.volunteer.ActivityInfo;
 import pantry.volunteer.Volunteer;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
@@ -23,7 +27,12 @@ public class VolunteerInfo extends PersonInfo {
     /**
      * Recent Activity information
      */
-    private ActivityInfo recentActivity = new ActivityInfo();
+    private ActivityInfo recentActivity ;
+
+    /**
+     * Check in time control
+     */
+    JTextField checkInTime;
 
     /**
      * Constructor
@@ -53,7 +62,8 @@ public class VolunteerInfo extends PersonInfo {
         identityPanel.add(checkInTimeLbl);
 
         String formattedDateTime = recentActivity.getStartTime().format(DateTimeFormatter.ofPattern("MMM dd, uuuu hh:mm a"));
-        JLabel checkInTime = new JLabel(formattedDateTime);
+        checkInTime = new JTextField(formattedDateTime);
+        checkInTime.getDocument().addDocumentListener(this);
         checkInTime.setBounds(135, 20, 220, 20);
         identityPanel.add(checkInTime);
 
@@ -82,6 +92,42 @@ public class VolunteerInfo extends PersonInfo {
      */
     public ActivityInfo getRecentActivity() {
         return recentActivity;
+    }
+
+    /**
+     * element insert handler
+     */
+    @Override
+    public void insertUpdate(DocumentEvent e) {
+        String name =  nameTextBox.getText();
+        String phone = contactTextBox.getText();
+        LocalDateTime  checkinTimeObj = null;
+        try {
+            checkinTimeObj = LocalDateTime.parse(checkInTime.getText(), DateTimeFormatter.ofPattern("MMM dd, uuuu hh:mm a"));
+        }
+        catch(Exception ex){
+
+        }
+
+        okButton.setEnabled(!StringHelper.isNullOrEmpty(name) && !PhoneHelper.isNullOrEmpty(phone) && checkinTimeObj != null);
+    }
+
+    /**
+     * element remove handler
+     */
+    @Override
+    public void removeUpdate(DocumentEvent e) {
+        String name =  nameTextBox.getText();
+        String phone = contactTextBox.getText();
+        LocalDateTime  checkinTimeObj = null;
+        try {
+            checkinTimeObj = LocalDateTime.parse(checkInTime.getText(), DateTimeFormatter.ofPattern("MMM dd, uuuu hh:mm a"));
+        }
+        catch(Exception ex){
+
+        }
+
+        okButton.setEnabled(!StringHelper.isNullOrEmpty(name) && !PhoneHelper.isNullOrEmpty(phone) && checkinTimeObj != null);
     }
 
     /**

@@ -5,6 +5,7 @@ package pantry.employee.ui;
 
 import pantry.dataprotection.Hash;
 import pantry.employee.Employee;
+import pantry.helpers.StringHelper;
 import pantry.person.ui.PersonInfo;
 
 import javax.swing.*;
@@ -28,12 +29,12 @@ public class EmployeeInfo extends PersonInfo {
 	/**
 	 * SSN text box control
 	 */
-	JFormattedTextField ssnField = null;
+	JFormattedTextField ssnField;
 
 	/**
 	 * Employment Start date
 	 */
-	JFormattedTextField empStart = null;
+	JFormattedTextField empStart;
 
 	/**
 	 * Constructor
@@ -144,13 +145,21 @@ public class EmployeeInfo extends PersonInfo {
 
 		Employee e = null;
 		if (pInfo.option == JOptionPane.OK_OPTION) {
-			String ssn = pInfo.ssnField.getText();
-			String ssnHash = Hash.Sha2Hash(ssn.toCharArray());
-
 			e = new Employee(pInfo.personName, pInfo.Role);
+
+			String ssn = pInfo.ssnField.getText();
+			ssn = ssn.replace("-", StringHelper.Empty);
+			ssn = ssn.trim();
+			if (StringHelper.isNullOrEmpty(ssn))
+				ssn = StringHelper.Empty;
+			else {
+				ssn = pInfo.ssnField.getText();
+				String ssnHash = Hash.Sha2Hash(ssn.toCharArray());
+				e.setSSN(ssnHash);
+			}
+
 			e.setAddress(pInfo.personAddress);
 			e.setContactPhone(pInfo.personContact);
-			e.setSSN(ssnHash);
 		}
 
 		pInfo.dispose();

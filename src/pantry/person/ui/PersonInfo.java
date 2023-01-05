@@ -3,6 +3,9 @@
  */
 package pantry.person.ui;
 
+import pantry.helpers.PhoneHelper;
+import pantry.helpers.StringHelper;
+
 import javax.swing.*;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
@@ -236,12 +239,7 @@ public class PersonInfo extends JDialog implements ActionListener, DocumentListe
 			label.setBounds(10, 45, 120, 20);
 			contentPanel.add(label);
 
-			MaskFormatter fmt = null;
-			try {
-				fmt = new MaskFormatter("(###)###-####");
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
+			MaskFormatter fmt = PhoneHelper.getFormatterMask();
 
 			contactTextBox = new JFormattedTextField(fmt);
 			contactTextBox.setColumns(12);
@@ -342,7 +340,8 @@ public class PersonInfo extends JDialog implements ActionListener, DocumentListe
 	 */
 	protected void onOKButtonClicked(ActionEvent e) {
 		personName = nameTextBox.getText().trim();
-		personContact = contactTextBox.getText().trim();
+		String phone = contactTextBox.getText().trim();
+		personContact = PhoneHelper.isNullOrEmpty(phone) ? StringHelper.Empty : phone;
 		personAddress = addressTextBox.getText().trim();
 	}
 
@@ -351,7 +350,10 @@ public class PersonInfo extends JDialog implements ActionListener, DocumentListe
 	 */
 	@Override
 	public void insertUpdate(DocumentEvent e) {
-		okButton.setEnabled(nameTextBox.getText().trim().length() != 0);
+		String name =  nameTextBox.getText();
+		String phone = contactTextBox.getText();
+
+		okButton.setEnabled(!StringHelper.isNullOrEmpty(name) && !PhoneHelper.isNullOrEmpty(phone));
 	}
 
 	/**
@@ -359,8 +361,11 @@ public class PersonInfo extends JDialog implements ActionListener, DocumentListe
 	 */
 	@Override
 	public void removeUpdate(DocumentEvent e) {
-		okButton.setEnabled(nameTextBox.getText().trim().length() != 0);
-	}	
+		String name =  nameTextBox.getText();
+		String phone = contactTextBox.getText();
+
+		okButton.setEnabled(!StringHelper.isNullOrEmpty(name) && !PhoneHelper.isNullOrEmpty(phone));
+	}
 
 	/**
 	 * Change handler - called when name, address or phone number controls text changes

@@ -61,15 +61,8 @@ public class VolunteerTable extends JTable implements ListSelectionListener{
         createRowSorter() ;
 
         // setting cell editor for phone column
-        JFormattedTextField ftext = new JFormattedTextField();
-        MaskFormatter mask;
-        try {
-            mask = new MaskFormatter("(###)###-####");
-            mask.install(ftext);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
+        MaskFormatter mask = PhoneHelper.getFormatterMask();
+        JFormattedTextField ftext = new JFormattedTextField(mask);
         getColumnModel().getColumn(2).setCellEditor(new DefaultCellEditor(ftext));
     }
 

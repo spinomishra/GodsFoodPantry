@@ -1,5 +1,7 @@
 package pantry.helpers;
 
+import javax.swing.text.MaskFormatter;
+import java.text.ParseException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,6 +22,41 @@ public class PhoneHelper {
         Pattern phonePattern = Pattern.compile("^\\+(?:[0-9] ?){6,14}[0-9]$");
         Matcher match = phonePattern.matcher(str);
         return (match.find() && match.group().equals(str));
+    }
+
+    /**
+     * Gets MaskFormatter for controls that may contain phone numbers
+     * @return MaskFormatter object
+     */
+    public static MaskFormatter getFormatterMask(){
+        MaskFormatter mask = null;
+        try {
+            mask = new MaskFormatter("(###)###-####");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return mask;
+    }
+
+    /**
+     * Checks if a given phone number is an empty string
+     * @param phoneNumber The Phone Number
+     * @return true if phone number string is empty, else false
+     */
+    public static boolean isNullOrEmpty(String phoneNumber){
+        if (phoneNumber != null) {
+            String temp = phoneNumber;
+            temp = temp.replace("(", StringHelper.Empty);
+            temp = temp.replace(")", StringHelper.Empty);
+            temp = temp.replace("+", StringHelper.Empty);
+            temp = temp.replace("-", StringHelper.Empty);
+            temp = temp.replace(" ", StringHelper.Empty);
+            temp = temp.replace(".", StringHelper.Empty);
+
+            return temp.trim().isEmpty();
+        }
+        return true;
     }
 
     /**

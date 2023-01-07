@@ -9,15 +9,39 @@ import java.io.FileNotFoundException;
  * Menu items on the sidebar
  */
 public class SideMenuItem extends JButton {
+    /**
+     * Menu item's height (constant)
+     */
     public static int MENUITEM_HEIGHT = 45;
+    /**
+     * Menu item's width (constant)
+     */
     public static int MENUITEM_WIDTH = 70;
 
+    /**
+     * background color for the menu item
+     */
     private final Color backgroundColor = new Color(16,84,129);
+    /**
+     * Foreground color for the menu item
+     */
     private final Color foregroundColor = new Color(195, 217, 233);
+    /**
+     * Color when mouse hovers over the menu item
+     */
     private final Color hoverColor = new Color(151,83,74);
 
+    /**
+     * Image icon for the menu item
+     */
     private ImageIcon icon ;
+    /**
+     * Image to be displayed when mouse hovers over menu item
+     */
     private ImageIcon icon_hover;
+    /**
+     * Image to be displayed when icon is pressed
+     */
     private ImageIcon icon_pressed;
 
     /**
@@ -106,10 +130,10 @@ public class SideMenuItem extends JButton {
 
     /**
      * Set icons for normal, hover and pressed states
-     * @param imgNormal
-     * @param imgHover
-     * @param imgPressed
-     * @return
+     * @param imgNormal  Normal Image
+     * @param imgHover  Hover Image
+     * @param imgPressed Menu item pressed image
+     * @return the menu item object
      * @throws FileNotFoundException
      */
     public SideMenuItem setIcons(String imgNormal, String imgHover, String imgPressed) throws FileNotFoundException {

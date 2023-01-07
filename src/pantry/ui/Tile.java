@@ -10,8 +10,17 @@ import java.awt.event.MouseEvent;
  * Tile class represents a tile aka card object
  */
 public class Tile extends JButton {
+    /**
+     * Default color for the tile - Wheat Color constant value
+     */
     private static final int DefaultColor = 0xE3C7A6;   // wheat color
+    /**
+     * Harvest Gold color constant value used when mouse hovers over the tile
+     */
     private static final int MouseHoverColor = 0xDA9100;    // harvest gold color
+    /**
+     * Blue shade color constant value used when mouse is pressed over the tile
+     */
     private static final int MousePressedColor = 0x0056D9; // blue shade color
 
     /**

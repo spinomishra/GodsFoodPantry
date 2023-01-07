@@ -1,5 +1,12 @@
 package pantry.employee.ui;
 
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRMapArrayDataSource;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import pantry.Pantry;
 import pantry.helpers.PrintHelper;
 import pantry.employee.Employee;
@@ -19,8 +26,9 @@ import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.util.*;
 import java.util.List;
 
 /**
@@ -269,8 +277,8 @@ public class EmployeeManagerCard extends JPanel implements ListSelectionListener
                         super.printJobRequiresAttention(pje);
                     }
                 });
-/*
-                FileInputStream fis = new FileInputStream("C:/test.jpg");
+
+               /* FileInputStream fis = new FileInputStream("C:/test.jpg");
                 Doc doc=new SimpleDoc(fis, DocFlavor.INPUT_STREAM.AUTOSENSE, null);
                 // Doc doc=new SimpleDoc(fis, DocFlavor.INPUT_STREAM.JPEG, null);
                 PrintRequestAttributeSet attrib=new HashPrintRequestAttributeSet();
@@ -343,9 +351,9 @@ public class EmployeeManagerCard extends JPanel implements ListSelectionListener
             }
         }
     }
-
+/*
     private void GenerateReport() {
-/*        try {
+        try {
             JasperReport jr;
             InputStream in=getClass().getResourceAsStream(resourcefile + ".ser");
             if (in == null) {
@@ -367,14 +375,13 @@ public class EmployeeManagerCard extends JPanel implements ListSelectionListener
             Map reportfields=new HashMap();
             reportfields.put("TICKET",ticket);
             reportfields.put("PLACE",ticketext);
-            JasperPrint jp=JasperFillManager.fillReport(jr,reportparams,new JRMapArrayDataSource(new Object[]{reportfields}));
-            PrintService service=ReportUtils.getPrintService(m_App.getProperties().getProperty("machine.printername"));
-            JRPrinterAWT300.printPages(jp,0,jp.getPages().size() - 1,service);
+            JasperPrint jp= JasperFillManager.fillReport(jr,reportparams,new JRMapArrayDataSource(new Object[]{reportfields}));
+            //PrintService service=PrintHelper.getPrintService(getProperties().getProperty("machine.printername"));
+            //JRPrinterAWT300.printPages(jp,0,jp.getPages().size() - 1,service);
         }
         catch (  Exception e) {
-            MessageInf msg=new MessageInf(MessageInf.SGN_WARNING,AppLocal.getIntString("message.cannotloadreport"),e);
-            msg.show(this);
+            //MessageInf msg=new MessageInf(MessageInf.SGN_WARNING,AppLocal.getIntString("message.cannotloadreport"),e);
+            ///msg.show(this);
         }
- */
-    }
+    }*/
 }

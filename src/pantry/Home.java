@@ -21,15 +21,13 @@ public abstract class Home {
      *             -mmode=volunteer | manage
      */
     public static void main(String[] args) {
-        IHome home = null;
-        String mode = System.getProperty("mode");
-
         /*
             Load properties from config.properties
             e.g. pantry title
          */
         String pantryName = "";
         boolean rememberMe=false;
+        String mode = System.getProperty("mode");
 
         Properties prop = LoadConfiguration() ;
         if (prop != null) {
@@ -41,7 +39,39 @@ public abstract class Home {
             }
         }
 
-        if (StringHelper.isNullOrEmpty(mode) || rememberMe == false) {
+        // command line arguments override properties defined in the config.properties
+        boolean overrideProperties=false ;
+        if (args != null){
+            String nextOptionValue = "";
+            for (String option:args){
+                switch (option) {
+                    case "-m":
+                        nextOptionValue="mode";
+                        break;
+
+                    case "-p":
+                        nextOptionValue="title";
+                        break;
+
+                    default:
+                        if (StringHelper.isNullOrEmpty(nextOptionValue))
+                            continue;
+
+                        if (nextOptionValue == "title") {
+                            pantryName = option;
+                        }
+                        else if (nextOptionValue == "mode") {
+                            mode = option;
+                            overrideProperties=true;
+                        }
+                        nextOptionValue=StringHelper.Empty;
+                        break;
+                }
+            }
+        }
+
+        IHome home = null;
+        if (!overrideProperties && (StringHelper.isNullOrEmpty(mode) || rememberMe == false)) {
             ExecutionModeSelection modeSelector = new ExecutionModeSelection(mode, "Pantryware");
             modeSelector.setVisible(true);
             mode = modeSelector.executionMode;

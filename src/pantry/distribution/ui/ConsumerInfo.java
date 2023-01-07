@@ -306,7 +306,7 @@ public class ConsumerInfo extends PersonInfo implements integrisign.IDocInfo{
             insertUpdate(null);
         }
         catch(Exception ex){
-            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, ex.getMessage(),"Signature", JOptionPane.ERROR_MESSAGE);
         }
     }
 

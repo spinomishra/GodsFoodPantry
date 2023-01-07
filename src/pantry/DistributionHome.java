@@ -107,13 +107,10 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
             }
         });
 
-        setMinimumSize(getDefaultToolkit().getScreenSize());
-        setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
-
+        setMinimumSize(new Dimension(800, 600));
         setLocationRelativeTo(null);
+        setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
         setVisible(true);
-        setResizable(false);
-
     }
 
     /**

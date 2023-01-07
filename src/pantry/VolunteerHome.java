@@ -101,9 +101,9 @@ public class VolunteerHome extends JFrame implements IHome, ActionListener {
         });
 
         setLocationRelativeTo(null);
+        setMinimumSize(new Dimension(800, 600));
         setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
         setVisible(true);
-        setResizable(false);
     }
 
     /**

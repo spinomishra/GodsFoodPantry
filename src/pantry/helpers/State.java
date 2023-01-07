@@ -73,4 +73,13 @@ public enum State {
     public String toString() {
         return this.state;
     }
+
+    //Enums don't allow to override Equals and CompareTo() as that would violate the
+    //principle of least astonishment - It proposes that a component of a system
+    //should behave in a way that most users will expect it to behave. The behavior
+    //should not astonish or surprise users. The following is a formal statement
+    //of the principle: "If a necessary feature has a high astonishment factor, it
+    //may be necessary to redesign the feature
+    //Two enum constants are expected to be equal if and only if they are the same object
+    //and the ability to override this behavior would be error prone.
 }

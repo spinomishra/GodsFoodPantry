@@ -8,7 +8,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 /**
- * Hash implements various hash methods
+ * Hash class implements various one way hash methods
  */
 public class Hash {
     /**

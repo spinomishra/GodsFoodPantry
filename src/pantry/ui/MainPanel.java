@@ -11,11 +11,19 @@ import java.util.*;
  * Main content panel
  */
 public class MainPanel extends JPanel {
-    // parent window
+    /**
+     * Parent Window
+     */
     private JFrame parentWindow ;
-    // list of screens added to the panel
+
+    /**
+     * Map of title and the screens added to the card layout
+     */
     private Map<String, JPanel> cards ;
-    // card layout
+
+    /**
+     * Card layout
+     */
     private CardLayout cardLayout;
 
     /**

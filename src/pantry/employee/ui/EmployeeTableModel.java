@@ -5,6 +5,9 @@ import pantry.data.RowTableModel;
 
 import java.util.Arrays;
 
+/**
+ * Class to manage custom data model for the Employee table.
+ */
 public class EmployeeTableModel extends RowTableModel<Employee> {
     private static String[] COLUMN_NAMES = {
             "Full Name",
@@ -14,6 +17,9 @@ public class EmployeeTableModel extends RowTableModel<Employee> {
             "Address"
     };
 
+    /**
+     * Constructor
+     */
     EmployeeTableModel() {
         super(Arrays.asList(COLUMN_NAMES));
         setRowClass(Employee.class);
@@ -53,6 +59,12 @@ public class EmployeeTableModel extends RowTableModel<Employee> {
         }
     }
 
+    /**
+     * Set value at specified row and column
+     * @param value   value to assign to cell
+     * @param row   row of cell
+     * @param column  column of cell
+     */
     @Override
     public void setValueAt(Object value, int row, int column)
     {

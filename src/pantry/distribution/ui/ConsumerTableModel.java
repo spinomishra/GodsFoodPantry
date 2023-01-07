@@ -6,6 +6,10 @@ import pantry.person.Identity;
 
 import java.util.Arrays;
 
+/**
+ * This class extends RowTableModel and implements a
+ * custom row column model for the consumer table
+ */
 public class ConsumerTableModel extends RowTableModel<Consumer> {
     /**
      * Consumer table columns
@@ -23,6 +27,9 @@ public class ConsumerTableModel extends RowTableModel<Consumer> {
             "Members"
     };
 
+    /**
+     * Constructor
+     */
     ConsumerTableModel() {
         super(Arrays.asList(COLUMN_NAMES));
         setRowClass(Consumer.class);

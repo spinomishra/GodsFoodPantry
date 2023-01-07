@@ -24,7 +24,7 @@ import java.util.Comparator;
 /**
  * This class extends JTable to support consumer record display
  */
-public class VolunteerTable extends JTable implements ListSelectionListener{
+public class VolunteerTable extends JTable{
     /**
      * Employee object model
      */
@@ -41,6 +41,16 @@ public class VolunteerTable extends JTable implements ListSelectionListener{
     private ITableSelectionChangeListener selectionChangeListener;
 
     /**
+     * Model use for list selection
+     */
+    private ListSelectionModel tableListSelectionModel;
+
+    /**
+     * Table sorting object
+     */
+    private TableRowSorter<VolunteerTableModel> sorter;
+
+    /**
      * Constructors
      */
     public VolunteerTable(ArrayList<Volunteer> volunteers){
@@ -48,17 +58,42 @@ public class VolunteerTable extends JTable implements ListSelectionListener{
 
         setCellSelectionEnabled(false);
         setRowSelectionAllowed(true);
+
         setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
         setRowHeight(40);
 
-        setSelectionBackground(selectedRowColor);
-        setSelectionForeground(Color.WHITE);
+        tableListSelectionModel = getSelectionModel();
+        var table = this;
+        tableListSelectionModel.addListSelectionListener(new ListSelectionListener() {
+            /**
+             * When selection changes, enable button to remove employees data from records
+             * @param e list selection change event
+             */
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (e.getSource() == tableListSelectionModel) {
+                    int selectedRowIndex = table.getSelectedRow();
 
-        var selectionModel = this.getSelectionModel();
-        selectionModel.addListSelectionListener(this);
+                    if (selectedRowIndex != -1)
+                    {
+                        // Following 2 lines of code allows me to highlight selected row using selected row Color
+                        addRowSelectionInterval(selectedRowIndex, selectedRowIndex);
+                        setColumnSelectionInterval(0, table.getColumnCount()-1);
+
+                        if (selectionChangeListener != null)
+                            selectionChangeListener.SelectionChanged(table, selectedRowIndex, 0);
+                    }
+                }
+            }
+        });
+        setSelectionModel(tableListSelectionModel);
 
         setColumnWidths();
         createRowSorter() ;
+
+        setSelectionBackground(selectedRowColor);
+        setSelectionForeground(Color.WHITE);
 
         // setting cell editor for phone column
         MaskFormatter mask = PhoneHelper.getFormatterMask();
@@ -102,7 +137,8 @@ public class VolunteerTable extends JTable implements ListSelectionListener{
      * Creates custom sorter for the table with capability to compare phone numbers
      */
     void createRowSorter(){
-        TableRowSorter sorter = new TableRowSorter(getModel());
+        VolunteerTableModel model = (VolunteerTableModel)getModel();
+        sorter = new TableRowSorter<VolunteerTableModel>(model);
 
         class PhoneComparator implements Comparator {
             public int compare(Object o1, Object o2) {
@@ -144,38 +180,19 @@ public class VolunteerTable extends JTable implements ListSelectionListener{
     @Override
     public Component prepareRenderer(TableCellRenderer renderer, int row, int column){
         Component comp = super.prepareRenderer(renderer, row, column);
-        if (row != -1 && row ==  getSelectedRow())
-        {
-            comp.setBackground(selectedRowColor);
-            comp.setForeground(Color.WHITE);
-        }
-        else {
-            Color c = (row % 2 == 0 ? new Color(210, 231, 255) : Color.WHITE);
-            comp.setBackground(c);
-            comp.setForeground(Color.BLACK);
+        if(!comp.getBackground().equals(getSelectionBackground()) && row != getSelectedRow()) {
+            if (row != -1 && row == getSelectedRow()) {
+                comp.setBackground(selectedRowColor);
+                comp.setForeground(Color.WHITE);
+            } else {
+                Color c = (row % 2 == 0 ? new Color(210, 231, 255) : Color.WHITE);
+                comp.setBackground(c);
+                comp.setForeground(Color.BLACK);
+            }
         }
         return comp;
     }
 
-    /**
-     * When selection changes, enable button to remove employees data from records
-     * @param e list selection change event
-     */
-    @Override
-    public void valueChanged(ListSelectionEvent e) {
-        if (e.getSource() == this.getSelectionModel()) {
-            int selectedRowIndex = getSelectedRow();
-
-            if (selectedRowIndex != -1)
-            {
-                // Following 2 lines of code allows me to highlight selected row using selected row Color
-                addRowSelectionInterval(selectedRowIndex, selectedRowIndex);
-                setColumnSelectionInterval(0, this.getColumnCount()-1);
-                if (selectionChangeListener != null)
-                    selectionChangeListener.SelectionChanged(this, selectedRowIndex, 0);
-            }
-        }
-    }
 
     /**
      * Adds a new consumer object to the table model

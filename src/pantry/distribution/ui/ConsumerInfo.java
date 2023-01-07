@@ -16,7 +16,9 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
 /**
- * ConsumerInfo class represents individuals/groups that receive the food distribution.
+ * ConsumerInfo class represents UI to capture consumer information about individuals/groups that receive the food distribution.
+ * This class implements integrisign's IDocInfo interface. This interface defines methods that needs to be implemented by
+ * the host application to bind the content to the signature that is being captured.
  */
 public class ConsumerInfo extends PersonInfo implements integrisign.IDocInfo{
     ////////////////// Controls Begin /////////////////////////////
@@ -77,8 +79,8 @@ public class ConsumerInfo extends PersonInfo implements integrisign.IDocInfo{
     }
 
     /**
-     * {@inheritDoc}
-     * @return the panel to be added at the top of the dialog box
+     * Add tab control to capture Consumer information
+     * @param tabbedPane The tabbed pane control.
      */
     protected void addTabs(JTabbedPane tabbedPane){
         super.addTabs(tabbedPane);
@@ -198,7 +200,8 @@ public class ConsumerInfo extends PersonInfo implements integrisign.IDocInfo{
     }
 
     /**
-     * {@inheritDoc}
+     * Add action buttons to the UI
+     * This specific override adds "Sign Now" to initialize inkPad
      * @return The JPanel object
      */
     @Override
@@ -225,6 +228,15 @@ public class ConsumerInfo extends PersonInfo implements integrisign.IDocInfo{
         return actionPanel;
     }
 
+    /**
+     * Enables inkpad component to generate MD5
+     * hash of the content to be authenticated.
+     * Once the signature is captured or opened
+     * using existing signature info, user details
+     * like Name, Designation, Organization, Address can
+     * be queried if they are set.
+     * @param iGrabber IGrabber object
+     */
     @Override
     public void feedGrabber(IGrabber iGrabber) {
         String name = nameTextBox.getText().trim();
@@ -232,11 +244,19 @@ public class ConsumerInfo extends PersonInfo implements integrisign.IDocInfo{
         iGrabber.finishGrab();
     }
 
+    /**
+     * Get the version for the signature data
+     * @return version info
+     */
     @Override
     public byte getVersion() {
         return 1;
     }
 
+    /**
+     * Get document IDd
+     * @return empty string as doc ID
+     */
     @Override
     public String getDocID() {
         return "";
@@ -262,11 +282,17 @@ public class ConsumerInfo extends PersonInfo implements integrisign.IDocInfo{
                 idNumber.getText().trim().length() != 0);
     }
 
-
+    /**
+     * When SignNowEx is called a SignPad appears for capturing the
+     * signature. User can choose a different signature color
+     * from options button, depending on the privileges set
+     * to him in signNowEx method.
+     */
     private void SignNow() {
         try {
             deskSign1.setSignThickness((byte)1);
             deskSign1.setForeground(Color.BLUE);
+            deskSign1.setOpaque(false);
 
             if (deskSign1.isSigned()) {
                 deskSign1.clear();
@@ -275,6 +301,7 @@ public class ConsumerInfo extends PersonInfo implements integrisign.IDocInfo{
                 deskSign1.signNowEx(idNumber.getText().trim(), nameTextBox.getText().trim(),"", "", addressTextBox.getText().trim(),"", false,  (integrisign.IDocInfo)this);
             }
 
+            deskSign1.setOpaque(true);
             // update the state for OK button
             insertUpdate(null);
         }

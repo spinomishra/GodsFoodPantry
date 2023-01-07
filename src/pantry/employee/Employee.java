@@ -1,22 +1,32 @@
 package pantry.employee;
 import pantry.dataprotection.Hash;
+import pantry.helpers.PhoneHelper;
 import pantry.person.Person;
 
 
 /**
- * Employee class derived from Person
+ * Class representing an Employee. This class extends Person class with additional information for the employee.
  */
 public class Employee extends Person
 {
-    // version number for serialization purposes
+	/**
+	 * Version number for serialization purposes
+	 */
 	private static final long serialVersionUID = 1L;
-	
-	// Employee Role enum
-	public enum EmployeeRole {Owner, Manager, Cook, Cleaner, Assistant, Validator, Accountant, Driver}
-	
+
+	/**
+	 * Employee Role enum
+	 */
+	public enum EmployeeRole {Owner, Manager, Cook, Cleaner, Assistant, Validator, Accountant, Driver, Undecided}
+
+	/**
+	 * Employee Role
+	 */
 	private EmployeeRole Role;
 
-	// Employee Social Security hash Info
+	/**
+	 * One way hash of Employee's Social Security NUmber
+	 */
 	private String SSNHash;
 
 	/**
@@ -25,6 +35,7 @@ public class Employee extends Person
 	 */
 	public Employee(String name){
 	  super(name);
+	  Role = EmployeeRole.Undecided;
 	}
 
 	/**
@@ -54,7 +65,8 @@ public class Employee extends Person
 	}
 
 	/**
-	 * Gets social security number
+	 * Gets social security number.
+	 * Since Social security number is never preserved, we do not return a valid SSN.
 	 * @return anonymized social security
 	 */
 	public String getSSN(){
@@ -62,6 +74,10 @@ public class Employee extends Person
 		return "**-**-****";
 	}
 
+	/**
+	 * Set SSN hash for the employee
+	 * @param hash
+	 */
 	public void setSSN(String hash){
 		SSNHash = hash;
 	}
@@ -113,9 +129,7 @@ public class Employee extends Person
 			return true;
 
 		if (obj != null)
-		{
 			return super.equals(obj);
-		}
 
 		return false;
 	}
@@ -125,6 +139,14 @@ public class Employee extends Person
 	 * @return the string format of the data
 	 */
 	public String toString(){
-		return getName() + ":" + Role.toString() + ":" + getContactNumber() + ":" + getAddress() ;
+		String address = getAddress();
+		String phoneNo = getContactNumber();
+
+		String str = getName() ;
+		str = str + ", " + Role.toString();
+		if (!PhoneHelper.isNullOrEmpty(phoneNo))
+			str = str + ": ";
+
+		return str;
 	}
 }

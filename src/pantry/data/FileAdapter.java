@@ -10,9 +10,24 @@ import java.util.Objects;
  * Class represents methods that assist with data record's persistence to a local file
  */
 public class FileAdapter implements IDataConnector {
-    String fileName ;
-    FileInputStream fis;
+    /**
+     * Filename
+     */
+    private String fileName ;
+
+    /**
+     * Input stream
+     */
+    private FileInputStream fis;
+
+    /**
+     * Pantry Data object
+     */
     IPantryData pantryData;
+
+    /**
+     * Object input stream
+     */
     ObjectInputStream ois;
 
     /**
@@ -56,7 +71,7 @@ public class FileAdapter implements IDataConnector {
     }
 
     /**
-     * Persist records
+     * Persist records in file using output stream
      */
     @Override
     public void Save() {

@@ -1,5 +1,8 @@
 package pantry.helpers;
 
+/**
+ * United States's State Enumerator
+ */
 public enum State {
     AL("Alabama"),
     MT("Montana"),
@@ -53,10 +56,19 @@ public enum State {
     WY("Wyoming");
 
     private final String state;
+
+    /**
+     * Constructor
+     * @param state State's string
+     */
     private State(String state) {
         this.state = state;
     }
 
+    /**
+     * Converting the enum to string
+     * @return String for the enum
+     */
     @Override
     public String toString() {
         return this.state;

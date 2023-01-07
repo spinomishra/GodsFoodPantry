@@ -13,10 +13,15 @@ import java.awt.print.PrinterJob;
  * Supporting Printing reports from Pantryware
  */
 public class PrintHelper {
+    /**
+     * Prepare system to print
+     * This will display a print settings dialogs box with the printer services available on the system.
+     * @param window parent Window component for the dialog box
+     * @return Print service selected by the user
+     */
     public static PrintService PrepareForPrint(Window window){
         final int offset = 50;
 
-        //Window window = SwingUtilities.getWindowAncestor(container);
         GraphicsConfiguration graphicsConfiguration = window == null ? null : window.getGraphicsConfiguration();
         PrintService[] printServices = PrintServiceLookup.lookupPrintServices(null, null);
         PrintService defaultPrintService = PrintServiceLookup.lookupDefaultPrintService();
@@ -30,8 +35,8 @@ public class PrintHelper {
     }
 
     /**
-     * Retrieve the specified Print Service; will return null if not found.
-     * @return PrintService object
+     * Retrieve the specified Print Service
+     * @return PrintService object; returns null if none found.
      */
     public static PrintService findPrintService(String printerName) {
 
@@ -44,7 +49,6 @@ public class PrintHelper {
         for (int index = 0; service == null && index < services.length; index++) {
 
             if (services[index].getName().equalsIgnoreCase(printerName)) {
-
                 service = services[index];
             }
         }
@@ -56,7 +60,7 @@ public class PrintHelper {
     /**
      * Retrieve a PrinterJob instance set with the PrinterService using the printerName.
      *
-     * @return
+     * @return Printer job instance
      * @throws Exception IllegalStateException if expected printer is not found.
      */
     public static PrinterJob findPrinterJob(String printerName) throws Exception {

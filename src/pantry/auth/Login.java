@@ -19,28 +19,92 @@ import java.util.HashMap;
  * Login class represents login and registration UI
  */
 public class Login implements DocumentListener, ActionListener, KeyListener {
-    // login page controls
-    JTextField      username;
-    JPasswordField  password;
+    ////////////// login page controls ///////////////
+    /**
+     * Username text field to capture username
+     */
+    private JTextField      username;
+    /**
+     * Password field to capture password
+     */
+    private JPasswordField  password;
 
-    // registration page controls
-    JTextField      reg_username;
-    JPasswordField  reg_password;
-    JPasswordField  conf_password;
+    ////////// registration page controls ////////////////
 
-    JButton         loginButton;
-    JButton         regButton;
-    JButton         regLinkButton;
-    CardLayout      cardLayout;
-    JPanel          cards;
+    /**
+     * Username control for user registration
+     */
+    private JTextField      reg_username;
 
-    final String LOGIN_CARD = "LoginUser";
-    final String REGISTER_CARD = "RegisterNewUser";
-    HashMap<String, String> passwordDB = null;
-    JDialog modelDialog = null;
-    String activePage ;
-    boolean authenticated = false;
+    /**
+     * Password control for user registration
+     */
+    private JPasswordField  reg_password;
 
+    /**
+     * Password confirmation control for user registration
+     */
+    private JPasswordField  conf_password;
+
+    /**
+     * Login button
+     */
+    private JButton         loginButton;
+
+    /**
+     * register button
+     */
+    private JButton         regButton;
+
+    /**
+     * Register link button
+     */
+    private JButton         regLinkButton;
+
+    /**
+     * Card layout control
+     */
+    private CardLayout      cardLayout;
+
+    /**
+     * Cards to be hosted in card layout
+     */
+    private JPanel          cards;
+
+    /**
+     * LoginUser label text
+     */
+    private final String LOGIN_CARD = "LoginUser";
+
+    /**
+     * New user registration label text
+     */
+    private final String REGISTER_CARD = "RegisterNewUser";
+    /**
+     * Password hash map
+     */
+    private HashMap<String, String> passwordDB ;
+
+    /**
+     * Model dialog for login/registration
+     */
+    private JDialog modelDialog ;
+
+    /**
+     * Active card title
+     */
+    private String activePage ;
+
+    /**
+     * Flag to store authentication status
+     */
+    private boolean authenticated = false;
+
+    /**
+     * Shows dialog box and authenticates user
+     * @param frame parent component for the dialog box
+     * @return true if user has successfully authenticated, otherwise false
+     */
     public boolean Show(final JFrame frame) {
         modelDialog = new JDialog(frame, "PantryWare - Manager Login", Dialog.ModalityType.DOCUMENT_MODAL);
 
@@ -85,8 +149,8 @@ public class Login implements DocumentListener, ActionListener, KeyListener {
     }
 
     /**
-     * Initialize components
-     * @param dialog
+     * Initialize components for the dialog box
+     * @param dialog Dialog component
      */
     private void InitComponent(JDialog dialog){
         cardLayout = new CardLayout();
@@ -101,7 +165,7 @@ public class Login implements DocumentListener, ActionListener, KeyListener {
 
     /**
      * Adds register user card
-     * @return JPanel
+     * @return JPanel The Panel containing registration controls
      */
     private JPanel AddRegisterCard() {
         JPanel registerPanel = new JPanel();
@@ -157,8 +221,8 @@ public class Login implements DocumentListener, ActionListener, KeyListener {
     }
 
     /**
-     * Add login card
-     * @return JPanel
+     * Add login card to the card layout
+     * @return JPanel The panel containing login controls
      */
     private JPanel AddLoginCard(){
         // create panel object
@@ -315,9 +379,9 @@ public class Login implements DocumentListener, ActionListener, KeyListener {
     }
 
     /**
-     * Authenticate user
+     * Authenticate user... search thru the hash in the hashmap, matching each with the input password hash
      * @param username username
-     * @param password password specified by the user entry
+     * @param pwd password specified by the user entry
      * @return true if successfully authenticated
      */
     private boolean Authenticate(String username, char[] pwd) {
@@ -380,7 +444,7 @@ public class Login implements DocumentListener, ActionListener, KeyListener {
      */
     @Override
     public void keyTyped(KeyEvent e) {
-
+        // IGNORE THIS EVENT ...IMPLEMENT ONLY keyPressed
     }
 
     /**
@@ -414,5 +478,6 @@ public class Login implements DocumentListener, ActionListener, KeyListener {
      */
     @Override
     public void keyReleased(KeyEvent e) {
+        // IGNORE KEYRELEASED EVENT...IMPLEMENT ONLY keyPressed
     }
 }

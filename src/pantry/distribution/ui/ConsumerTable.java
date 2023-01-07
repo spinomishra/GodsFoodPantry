@@ -136,7 +136,6 @@ public class ConsumerTable extends JTable implements ListSelectionListener, Tabl
     }
 
     /**
-     * {@inheritDoc}
      * When selection changes, enable button to remove employees data from records
      * @param e list selection change event
      */

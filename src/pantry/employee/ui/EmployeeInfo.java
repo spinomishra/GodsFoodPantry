@@ -15,7 +15,7 @@ import java.awt.event.ActionEvent;
 import java.text.ParseException;
 
 /**
- * UI to collect and display employee information
+ * Class to display UI to collect employee information
  */
 public class EmployeeInfo extends PersonInfo {
 	/**

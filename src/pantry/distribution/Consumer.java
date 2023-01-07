@@ -17,7 +17,9 @@ import java.util.Date;
  * Consumer class represents information about the people who are collecting food from the food pantry.
  */
 public class Consumer extends Person {
-    // version number for serialization purposes
+    /**
+     * version number for serialization purposes
+     */
     private static final long serialVersionUID = 1L;
 
     /**

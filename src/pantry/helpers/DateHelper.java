@@ -12,6 +12,11 @@ import java.util.Date;
  */
 public class DateHelper {
     /**
+     *  The maximum date possible.
+     */
+    public static Date MAX_DATE = new Date(Long.MAX_VALUE);
+
+    /**
      * Checks if two dates are on the same day ignoring time.
      * @param date1  the first date, not altered, not null
      * @param date2  the second date, not altered, not null
@@ -284,13 +289,12 @@ public class DateHelper {
         return dt;
     }
 
+    /**
+     * Gets Date formatter used across Pantryware
+     * @return DateFormat object
+     */
     public static DateFormat getDateFormatter(){
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
         return dateFormat;
     }
-
-    /**
-     *  The maximum date possible.
-     */
-    public static Date MAX_DATE = new Date(Long.MAX_VALUE);
 }

@@ -8,11 +8,15 @@ import pantry.volunteer.Volunteer;
 
 import javax.swing.*;
 import javax.swing.event.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Volunteer management card
@@ -37,6 +41,11 @@ public class VolunteerManagerCard extends JPanel implements  ActionListener, ITa
      * Record choice combo box
      */
     JComboBox comboBox;
+
+    /**
+     * Filter text control
+     */
+    JTextField searchNameField;
 
     /**
      * Title of the volunteer page
@@ -69,22 +78,30 @@ public class VolunteerManagerCard extends JPanel implements  ActionListener, ITa
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     removeButton.setEnabled(false);
+                    // apply filter
+                    // https://stackoverflow.com/questions/56119820/jtable-date-filter-not-working-the-way-it-should
                     switch (comboBox.getSelectedIndex()){
                         case 0:
-                            volunteerTable.ChangeDataModel(volunteers);
+                            // all days
+                            var sorter = (TableRowSorter<VolunteerTableModel>)volunteerTable.getRowSorter();
+                            sorter.setRowFilter(null);
                             break ;
 
                         case 1: {
-                            // search all records for last 1 day
-                            var records = Pantry.getInstance().get_Data().searchVolunteers(1);
-                            volunteerTable.ChangeDataModel(records);
+                            // filter all records for last 1 day
+                            Date fromDate =  DateHelper.fromLocalDateTime(LocalDate.now().atStartOfDay().minusDays(1));
+                            Date toDate = DateHelper.fromLocalDateTime(LocalDate.now().atStartOfDay());
+
+                            filterDates(fromDate, toDate);
                         }
                         break ;
 
                         case 2: {
-                            // search all records for last 30 days
-                            var records = Pantry.getInstance().get_Data().searchVolunteers(30);
-                            volunteerTable.ChangeDataModel(records);
+                            // filter all records for last 30 days
+                            Date fromDate =  DateHelper.fromLocalDateTime(LocalDate.now().atStartOfDay().minusDays(30));
+                            Date toDate = DateHelper.fromLocalDateTime(LocalDate.now().atStartOfDay());
+
+                            filterDates(fromDate, toDate);
                         }
                         break ;
                     }
@@ -119,15 +136,68 @@ public class VolunteerManagerCard extends JPanel implements  ActionListener, ITa
             var removeButtonIcon = getImageIcon("/images/recyclebin.png", 12, 12);
             removeButton.setIcon(removeButtonIcon);
             removeButton.setEnabled(false);
-
             buttonPane.add(removeButton);
+
             buttonPane.add(Box.createHorizontalStrut(5));
             buttonPane.add(new JSeparator(SwingConstants.VERTICAL));
             buttonPane.add(Box.createHorizontalStrut(5));
+            buttonPane.add(new JLabel(" Search : "));
+            buttonPane.add(Box.createRigidArea(new Dimension(5, 0)));
+            searchNameField = new JTextField();
+            searchNameField.setPreferredSize(new Dimension(100, 30));
+            searchNameField.getDocument().addDocumentListener(
+                    new DocumentListener() {
+                        public void changedUpdate(DocumentEvent e) {
+                            filterByName();
+                        }
+                        public void insertUpdate(DocumentEvent e) {
+                            filterByName();
+                        }
+                        public void removeUpdate(DocumentEvent e) {
+                            filterByName();
+                        }
+                    });
+            buttonPane.add(searchNameField);
+            buttonPane.add(Box.createRigidArea(new Dimension(5, 0)));
+            //buttonPane.add(printButton);
 
             buttonPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
             add(buttonPane, BorderLayout.PAGE_END);
         }
+    }
+
+    /**
+     * Update the row filter regular expression from the expression in the text box
+     */
+    private void filterByName() {
+        // For more info on sorter filter see -
+        // https://docs.oracle.com/javase/7/docs/api/javax/swing/RowFilter.html#regexFilter(java.lang.String,%20int...)
+        RowFilter<VolunteerTableModel, Object> rf = null;
+
+        //If current expression doesn't parse, don't update.
+        try {
+            // (?i) is case-insensitive flag for regular expression
+            // See https://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html#CASE_INSENSITIVE
+            rf = RowFilter.regexFilter("(?i)"+searchNameField.getText());
+        } catch (java.util.regex.PatternSyntaxException e) {
+            return;
+        }
+
+        var sorter = (TableRowSorter<VolunteerTableModel>)this.volunteerTable.getRowSorter();
+        sorter.setRowFilter(rf);
+    }
+
+    /**
+     * Update the table view based on the dates based on filtering
+     */
+    private void filterDates(Date from, Date to){
+        ArrayList<RowFilter<Object,Object>> filters = new ArrayList<RowFilter<Object,Object>>(2);
+        filters.add(RowFilter.dateFilter(RowFilter.ComparisonType.AFTER, from, 4,5 ));
+        filters.add(RowFilter.dateFilter(RowFilter.ComparisonType.BEFORE, to,4,5));
+        RowFilter<Object,Object> dateFilter = RowFilter.andFilter(filters);
+
+        var sorter = (TableRowSorter<VolunteerTableModel>)this.volunteerTable.getRowSorter();
+        sorter.setRowFilter(RowFilter.andFilter(filters));
     }
 
     /**

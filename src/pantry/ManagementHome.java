@@ -123,7 +123,7 @@ public class ManagementHome extends JFrame implements IHome {
      * Shows management dashboard
      */
     private void ShowDashboard(){
-        setTitle("PantryWare - "+ pantryName);
+        setTitle(Home.getDefaultPageTitle() +  " - Management");
         setSize(800, 600);
 
         // main screen

@@ -7,6 +7,7 @@ import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRMapArrayDataSource;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
+import pantry.Home;
 import pantry.Pantry;
 import pantry.helpers.PrintHelper;
 import pantry.employee.Employee;
@@ -26,8 +27,10 @@ import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.print.PrinterException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.text.MessageFormat;
 import java.util.*;
 import java.util.List;
 
@@ -255,49 +258,7 @@ public class EmployeeManagerCard extends JPanel implements ListSelectionListener
             }
         }
         else if (e.getActionCommand() == printLabel){
-            //TODO: Generate employee report for printing
-            //Utilize PrintService and DocPrintJob defined in Javax.print package
-            //https://www.developer.com/java/data/how-to-add-java-print-services-to-your-java-application/
-            PrintService printService = PrintHelper.PrepareForPrint(this.parentWindow);
-            if (printService != null){
-                DocPrintJob printJob = printService.createPrintJob();
-                printJob.addPrintJobListener(new PrintJobAdapter() {
-                    @Override
-                    public void printDataTransferCompleted(PrintJobEvent pje) {
-                        super.printDataTransferCompleted(pje);
-                    }
-
-                    @Override
-                    public void printJobNoMoreEvents(PrintJobEvent pje) {
-                        super.printJobNoMoreEvents(pje);
-                    }
-
-                    @Override
-                    public void printJobRequiresAttention(PrintJobEvent pje) {
-                        super.printJobRequiresAttention(pje);
-                    }
-                });
-
-               /* FileInputStream fis = new FileInputStream("C:/test.jpg");
-                Doc doc=new SimpleDoc(fis, DocFlavor.INPUT_STREAM.AUTOSENSE, null);
-                // Doc doc=new SimpleDoc(fis, DocFlavor.INPUT_STREAM.JPEG, null);
-                PrintRequestAttributeSet attrib=new HashPrintRequestAttributeSet();
-                attrib.add(new Copies(1));
-                job.print(doc, attrib); */
-            }
-
-/*
-            if (attrib.get(Destination.class) != null){
-                // here we deny to perform the save into a file
-                JOptionPane.showMessageDialog(this.parentWindow, getBundleString("error.printing"));
-                throw new PrintException("Print to file option not allowed. Action aborted!");
-            }
-            if (selectedPrintService!=null){
-
-            }
-            else
-                System.out.println("selection cancelled");
-            } */
+            PrintHelper.Print(this.parentWindow, employeeTable, Home.getPantryName() + " - Employees");
         }
     }
 

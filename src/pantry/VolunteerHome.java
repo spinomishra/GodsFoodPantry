@@ -85,7 +85,7 @@ public class VolunteerHome extends JFrame implements IHome, ActionListener {
      */
     @Override
     public void Run() {
-        setTitle("PantryWare - Volunteer Time Management - "+ pantryName);
+        setTitle(Home.getDefaultPageTitle() +  " - Volunteer Check-in/out");
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 

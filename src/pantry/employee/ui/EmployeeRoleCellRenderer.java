@@ -17,7 +17,7 @@ public class EmployeeRoleCellRenderer extends DefaultTableCellRenderer {
             setText(role.toString());
         }
 
-        if (isSelected) {
+        if (isSelected && !isPaintingForPrint()) {
             setBackground(table.getSelectionBackground());
         } else {
             setBackground(table.getSelectionForeground());

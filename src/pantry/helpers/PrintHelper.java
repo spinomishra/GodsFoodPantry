@@ -6,8 +6,12 @@ import javax.print.PrintServiceLookup;
 import javax.print.ServiceUI;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
+import javax.swing.*;
 import java.awt.*;
+import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
+import java.text.MessageFormat;
+import java.util.Objects;
 
 /**
  * Supporting Printing reports from Pantryware
@@ -82,5 +86,34 @@ public class PrintHelper {
 
         // Return Print Job
         return printerJob;
+    }
+
+    /**
+     * Helper method to make printing reports easy
+     * @param parentWindow Parent Window
+     * @param table source JTable
+     * @param headerFormat Print header
+     * @param footerFormat Print footer
+     * @return true if successfully printed, else false
+     */
+    public static boolean Print(Window parentWindow, JTable table, String headerFormat){
+        Objects.requireNonNull(table);
+        Objects.requireNonNull(headerFormat);
+
+        boolean printResult = false;
+
+        //Utilize PrintService and DocPrintJob defined in Javax.print package
+        //https://www.developer.com/java/data/how-to-add-java-print-services-to-your-java-application/
+        PrintService printService = PrintHelper.PrepareForPrint(parentWindow);
+        if (printService != null) {
+            try {
+                MessageFormat header = new MessageFormat(headerFormat);
+                MessageFormat footer = new MessageFormat("- {0} -");
+                printResult = table.print(JTable.PrintMode.FIT_WIDTH, header, footer, false, null, true, printService);
+            } catch (PrinterException ex) {
+                JOptionPane.showMessageDialog(parentWindow, ex.getMessage(), "Print", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        return printResult;
     }
 }

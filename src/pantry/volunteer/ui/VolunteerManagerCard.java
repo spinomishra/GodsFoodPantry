@@ -1,8 +1,10 @@
 package pantry.volunteer.ui;
 
+import pantry.Home;
 import pantry.Pantry;
 import pantry.data.PantryData;
 import pantry.helpers.DateHelper;
+import pantry.helpers.PrintHelper;
 import pantry.interfaces.ITableSelectionChangeListener;
 import pantry.volunteer.Volunteer;
 
@@ -90,7 +92,7 @@ public class VolunteerManagerCard extends JPanel implements  ActionListener, ITa
                         case 1: {
                             // filter all records for last 1 day
                             Date fromDate =  DateHelper.fromLocalDateTime(LocalDate.now().atStartOfDay().minusDays(1));
-                            Date toDate = DateHelper.fromLocalDateTime(LocalDate.now().atStartOfDay());
+                            Date toDate = DateHelper.fromLocalDateTime(LocalDateTime.now());
 
                             filterDates(fromDate, toDate);
                         }
@@ -99,7 +101,7 @@ public class VolunteerManagerCard extends JPanel implements  ActionListener, ITa
                         case 2: {
                             // filter all records for last 30 days
                             Date fromDate =  DateHelper.fromLocalDateTime(LocalDate.now().atStartOfDay().minusDays(30));
-                            Date toDate = DateHelper.fromLocalDateTime(LocalDate.now().atStartOfDay());
+                            Date toDate = DateHelper.fromLocalDateTime(LocalDateTime.now());
 
                             filterDates(fromDate, toDate);
                         }
@@ -159,7 +161,15 @@ public class VolunteerManagerCard extends JPanel implements  ActionListener, ITa
                     });
             buttonPane.add(searchNameField);
             buttonPane.add(Box.createRigidArea(new Dimension(5, 0)));
-            //buttonPane.add(printButton);
+            JButton printButton = new JButton("Print Report");
+            printButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    PrintHelper.Print(parentWindow, volunteerTable, Home.getPantryName() + " - Volunteer Report");
+                }
+            });
+            buttonPane.add(printButton);
+            buttonPane.add(Box.createRigidArea(new Dimension(5, 0)));
 
             buttonPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
             add(buttonPane, BorderLayout.PAGE_END);

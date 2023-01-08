@@ -15,6 +15,8 @@ import java.util.Properties;
  * This singleton class controls the main dashboard of the application
  */
 public abstract class Home {
+    private static String pantryName ;
+
     /**
      * entry method for application
      * @param args - command line arguments
@@ -25,7 +27,7 @@ public abstract class Home {
             Load properties from config.properties
             e.g. pantry title
          */
-        String pantryName = "";
+        pantryName = "";
         boolean rememberMe=false;
         String mode = System.getProperty("mode");
 
@@ -125,6 +127,20 @@ public abstract class Home {
                 finalHome.Run();
             }
         });
+    }
+
+    /**
+     * Gets pantry name
+     */
+    public static String getPantryName() {
+        return pantryName;
+    }
+
+    /**
+     * Gets default tile for various application windows
+     */
+    public static String getDefaultPageTitle(){
+        return (StringHelper.isNullOrEmpty(pantryName)) ? "PantryWare" : "PantryWare - " + getPantryName();
     }
 
     /**

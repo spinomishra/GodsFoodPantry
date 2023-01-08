@@ -4,6 +4,7 @@ import pantry.data.FileAdapter;
 import pantry.distribution.Consumer;
 import pantry.distribution.ui.ConsumerInfo;
 import pantry.distribution.ui.ConsumerTable;
+import pantry.helpers.PrintHelper;
 import pantry.interfaces.IHome;
 import pantry.interfaces.ITableSelectionChangeListener;
 import pantry.ui.Tile;
@@ -91,8 +92,7 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
      */
     @Override
     public void Run() {
-        setTitle("PantryWare - Food Distribution Management - "+ pantryName);
-
+        setTitle(Home.getDefaultPageTitle() +  " - Food Distribution Management");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         this.addWindowListener(new WindowAdapter() {
@@ -118,8 +118,13 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
      * @return The button panel object
      */
     private JPanel addActionButtons() {
-        var buttonPanel = new JPanel(new BorderLayout(5,5)) ;
+        var This = this;
+
+        var buttonPanel = new JPanel() ;
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.LINE_AXIS));
         buttonPanel.setBorder(new EmptyBorder(6,6,6,6));
+        buttonPanel.add(Box.createRigidArea(new Dimension(5, 0)));
+
         deleteBtn = new JButton("Delete Record");
         deleteBtn.setEnabled(false);
         deleteBtn.setMinimumSize(new Dimension(200, 100));
@@ -128,7 +133,6 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
 
         consumerTable.addSelectionChangeListener(this);
 
-        var This = this;
         deleteBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -152,7 +156,19 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
             }
         });
 
-       buttonPanel.add(deleteBtn, BorderLayout.WEST);
+       buttonPanel.add(deleteBtn);
+       buttonPanel.add(Box.createRigidArea(new Dimension(5, 0)));
+
+       JButton printButton = new JButton("Print Records");
+       buttonPanel.add(Box.createRigidArea(new Dimension(5, 0)));
+
+       printButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                PrintHelper.Print(This, consumerTable, Home.getPantryName() + " - Food Distribution Report");
+            }
+        });
+       buttonPanel.add(printButton);
 
        return buttonPanel;
     }

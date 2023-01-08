@@ -1,8 +1,21 @@
 package pantry.employee.ui;
 
-import pantry.employee.Employee;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRMapArrayDataSource;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
+import pantry.Home;
 import pantry.Pantry;
+import pantry.helpers.PrintHelper;
+import pantry.employee.Employee;
 
+import javax.print.DocPrintJob;
+import javax.print.PrintService;
+import javax.print.event.PrintJobAdapter;
+import javax.print.event.PrintJobEvent;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -14,35 +27,75 @@ import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.awt.print.PrinterException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.text.MessageFormat;
+import java.util.*;
 import java.util.List;
 
 /**
  * Class to manage employees
  */
 public class EmployeeManagerCard extends JPanel implements ListSelectionListener, TableModelListener, ActionListener {
+    /**
+     * Card Title for Employee Management
+     */
     public static final String Title = "Employee Manager";
 
-    // Version Id for serialization
-    private static final long serialVersionUID = 1L;
-
-    // Labels for various buttons
+    /**
+     * Add label text
+     */
     private static final String addNew = "Add";
+
+    /**
+     * Remove label text
+     */
     private static final String removeLabel = "Delete";
 
+    /**
+     * Print label text
+     */
+    private static final String printLabel = "Print";
+
+    /**
+     * Employee object model
+     */
     private EmployeeTableModel employeeModel;
+
+    /**
+     * Model use for employee role list
+     */
     private ListSelectionModel employeeTableListModel;
+
+    /**
+     * Employee Table control
+     */
     private JTable employeeTable ;
 
-    // buttons
+    /**
+     * New button control
+     */
     private	JButton newButton;
+
+    /**
+     * Remove button control
+     */
     private JButton removeButton;
 
-    // reference to employees list
+    /**
+     * Print button control
+     */
+    private JButton printButton;
+
+    /**
+     * Reference to the employees list
+     */
     private ArrayList<Employee> employees;
 
-    // parent window
+    /**
+     * Parent window object
+     */
     private Window  parentWindow;
 
     /**
@@ -53,9 +106,16 @@ public class EmployeeManagerCard extends JPanel implements ListSelectionListener
         setOpaque(true);
         parentWindow = parent;
 
+        // list of employees
         employees = Pantry.getInstance().get_Data().get_Employees();
 
+        // table control
         JScrollPane dataScrollPane = CreateTableForData();
+
+        // Action buttons
+        JPanel buttonPane = new JPanel();
+        buttonPane.setLayout(new BoxLayout(buttonPane,BoxLayout.LINE_AXIS));
+        buttonPane.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
 
         // "Add New Employee" button
         newButton = new JButton("Add New Employee");
@@ -68,23 +128,21 @@ public class EmployeeManagerCard extends JPanel implements ListSelectionListener
         removeButton.setActionCommand(removeLabel);
         removeButton.addActionListener(this);
         removeButton.setEnabled(false);
-/*
-        int selection = list.getSelectedIndex() ;
-        if (selection != -1) {
-            removeButton.setEnabled(true);
-        }
-*/
+
+        // "Print Report" button
+        printButton = new JButton("Print Report");
+        printButton.setActionCommand(printLabel);
+        printButton.addActionListener(this);
+        printButton.setEnabled(true);
 
         //Create a panel that uses BoxLayout.
-        JPanel buttonPane = new JPanel();
-        buttonPane.setLayout(new BoxLayout(buttonPane,BoxLayout.LINE_AXIS));
         buttonPane.add(removeButton);
         buttonPane.add(Box.createHorizontalStrut(5));
         buttonPane.add(new JSeparator(SwingConstants.VERTICAL));
         buttonPane.add(Box.createHorizontalStrut(5));
         buttonPane.add(newButton);
-
-        buttonPane.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+        buttonPane.add(Box.createRigidArea(new Dimension(5, 0)));
+        buttonPane.add(printButton);
 
         // add all controls to container
         add(dataScrollPane, BorderLayout.CENTER);
@@ -199,6 +257,9 @@ public class EmployeeManagerCard extends JPanel implements ListSelectionListener
                 removeButton.setEnabled(false);
             }
         }
+        else if (e.getActionCommand() == printLabel){
+            PrintHelper.Print(this.parentWindow, employeeTable, Home.getPantryName() + " - Employees");
+        }
     }
 
     /**
@@ -231,20 +292,6 @@ public class EmployeeManagerCard extends JPanel implements ListSelectionListener
             int index = e.getColumn();
 
             switch (e.getType()){
-                case TableModelEvent.INSERT: {
-                    for (int i= firstRow; i<=lastRow; i++){
-
-                    }
-                }
-                break;
-
-                case TableModelEvent.DELETE: {
-                    for (int i= firstRow; i<=lastRow; i++){
-
-                    }
-                }
-                break;
-
                 case TableModelEvent.UPDATE:
                     if (firstRow == TableModelEvent.HEADER_ROW) {
                     if (index == TableModelEvent.ALL_COLUMNS) {
@@ -265,4 +312,37 @@ public class EmployeeManagerCard extends JPanel implements ListSelectionListener
             }
         }
     }
+/*
+    private void GenerateReport() {
+        try {
+            JasperReport jr;
+            InputStream in=getClass().getResourceAsStream(resourcefile + ".ser");
+            if (in == null) {
+                JasperDesign jd= JRXmlLoader.load(getClass().getResourceAsStream(resourcefile + ".jrxml"));
+                jr= JasperCompileManager.compileReport(jd);
+            }
+            else {
+                ObjectInputStream oin=new ObjectInputStream(in);
+                jr=(JasperReport)oin.readObject();
+                oin.close();
+            }
+            Map reportparams=new HashMap();
+            try {
+                reportparams.put("REPORT_RESOURCE_BUNDLE",ResourceBundle.getBundle(resourcefile + ".properties"));
+            }
+            catch (    MissingResourceException e) {
+            }
+            reportparams.put("TAXESLOGIC",taxeslogic);
+            Map reportfields=new HashMap();
+            reportfields.put("TICKET",ticket);
+            reportfields.put("PLACE",ticketext);
+            JasperPrint jp= JasperFillManager.fillReport(jr,reportparams,new JRMapArrayDataSource(new Object[]{reportfields}));
+            //PrintService service=PrintHelper.getPrintService(getProperties().getProperty("machine.printername"));
+            //JRPrinterAWT300.printPages(jp,0,jp.getPages().size() - 1,service);
+        }
+        catch (  Exception e) {
+            //MessageInf msg=new MessageInf(MessageInf.SGN_WARNING,AppLocal.getIntString("message.cannotloadreport"),e);
+            ///msg.show(this);
+        }
+    }*/
 }

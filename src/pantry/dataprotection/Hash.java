@@ -8,13 +8,13 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 /**
- * Hash implements various hash methods
+ * Hash class implements various one way hash methods
  */
 public class Hash {
     /**
-     * Hash input array of charactrs
+     * Hash input array of characters using SHA256 algorithm
      * @param chars array of characters
-     * @return hash as string
+     * @return The Hash as string
      */
     public static String Sha2Hash(char[] chars) {
         CharBuffer charBuffer = CharBuffer.wrap(chars);

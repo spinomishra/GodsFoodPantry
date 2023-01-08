@@ -1,64 +1,123 @@
 package pantry;
 
+import pantry.helpers.StringHelper;
 import pantry.interfaces.IHome;
+import pantry.ui.ExecutionModeSelection;
 
 import javax.swing.*;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
 /**
- * home class - entry point for the application
+ * Home class is the entry point for the PantryWare application
  * This singleton class controls the main dashboard of the application
  */
 public abstract class Home {
+    private static String pantryName ;
+
     /**
      * entry method for application
      * @param args - command line arguments
      *             -mmode=volunteer | manage
      */
     public static void main(String[] args) {
-        IHome home = null;
-        String mode = System.getProperty("mode");
         /*
             Load properties from config.properties
-            properties e.g. pantry title
+            e.g. pantry title
          */
-        String pantryName = "";
+        pantryName = "";
+        boolean rememberMe=false;
+        String mode = System.getProperty("mode");
 
-        try {
-            String configFilePath = "src/config.properties";
-            FileInputStream propsInput = new FileInputStream(configFilePath);
-
-            Properties prop = new Properties();
-            prop.load(propsInput);
-
+        Properties prop = LoadConfiguration() ;
+        if (prop != null) {
             pantryName = prop.getProperty("PANTRY_NAME");
-        } catch (IOException e) {
-            e.printStackTrace();
+            mode = prop.getProperty("EXECUTION_MODE");
+            var tempStr = prop.getProperty("REMEMBER_ME");
+            if (!StringHelper.isNullOrEmpty(tempStr)){
+                rememberMe = (Integer.parseInt(tempStr) == 1) ? true : false;
+            }
         }
 
-        int response = JOptionPane.showConfirmDialog(null,"Are you an employee? Press Cancel if you want to exit. ", "Pantryware", JOptionPane.YES_NO_CANCEL_OPTION);
-        switch (response) {
-            case JOptionPane.YES_OPTION :{
-                mode = "manage";
+        // command line arguments override properties defined in the config.properties
+        boolean overrideProperties=false ;
+        if (args != null){
+            String nextOptionValue = "";
+            for (String option:args){
+                switch (option) {
+                    case "-m":
+                        nextOptionValue="mode";
+                        break;
+
+                    case "-p":
+                        nextOptionValue="title";
+                        break;
+
+                    default:
+                        if (StringHelper.isNullOrEmpty(nextOptionValue))
+                            continue;
+
+                        if (nextOptionValue == "title") {
+                            pantryName = option;
+                        }
+                        else if (nextOptionValue == "mode") {
+                            mode = option;
+                            overrideProperties=true;
+                        }
+                        nextOptionValue=StringHelper.Empty;
+                        break;
+                }
+            }
+        }
+
+        IHome home = null;
+        if (!overrideProperties && (StringHelper.isNullOrEmpty(mode) || rememberMe == false)) {
+            ExecutionModeSelection modeSelector = new ExecutionModeSelection(mode, "Pantryware");
+            modeSelector.setVisible(true);
+            mode = modeSelector.executionMode;
+
+            // persist properties
+            if (!StringHelper.isNullOrEmpty(mode)) {
+                if (prop == null)
+                    prop = new Properties();
+
+                prop.setProperty("EXECUTION_MODE", mode);
+
+                if (modeSelector.rememberMe) {
+                    prop.setProperty("REMEMBER_ME", "1");
+                }
+
+                SaveConfiguration(prop);
+            }
+
+            modeSelector.dispose();
+        }
+
+
+        switch (mode){
+            case "manage": {
                 home = new ManagementHome(pantryName);
             }
             break;
 
-            case JOptionPane.NO_OPTION: {
-                mode = "volunteer";
-                //home = new VolunteerHome();
+            case "volunteer": {
+                home = new VolunteerHome(pantryName);
             }
             break;
 
-            case JOptionPane.CANCEL_OPTION:
+            case "distribution": {
+                home = new DistributionHome(pantryName);
+            }
+            break;
+
+            default:
                 System.exit(0);
                 break;
         }
 
         Pantry.getInstance().Open();
-        assert home != null;
         home.ShowHome() ;
 
         /* Create and display the form */
@@ -68,5 +127,58 @@ public abstract class Home {
                 finalHome.Run();
             }
         });
+    }
+
+    /**
+     * Gets pantry name
+     */
+    public static String getPantryName() {
+        return pantryName;
+    }
+
+    /**
+     * Gets default tile for various application windows
+     */
+    public static String getDefaultPageTitle(){
+        return (StringHelper.isNullOrEmpty(pantryName)) ? "PantryWare" : "PantryWare - " + getPantryName();
+    }
+
+    /**
+     * Load configuration properties from file config.properties
+     * @return Properties object
+     */
+    private static Properties LoadConfiguration(){
+        String currentDirectory = System.getProperty("user.dir");
+        Properties prop = null;
+        try {
+            String configFilePath = "config.properties";
+            FileInputStream propsInput = new FileInputStream(configFilePath);
+            prop = new Properties();
+            prop.load(propsInput);
+            propsInput.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Config.properties couldn't be found at "+currentDirectory);
+        }
+        catch (Exception e){
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+
+        return prop;
+    }
+
+    /**
+     * Save application configuration properties
+     * @param prop Configuration properties
+     */
+    private static void SaveConfiguration(Properties prop){
+        try {
+            String configFilePath = "config.properties";
+            var propsOutput = new FileOutputStream(configFilePath);
+            prop.store(propsOutput, null);
+            propsOutput.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

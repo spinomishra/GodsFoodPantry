@@ -20,11 +20,34 @@ import javax.swing.table.*;
  */
 public abstract class RowTableModel<T> extends AbstractTableModel
 {
+    /**
+     * Model Data
+     */
     protected List<T> modelData;
+
+    /**
+     * Column Names
+     */
     protected List<String> columnNames;
+
+    /**
+     * Vector of classes for columns
+     */
     protected Class[] columnClasses;
+
+    /**
+     * Vector of flags signifying if a column is editable or not
+     */
     protected Boolean[] isColumnEditable;
+
+    /**
+     * Class information for the rows in the model
+     */
     private Class rowClass = Object.class;
+
+    /**
+     * Flag signifying that model is editable
+     */
     private boolean isModelEditable = true;
 
     /**
@@ -128,15 +151,16 @@ public abstract class RowTableModel<T> extends AbstractTableModel
      *  This is required for the getRowsAsArray() method to return the
      *  proper class of row.
      *
-     * @param rowClas		 the class of the row
+     * @param rowClass		 the class of the row
      */
     protected void setRowClass(Class rowClass)
     {
         this.rowClass = rowClass;
     }
-//
-//  Implement the TableModel interface
-//
+
+    //
+    //  Implement the TableModel interface
+    //
     /**
      *  Returns the Class of the queried <code>column</code>.
 
@@ -222,9 +246,10 @@ public abstract class RowTableModel<T> extends AbstractTableModel
 
         return (isEditable == null) ? isModelEditable : isEditable.booleanValue();
     }
-//
-//  Implement custom methods
-//
+
+    //
+    //  Implement custom methods
+    //
     /**
      *  Adds a row of data to the end of the model.
      *  Notification of the row being added will be generated.
@@ -502,7 +527,7 @@ public abstract class RowTableModel<T> extends AbstractTableModel
         this.isModelEditable = isModelEditable;
     }
 
-    /*
+    /**
      *  Convert an unformatted column name to a formatted column name. That is:
      *
      *  - insert a space when a new uppercase character is found, insert

@@ -11,11 +11,19 @@ import java.util.*;
  * Main content panel
  */
 public class MainPanel extends JPanel {
-    // parent window
+    /**
+     * Parent Window
+     */
     private JFrame parentWindow ;
-    // list of screens added to the panel
+
+    /**
+     * Map of title and the screens added to the card layout
+     */
     private Map<String, JPanel> cards ;
-    // card layout
+
+    /**
+     * Card layout
+     */
     private CardLayout cardLayout;
 
     /**
@@ -36,13 +44,28 @@ public class MainPanel extends JPanel {
     }
 
     /**
+     * get respective Card
+     * @param cardTitle title of the card
+     * @return card object
+     */
+    public JPanel getCard(String cardTitle) { return cards.get(cardTitle); }
+
+    /**
      * Initializes components of the main panel
      */
     public void initComponent(){
         cardLayout = new CardLayout();
         this.setLayout(cardLayout);
+
+        JPanel tilesMgr = new TileManager(parentWindow);
+        cards.put(TileManager.Title, tilesMgr);
+        Tile empTile = new Tile("Volunteers", Color.WHITE, Color.YELLOW);
+        tilesMgr.add(empTile);
     }
 
+    /**
+     * Add management cards
+     */
     public void addManagementCards(){
         JPanel empCard = new EmployeeManagerCard(parentWindow);
         cards.put(EmployeeManagerCard.Title, empCard);

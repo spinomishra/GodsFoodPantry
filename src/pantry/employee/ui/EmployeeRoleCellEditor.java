@@ -18,8 +18,14 @@ import javax.swing.table.TableCellEditor;
  */
 public class EmployeeRoleCellEditor extends AbstractCellEditor
         implements TableCellEditor, ActionListener {
-
+    /**
+     * Employee's Role
+     */
     private Employee.EmployeeRole role;
+
+    /**
+     * List of possible roles for Employee
+     */
     private List<Employee.EmployeeRole> listRole;
 
     /**

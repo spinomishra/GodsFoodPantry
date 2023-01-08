@@ -1,16 +1,26 @@
 package pantry.person;
+
+import pantry.helpers.PhoneHelper;
+import pantry.helpers.StringHelper;
+import pantry.person.ui.PersonInfo;
+
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.util.Random;
 import java.io.Serializable;
+import java.security.SecureRandom;
 
 /**
  * Person class represents any human. It collects all necessary information like name and contact info.
  * No personally identifiable information is collected.
  */
 public abstract class Person implements Serializable {
+  private static final long serialVersionUID = -41842788452212300L;
   /**
    * Unique identifier assigned to the person
    */
   private int Id;
+
   /**
    * First Name
    */
@@ -51,7 +61,7 @@ public abstract class Person implements Serializable {
       fName = fullname;
     else 
     {
-      if (tokens.length >= 2)
+      if (tokens.length >= 1)
         fName = tokens[0];
       if (tokens.length >= 2)
         lName = tokens[1];
@@ -87,11 +97,23 @@ public abstract class Person implements Serializable {
   }
 
   /**
+   * Constructor
+   * @param pInfo Personal Information
+   */
+  public Person(PersonInfo pInfo){
+    this(pInfo.getPersonName());
+
+    setAddress(pInfo.getPersonAddress());
+    setContactPhone(pInfo.getPersonContact());
+  }
+
+  /**
    * sets address for the person
    * @param address address
    */
   public void setAddress(String address)
   {
+    if (!StringHelper.isNullOrEmpty(address))
       Address = address;
   }
 
@@ -101,6 +123,7 @@ public abstract class Person implements Serializable {
    */
   public void setContactPhone(String phone_no)
   {
+    if (!PhoneHelper.isNullOrEmpty(phone_no))
       Mobile_number = phone_no;
   }
 
@@ -110,7 +133,10 @@ public abstract class Person implements Serializable {
   */
   public String getName()
   {
-    return (fName + " " + lName).trim();
+    if (StringHelper.isNullOrEmpty(lName))
+      return fName;
+    else
+      return (fName + " " + lName).trim();
   }
 
   /**
@@ -132,22 +158,60 @@ public abstract class Person implements Serializable {
   }
 
   /**
-  * generates an identity number for the person
-  */
-  void generateId()
+   * Gets unique Id assigned to the person
+   * @return The unique Identifier
+   */
+  public int getUniqueId() {return Id;}
+
+  /**
+   * Securely generates an identity number for the person
+   */
+  private void generateId()
   {
-    Random random = new Random();
-    Id = random.nextInt(32767);
-    if (Id == 0)
-      Id = random.nextInt(32767);
+    // The java.security.SecureRandom class is widely used for generating cryptographically strong random numbers.
+    // Deterministic random numbers have been the source of much software security breaches. The idea is that an
+    // adversary (hacker) should not be able to determine the original seed given several samples of random numbers.
+    // If this restriction is violated, all future random numbers may be successfully predicted by the adversary.
+    try
+    {
+      SecureRandom secureRandomGenerator = SecureRandom.getInstance("SHA1PRNG", "SUN");
+
+      // Get 128 random bytes
+      byte[] randomBytes = new byte[128];
+      secureRandomGenerator.nextBytes(randomBytes);
+
+      //Get random long
+      Id = secureRandomGenerator.nextInt();
+    }
+    catch(NoSuchAlgorithmException e) {
+      generateUnsecureId();
+    }
+    catch (NoSuchProviderException e){
+      generateUnsecureId();
+    }
   }
 
   /**
-  * formats the pantry.data of the Volunteer as a string
-  * @return the string format of the pantry.data
+   * Generates random unique identifier.
+   * THis is cryptographically weak random number
+   * @return The unique identifier
+   */
+  private void generateUnsecureId(){
+    Random random = new Random();
+    Id = random.nextInt();
+    if (Id == 0)
+      Id = random.nextInt();
+  }
+
+  /**
+  * formats the person object as a string
+  * @return the string format of object
   */
   public String toString(){
-    return getName() + ":" + getAddress() + ":" + getContactNumber();
+    String s = getName() ;
+    if (!StringHelper.isNullOrEmpty(getContactNumber()))
+      s = s + "   "  + getContactNumber();
+    return s;
   }
 
   /**
@@ -166,7 +230,7 @@ public abstract class Person implements Serializable {
         return -1;
 
       Person p = (Person) obj;
-      comp = Integer.compare(Id, p.Id);
+      comp = Long.compare(Id, p.Id);
 
       if (comp == 0) {
         comp = fName.compareTo(p.fName); 

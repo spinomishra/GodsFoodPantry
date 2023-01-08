@@ -1,15 +1,33 @@
 package pantry.data;
 
 import pantry.interfaces.IDataConnector;
+import pantry.interfaces.IPantryData;
+
 import java.io.*;
+import java.util.Objects;
 
 /**
- * Persistent record in a local file
+ * Class represents methods that assist with data record's persistence to a local file
  */
-public class FileAdapter extends PantryData implements IDataConnector {
-    String fileName ;
-    FileInputStream fis;
-    PantryData pantryData;
+public class FileAdapter implements IDataConnector {
+    /**
+     * Filename
+     */
+    private String fileName ;
+
+    /**
+     * Input stream
+     */
+    private FileInputStream fis;
+
+    /**
+     * Pantry Data object
+     */
+    IPantryData pantryData;
+
+    /**
+     * Object input stream
+     */
     ObjectInputStream ois;
 
     /**
@@ -17,13 +35,16 @@ public class FileAdapter extends PantryData implements IDataConnector {
      * @param fn filename
      * @param data pantry data
      */
-    public FileAdapter(String fn, PantryData data){
+    public FileAdapter(String fn, IPantryData data){
+        Objects.requireNonNull(fn, "Requires filename");
+        Objects.requireNonNull(data, "Requires pantry data object");
+
         fileName = fn;
         pantryData = data;
     }
 
     /**
-     * Load persistence records
+     * Load persisted records
      */
     @Override
     public void Load() {
@@ -50,7 +71,7 @@ public class FileAdapter extends PantryData implements IDataConnector {
     }
 
     /**
-     * Persist records
+     * Persist records in file using output stream
      */
     @Override
     public void Save() {
@@ -71,7 +92,7 @@ public class FileAdapter extends PantryData implements IDataConnector {
     }
 
     /**
-     * Close the connection
+     * Close the connection. Initiates Save operation to ensure data is persisted.
      */
     @Override
     public void Close() {

@@ -1,16 +1,20 @@
 package pantry;
 
-import pantry.Pantry;
 import pantry.auth.Login;
 import pantry.employee.ui.EmployeeManagerCard;
 import pantry.interfaces.IHome;
-import pantry.ui.*;
+import pantry.ui.MainPanel;
+import pantry.ui.SideMenuItem;
+import pantry.ui.SideMenuPanel;
 import pantry.volunteer.ui.VolunteerManagerCard;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,14 +22,18 @@ import java.util.Map;
  * Home screen for Food Pantry Management
  */
 public class ManagementHome extends JFrame implements IHome {
+    /**
+     * Pantry Name
+     */
     String pantryName;
+
     /**
      * Main Panel
      */
     MainPanel mainPanel;
 
     /**
-     * Card for main panel
+     * Map of cards for main panel
      */
     Map<String, JPanel>  mainPanelCards ;
 
@@ -33,6 +41,7 @@ public class ManagementHome extends JFrame implements IHome {
      * Side Menu Panel
      */
     SideMenuPanel sideMenuPanel;
+
     /**
      * Panel1
      */
@@ -114,18 +123,21 @@ public class ManagementHome extends JFrame implements IHome {
      * Shows management dashboard
      */
     private void ShowDashboard(){
-        setTitle("PantryWare - "+ pantryName);
+        setTitle(Home.getDefaultPageTitle() +  " - Management");
         setSize(800, 600);
 
+        // main screen
         mainPanel.initComponent();
         mainPanel.setBackground(new java.awt.Color(210, 231, 255));
 
+        // side menu bar
         sideMenuPanel = new SideMenuPanel(this, mainPanel);
         sideMenuPanel.setSpeed(4);
         sideMenuPanel.setResponsiveMinWidth(100);
         sideMenuPanel.addMenu(CreateMenuList());
         sideMenuPanel.setMaxWidth(300);
 
+        // content panel
         jPanel1 = new javax.swing.JPanel();
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -165,28 +177,13 @@ public class ManagementHome extends JFrame implements IHome {
         try {
             menuItems.add(new SideMenuItem("", "", SideMenuItem.MENUITEM_WIDTH, 10));
 
-            menuItems.add(new SideMenuItem("Employees", "../../images/employees.png", new ActionListener() {
+            menuItems.add(new SideMenuItem("Employees", "/images/employees.png", new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     mainPanel.Show(EmployeeManagerCard.Title);
                 }
             }));
 
-            menuItems.add(new SideMenuItem("Inventory", "../../images/inventory.png", new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    OnManageInventory(e);
-                }
-
-                private void OnManageInventory(ActionEvent e) {
-                }
-            }));
-
-            menuItems.add(new SideMenuItem("Donations", "../../images/donations.png", new ActionListener() {
-                public void actionPerformed(ActionEvent e) { OnManageDonations(e); }
-                private void OnManageDonations(ActionEvent e) {
-                }
-            }));
-
-            menuItems.add(new SideMenuItem("Volunteers", "../../images/volunteer.png", new ActionListener() {
+            menuItems.add(new SideMenuItem("Volunteers", "/images/volunteer.png", new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     mainPanel.Show(VolunteerManagerCard.Title);
                 }

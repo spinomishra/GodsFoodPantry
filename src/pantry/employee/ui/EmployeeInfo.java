@@ -5,6 +5,7 @@ package pantry.employee.ui;
 
 import pantry.dataprotection.Hash;
 import pantry.employee.Employee;
+import pantry.helpers.StringHelper;
 import pantry.person.ui.PersonInfo;
 
 import javax.swing.*;
@@ -14,22 +15,13 @@ import java.awt.event.ActionEvent;
 import java.text.ParseException;
 
 /**
- * Employee information
+ * Class to display UI to collect employee information
  */
 public class EmployeeInfo extends PersonInfo {
 	/**
-	 * Version Id for serialization
-	 */
-	private static final long serialVersionUID = 1L;
-
-	/**
 	 * Roles list combo box
 	 */
-	private JComboBox<Employee.EmployeeRole> rolelist;
-	/**
-	 * Rolelist combobox model
-	 */
-    private DefaultComboBoxModel<Employee.EmployeeRole> rolelistModel;
+	private JComboBox<Employee.EmployeeRole> roleList;
 	/**
 	 * Employee Role
 	 */
@@ -37,12 +29,12 @@ public class EmployeeInfo extends PersonInfo {
 	/**
 	 * SSN text box control
 	 */
-	JFormattedTextField ssnField = null;
+	JFormattedTextField ssnField;
 
 	/**
 	 * Employment Start date
 	 */
-	JFormattedTextField empStart = null;
+	JFormattedTextField empStart;
 
 	/**
 	 * Constructor
@@ -58,51 +50,65 @@ public class EmployeeInfo extends PersonInfo {
 	 * add controls to top panel of the UI
 	 */
 	@Override
-	protected JPanel addControlsToTopPanel()  {
-		JPanel containerPanel = super.addControlsToTopPanel();
-		GridLayout gridLayout = (GridLayout) containerPanel.getLayout();
-		gridLayout.setRows(gridLayout.getRows()+2);
+	protected void addTabs(JTabbedPane tabbedPane)  {
+		super.addTabs(tabbedPane);
 
-		JLabel empStartLabel = new JLabel("Employment Start (mm/dd/yyyy)", JLabel.LEFT);
-		JLabel ssnLabel = new JLabel("Social Security #", JLabel.LEFT);
-		try {
-			MaskFormatter datefmt = new MaskFormatter("##/##/####");
-			empStart = new JFormattedTextField(datefmt);
-			empStart.setColumns(11);
+		JPanel containerPanel = createNewTab(tabbedPane, "Employment Info", null);
 
-			MaskFormatter fmt = new MaskFormatter("###-##-####");
-			ssnField = new JFormattedTextField(fmt);
-			ssnField.setColumns(12);
-		} catch (ParseException e) {
-			// exception handler
+		JPanel panel ;
+
+		{
+			{
+				panel = addNewItemPanel("Social Security Number");
+				try {
+					MaskFormatter fmt = new MaskFormatter("###-##-####");
+					ssnField = new JFormattedTextField(fmt);
+					ssnField.setColumns(12);
+					panel.add(ssnField, BorderLayout.CENTER);
+				} catch (ParseException e) {
+					// exception handler
+				}
+				containerPanel.add(panel);
+			}
+
+			{
+				panel = addNewItemPanel("Employment Start (mm/dd/yyyy)");
+				try {
+					MaskFormatter dateFmt = new MaskFormatter("##/##/####");
+					empStart = new JFormattedTextField(dateFmt);
+					empStart.setColumns(11);
+					panel.add(empStart, BorderLayout.CENTER);
+				} catch (ParseException e) {
+					// exception handler
+				}
+				containerPanel.add(panel);
+			}
+
+			{
+				panel = addNewItemPanel("Employee Role");
+
+				// Role list combo box model
+				DefaultComboBoxModel<Employee.EmployeeRole> roleListModel = new DefaultComboBoxModel<>();
+				for (Employee.EmployeeRole r : Employee.EmployeeRole.values())
+					roleListModel.addElement(r);
+
+				//Create the list box to show the volunteers names
+				roleList = new JComboBox<Employee.EmployeeRole>(roleListModel);
+
+				// single item can be selected
+				roleList.setActionCommand("roleList");
+				roleList.setSelectedIndex(0);
+				roleList.addActionListener(this);
+
+				panel.add(roleList, BorderLayout.CENTER);
+				containerPanel.add(panel);
+			}
+
 		}
-		containerPanel.add(empStartLabel);
-		containerPanel.add(empStart);
-
-		containerPanel.add(ssnLabel);
-		containerPanel.add(ssnField);
-
-		rolelistModel = new DefaultComboBoxModel<Employee.EmployeeRole>();           
-		for (Employee.EmployeeRole r : Employee.EmployeeRole.values())
-		       rolelistModel.addElement(r);
-		
-		JLabel roleLabel = new JLabel("Employee Role", JLabel.LEFT);	    	     
-		
-		//Create the listbox to show the volunteers names		 
-		rolelist = new JComboBox<Employee.EmployeeRole>(rolelistModel);
-		
-		// single item can be selected
-		rolelist.setActionCommand("rolelist");
-		rolelist.setSelectedIndex(0);
-		rolelist.addActionListener(this);
-
-		containerPanel.add(roleLabel);
-		containerPanel.add(rolelist);
-
-		return containerPanel;
 	}
 	
 	/**
+	 * Get employee role
 	 * @return - employee's role
 	 */
 	public Employee.EmployeeRole getRole() {
@@ -110,21 +116,22 @@ public class EmployeeInfo extends PersonInfo {
 	}
 	
 	/**
-	 * action handler for the UI controls
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		super.actionPerformed(e);
 		if (e.getActionCommand() == "OK") {
-			Role = rolelist.getItemAt(rolelist.getSelectedIndex());
+			Role = roleList.getItemAt(roleList.getSelectedIndex());
 		}
-		else if (e.getActionCommand() == "rolelist")
+		else if (e.getActionCommand() == "roleList")
 		{
-			Role = rolelist.getItemAt(rolelist.getSelectedIndex());
+			Role = roleList.getItemAt(roleList.getSelectedIndex());
 		}
 	}
 
 	/**
+	 * Create and show the UI for Employee information
 	 * @param frame - parent component
 	 * @param title - title of the dialog box
 	 * @return EmployeeInfo object
@@ -138,13 +145,21 @@ public class EmployeeInfo extends PersonInfo {
 
 		Employee e = null;
 		if (pInfo.option == JOptionPane.OK_OPTION) {
-			String ssn = pInfo.ssnField.getText();
-			String ssnHash = Hash.Sha2Hash(ssn.toCharArray());
-
 			e = new Employee(pInfo.personName, pInfo.Role);
+
+			String ssn = pInfo.ssnField.getText();
+			ssn = ssn.replace("-", StringHelper.Empty);
+			ssn = ssn.trim();
+			if (StringHelper.isNullOrEmpty(ssn))
+				ssn = StringHelper.Empty;
+			else {
+				ssn = pInfo.ssnField.getText();
+				String ssnHash = Hash.Sha2Hash(ssn.toCharArray());
+				e.setSSN(ssnHash);
+			}
+
 			e.setAddress(pInfo.personAddress);
 			e.setContactPhone(pInfo.personContact);
-			e.setSSN(ssnHash);
 		}
 
 		pInfo.dispose();

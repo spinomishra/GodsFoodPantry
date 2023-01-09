@@ -1,5 +1,7 @@
 package pantry.helpers;
 
+import pantry.Pantry;
+
 import javax.print.DocFlavor;
 import javax.print.PrintService;
 import javax.print.PrintServiceLookup;
@@ -107,7 +109,7 @@ public class PrintHelper {
         PrintService printService = PrintHelper.PrepareForPrint(parentWindow);
         if (printService != null) {
             try {
-                MessageFormat header = new MessageFormat(headerFormat);
+                MessageFormat header = new MessageFormat(Pantry.getInstance().getPantryName() + headerFormat);
                 MessageFormat footer = new MessageFormat("- {0} -");
                 printResult = table.print(JTable.PrintMode.FIT_WIDTH, header, footer, false, null, true, printService);
             } catch (PrinterException ex) {

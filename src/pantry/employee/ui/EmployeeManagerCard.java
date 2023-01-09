@@ -258,7 +258,7 @@ public class EmployeeManagerCard extends JPanel implements ListSelectionListener
             }
         }
         else if (e.getActionCommand() == printLabel){
-            PrintHelper.Print(this.parentWindow, employeeTable, Home.getPantryName() + " - Employees");
+            PrintHelper.Print(this.parentWindow, employeeTable, " - Employees");
         }
     }
 

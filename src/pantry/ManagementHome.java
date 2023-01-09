@@ -23,11 +23,6 @@ import java.util.Map;
  */
 public class ManagementHome extends JFrame implements IHome {
     /**
-     * Pantry Name
-     */
-    String pantryName;
-
-    /**
      * Main Panel
      */
     MainPanel mainPanel;
@@ -49,10 +44,8 @@ public class ManagementHome extends JFrame implements IHome {
 
     /**
      * Constructor
-     * @param pn Pantry Name
      */
-    ManagementHome(String pn){
-        pantryName = pn;
+    ManagementHome(){
         mainPanelCards = new HashMap<String, JPanel>();
     }
 

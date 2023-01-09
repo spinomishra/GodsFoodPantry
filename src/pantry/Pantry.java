@@ -1,6 +1,7 @@
 package pantry;
 
 import pantry.data.PantryData;
+import pantry.helpers.StringHelper;
 
 /**
  * Pantry class ... Singleton class
@@ -12,20 +13,26 @@ public class Pantry {
   static Pantry instance ;
 
   /**
-   * Pantry data records
+   * Pantry data records associated with the singleton pantry object
    */
   PantryData pantryRecords ;
+
+  /**
+   * Pantry name associated with the singleton pantry object
+   */
+  private String pantryName ;
 
   /**
    * Constructor
    */
   public Pantry()
   {
+    pantryName = StringHelper.Empty;
   }
 
   /**
    * Static method to get singleton pantry manager object
-   * @return
+   * @return The singleton instance of Pantry object
    */
   public static Pantry getInstance()
   {
@@ -34,6 +41,22 @@ public class Pantry {
     }
 
     return instance;
+  }
+
+  /**
+   * Sets pantry name for this object
+   * @param name Name of the pantry
+   */
+  public void setPantryName(String name) {
+    pantryName = name ;
+  }
+
+  /**
+   * Gets pantry name for this object
+   * @return The name of the pantry
+   */
+  public String getPantryName(){
+    return pantryName;
   }
 
   /**
@@ -57,5 +80,14 @@ public class Pantry {
    */
   public void Close(){
     pantryRecords.Save();
+  }
+
+  /**
+   * Overrides toString() for the Pantry object
+   * @return Name of the Pantry
+   */
+  @Override
+  public String toString() {
+    return pantryName;
   }
 }

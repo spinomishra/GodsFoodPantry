@@ -337,4 +337,6 @@ public class ConsumerInfo extends PersonInfo implements integrisign.IDocInfo{
 
         return consumer;
     }
+
+
 }

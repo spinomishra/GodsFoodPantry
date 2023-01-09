@@ -165,7 +165,7 @@ public class VolunteerManagerCard extends JPanel implements  ActionListener, ITa
             printButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    PrintHelper.Print(parentWindow, volunteerTable, Home.getPantryName() + " - Volunteer Report");
+                    PrintHelper.Print(parentWindow, volunteerTable, " - Volunteer Report");
                 }
             });
             buttonPane.add(printButton);

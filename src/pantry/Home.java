@@ -15,25 +15,24 @@ import java.util.Properties;
  * This singleton class controls the main dashboard of the application
  */
 public abstract class Home {
-    private static String pantryName ;
-
     /**
      * entry method for application
      * @param args - command line arguments
      *             -mmode=volunteer | manage
      */
     public static void main(String[] args) {
+        Pantry pantry = Pantry.getInstance();
+
         /*
             Load properties from config.properties
             e.g. pantry title
          */
-        pantryName = "";
         boolean rememberMe=false;
         String mode = System.getProperty("mode");
 
         Properties prop = LoadConfiguration() ;
         if (prop != null) {
-            pantryName = prop.getProperty("PANTRY_NAME");
+            pantry.setPantryName(prop.getProperty("PANTRY_NAME"));
             mode = prop.getProperty("EXECUTION_MODE");
             var tempStr = prop.getProperty("REMEMBER_ME");
             if (!StringHelper.isNullOrEmpty(tempStr)){
@@ -60,7 +59,7 @@ public abstract class Home {
                             continue;
 
                         if (nextOptionValue == "title") {
-                            pantryName = option;
+                            pantry.setPantryName(option);
                         }
                         else if (nextOptionValue == "mode") {
                             mode = option;
@@ -98,17 +97,17 @@ public abstract class Home {
 
         switch (mode){
             case "manage": {
-                home = new ManagementHome(pantryName);
+                home = new ManagementHome();
             }
             break;
 
             case "volunteer": {
-                home = new VolunteerHome(pantryName);
+                home = new VolunteerHome();
             }
             break;
 
             case "distribution": {
-                home = new DistributionHome(pantryName);
+                home = new DistributionHome();
             }
             break;
 
@@ -117,6 +116,7 @@ public abstract class Home {
                 break;
         }
 
+        // Open pantry now... this will load pantry data
         Pantry.getInstance().Open();
         home.ShowHome() ;
 
@@ -130,17 +130,11 @@ public abstract class Home {
     }
 
     /**
-     * Gets pantry name
-     */
-    public static String getPantryName() {
-        return pantryName;
-    }
-
-    /**
      * Gets default tile for various application windows
      */
     public static String getDefaultPageTitle(){
-        return (StringHelper.isNullOrEmpty(pantryName)) ? "PantryWare" : "PantryWare - " + getPantryName();
+        String pantryName = Pantry.getInstance().getPantryName();
+        return (StringHelper.isNullOrEmpty(pantryName)) ? "PantryWare" : "PantryWare - " + pantryName;
     }
 
     /**

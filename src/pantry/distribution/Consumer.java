@@ -12,6 +12,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.ByteArrayInputStream;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * Consumer class represents information about the people who are collecting food from the food pantry.
@@ -152,5 +153,17 @@ public class Consumer extends Person {
         }
 
         return image ;
+    }
+
+    public String getData(String dataName) throws UnsupportedOperationException{
+        Objects.requireNonNull(dataName);
+        switch (dataName){
+            case "Name": return this.getName();
+            case "Phone": return this.getContactNumber();
+            case "Address": return this.getAddress();
+            case "Expiry": return this.identityInfo.ExpiresOn;
+            default:
+                throw new UnsupportedOperationException();
+        }
     }
 }

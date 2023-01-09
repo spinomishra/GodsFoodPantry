@@ -15,17 +15,10 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
-import static java.awt.Toolkit.getDefaultToolkit;
-
 /**
  * Home screen for Volunteering mode for food pantry
  */
 public class VolunteerHome extends JFrame implements IHome, ActionListener {
-    /**
-     * Pantry Name
-     */
-    String pantryName;
-
     /**
      * Check-in Tile control
      */
@@ -44,10 +37,8 @@ public class VolunteerHome extends JFrame implements IHome, ActionListener {
 
     /**
      * Constructor
-     * @param pn Person Name
      */
-    public VolunteerHome(String pn) {
-        pantryName = pn;
+    public VolunteerHome() {
     }
 
     /**

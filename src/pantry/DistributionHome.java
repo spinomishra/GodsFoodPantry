@@ -30,11 +30,6 @@ import static java.awt.Toolkit.getDefaultToolkit;
  */
 public class DistributionHome extends JFrame implements IHome, ActionListener, pantry.interfaces.IPantryData, ITableSelectionChangeListener {
     /**
-     * Pantry Name
-     */
-    private String pantryName;
-
-    /**
      * Today's consumers list
      */
     private ArrayList<Consumer> todaysConsumers = null;
@@ -61,10 +56,8 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
 
     /**
      * Constructor
-     * @param pn Pantry Name
      */
-    public DistributionHome(String pn) {
-        pantryName = pn;
+    public DistributionHome() {
         todaysConsumers = new ArrayList<Consumer>();
         LoadConsumers() ;
     }
@@ -165,7 +158,7 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
        printButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                PrintHelper.Print(This, consumerTable, Home.getPantryName() + " - Food Distribution Report");
+                PrintHelper.Print(This, consumerTable, " - Food Distribution Report");
             }
         });
        buttonPanel.add(printButton);
@@ -222,6 +215,40 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
                     }
                 });
                 panel.add(comboBox, BorderLayout.SOUTH);
+
+                String[] orderChoices = {"", "Name", "Name and Address", "Age and Name"};
+                JComboBox orderBox = new JComboBox(orderChoices);
+                orderBox.setSelectedIndex(0);
+                orderBox.setMaximumSize(new Dimension(200, 80));
+                orderBox.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        if (oldConsumers == null)
+                            oldConsumers = LoadOldConsumers();
+
+                        switch (orderBox.getSelectedIndex()) {
+                            case 1: {
+                                var sortedData = Sort(oldConsumers, "Name BY ASC");
+                                consumerTable.ChangeDataModel(sortedData);
+                            }
+                            break ;
+
+                            case 2:{
+                                var sortedData = Sort(oldConsumers, "Name BY ASC, Address BY DESC");
+                                consumerTable.ChangeDataModel(sortedData);
+                            }
+                            break;
+
+                            case 3: {
+                                var sortedData = Sort(oldConsumers, "Age BY ASC, Name BY DESC");
+                                consumerTable.ChangeDataModel(sortedData);
+                            }
+                            break;
+                        }
+                    }
+                });
+                panel.add(orderBox, BorderLayout.EAST);
+
 
                 tablePanel.add(panel, BorderLayout.NORTH);
             }
@@ -451,5 +478,88 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
     @Override
     public void SelectionChanged(JTable table, int row, int col) {
         deleteBtn.setEnabled(true);
+    }
+
+    /**
+     * Sorts the consumers based on the input criteria in specified order
+     * @param dataModel input data model that needs to be sorted
+     * @param sortingCriteria Criteria used for sorting  e.g. "Address BY ASC, NAME BY DESC" or "Address BY asc"
+     * @return sorted data model
+     */
+    public ArrayList<Consumer> Sort(ArrayList<Consumer> dataModel, String sortingCriteria) {
+        Objects.requireNonNull(sortingCriteria);
+        ArrayList<Consumer> sortedModel = new ArrayList<>(dataModel);
+        String[] criteriaArray = sortingCriteria.split(",");
+
+        // nested class
+        class SortCriteria {
+            public String dataName;
+            public boolean ascending;
+
+            public SortCriteria(String criteria){
+                String[] splitTokens = criteria.trim().split("BY");
+                if (splitTokens.length == 2){
+                    dataName = splitTokens[0].trim();
+                    String order = splitTokens[1].trim();
+                    if (order.compareToIgnoreCase("asc") == 0){
+                        ascending = true;
+                    }
+                    else {
+                        ascending = false;
+                    }
+                }
+            }
+        }
+
+        class Sorter{
+            private void Sort(ArrayList<Consumer> dataModel, int idxStart, int idxEnd, ArrayList<SortCriteria> sortCriteria, int sortLevel) {
+                if (dataModel.size() == 1)
+                    return ;    // nothing to sort
+
+                if (sortLevel > sortCriteria.size())   // incorrect sort level
+                    return;
+
+                String dataName = sortCriteria.get(sortLevel - 1).dataName ;
+                boolean ascending = sortCriteria.get(sortLevel - 1).ascending;
+
+                for (int x=idxStart; x<idxEnd; x++)
+                {
+                    for (int i=idxStart; i < idxEnd-x-1; i++) {
+                        try{
+                            String data1 = dataModel.get(i).getData(dataName);
+                            String data2 = dataModel.get(i+1).getData(dataName);
+
+                            if (ascending) {
+                                if (data1.compareTo(data2) > 0) {
+                                    Consumer temp = dataModel.get(i);
+                                    dataModel.set(i, dataModel.get(i + 1));
+                                    dataModel.set(i + 1, temp);
+                                }
+                            }
+                            else  {
+                                if (data1.compareTo(data2) < 0) {
+                                    Consumer temp = dataModel.get(i);
+                                    dataModel.set(i, dataModel.get(i + 1));
+                                    dataModel.set(i + 1, temp);
+                                }
+                            }
+                        }
+                        catch (UnsupportedOperationException ex){
+
+                        }
+                    }
+                }
+            }
+        }
+
+        var sortCriteriaList = new java.util.ArrayList<SortCriteria>();
+        for (String c:criteriaArray){
+            SortCriteria sortCriteria = new SortCriteria(c);
+            sortCriteriaList.add(sortCriteria);
+        }
+
+        Sorter sorter = new Sorter();
+        sorter.Sort(sortedModel, 0, sortedModel.size(), sortCriteriaList, 1);
+        return sortedModel;
     }
 }

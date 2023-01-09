@@ -13,23 +13,58 @@ import java.util.List;
  * Side Menu Panel
  * This class is motivated from https://github.com/iandiv/Side-Menu-Panel.
  * Original class has been modified for generalization. Additional methods
- * have been written to suit my needs according to my architecture
+ * have been written to suit my needs according to my design
  */
 public class SideMenuPanel {
-    private int x = 0;
-    private final int a = 0;
+    /**
+     * Current Width of the menu panel
+     */
+    private int currentWidth = 0;
+
+    /**
+     * Minimum width of menu panel
+     */
     private int minWidth = 60;
+    /**
+     * Maximum width of menu panel
+     */
     private int maxWidth = 200;
+    /**
+     * Is menu panel enabled
+     */
     private boolean isEnabled;
+    /**
+     * Speed for menu panel to expand and collapse
+     */
     private int speed = 2;
+    /**
+     * Response width for the menu panel
+     */
     private int responsiveMinWidth = 600;
+    /**
+     * Flag to track whether menu panel is expanded
+     */
     private boolean isOpen = false;
 
+    /**
+     * Layout control
+     */
     private GroupLayout gl;
+    /**
+     * Menu Bar panel
+     */
     private JPanel menuBar;
+    /**
+     * Side panel
+     */
     private JPanel sideBar;
+    /**
+     * Main content panel
+     */
     private JPanel mainContentPanel;
-
+    /**
+     * Parent Frame component
+     */
     private final JFrame frame;
 
     /**
@@ -37,12 +72,11 @@ public class SideMenuPanel {
      * @param frame - parent frame
      */
     public SideMenuPanel(JFrame frame) {
-
         frame.addComponentListener(new ComponentAdapter() {
 
             @Override
             public void componentResized(ComponentEvent arg0) {
-                x = 0;
+                currentWidth = 0;
             }
         });
 
@@ -59,7 +93,7 @@ public class SideMenuPanel {
         frame.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent arg0) {
-                x = 0;
+                currentWidth = 0;
             }
         });
 
@@ -95,24 +129,24 @@ public class SideMenuPanel {
     }
 
     /**
-     *
-     * @param responsiveWidth
+     * Sets responsive with for the menu panel
+     * @param responsiveWidth width
      */
     public void setResponsiveMinWidth(int responsiveWidth) {
         this.responsiveMinWidth = responsiveWidth;
     }
 
     /**
-     *
-     * @return
+     * get Speed for the menu panel to expand and collapse
+     * @return speed
      */
     public int getSpeed() {
         return speed;
     }
 
     /**
-     *
-     * @param speed
+     * Set speed for the menu panel expansion and collapse
+     * @param speed The Speed
      */
     public void setSpeed(int speed) {
         if (speed == 0) {
@@ -122,63 +156,63 @@ public class SideMenuPanel {
     }
 
     /**
-     *
-     * @return
+     * Get minimum width
+     * @return minimum width
      */
     public int getMinWidth() {
         return minWidth;
     }
 
     /**
-     *
-     * @return
+     * Get maximum width
+     * @return maximum width
      */
     public int getMaxWidth() {
         return maxWidth;
     }
 
     /**
-     *
-     * @return
+     * Get SideBar panel
+     * @return The panel
      */
     public JPanel getSideBar() {
         return sideBar;
     }
 
     /**
-     *
-     * @return
+     * Get Main content panel
+     * @return The main content panel
      */
     public JPanel getMainContentPanel() {
         return mainContentPanel;
     }
 
     /**
-     *
-     * @return
+     * Is animation enabled or not
+     * @return enable flag
      */
-    public boolean setMainAnimation() {
+    public boolean getMainAnimation() {
         return isEnabled;
     }
 
     /**
-     *
-     * @param min
+     * Sets menu panel's minimum width
+     * @param min minimum width
      */
     public void setMinWidth(int min) {
         this.minWidth = min;
     }
 
     /**
-     *
-     * @param max
+     * Set Maximum width for side menu panel when expanded
+     * @param max Maximum width
      */
     public void setMaxWidth(int max) {
         this.maxWidth = max;
     }
 
     /**
-     *
+     * Set Main content panel
      * @param mainContentPanel
      */
     public void setMainContentPanel(JPanel mainContentPanel) {
@@ -186,19 +220,19 @@ public class SideMenuPanel {
     }
 
     /**
-     *
-     * @param isEnabled
+     * sets flag to enable menu panel animation
+     * @param isEnabled true or false
      */
     public void setMainAnimation(boolean isEnabled) {
         this.isEnabled = isEnabled;
     }
 
     /**
-     *
+     * Side menu handler
      */
     public void onSideMenu() {
         int b = maxWidth % speed;
-        if (x == maxWidth) {
+        if (currentWidth == maxWidth) {
 
             Thread th = new Thread() {
                 @Override
@@ -212,7 +246,7 @@ public class SideMenuPanel {
                             sideBar.setSize(new Dimension(minWidth + i, mainContentPanel.getHeight()));
 
                             if (sideBar instanceof Container) {
-                                for (Component child : ((Container) sideBar).getComponents()) {
+                                for (Component child : sideBar.getComponents()) {
                                     child.setSize(new Dimension(maxWidth + minWidth, child.getHeight()));
                                 }
                             }
@@ -235,12 +269,12 @@ public class SideMenuPanel {
             };
             th.start();
 
-            x = 0;
-        } else if (x == 0) {
+            currentWidth = 0;
+        } else if (currentWidth == 0) {
             Thread th = new Thread() {
                 @Override
                 public void run() {
-                    for (int i = 0; i <= x; i += speed) {
+                    for (int i = 0; i <= currentWidth; i += speed) {
                         try {
 
                             TimeUnit.NANOSECONDS.sleep(1);
@@ -251,7 +285,7 @@ public class SideMenuPanel {
                             sideBar.setSize(new Dimension(minWidth + i, mainContentPanel.getHeight()));
 
                             if (sideBar instanceof Container) {
-                                for (Component child : ((Container) sideBar).getComponents()) {
+                                for (Component child : sideBar.getComponents()) {
                                     child.setSize(new Dimension(maxWidth + minWidth, child.getHeight()));
                                 }
                             }
@@ -273,32 +307,41 @@ public class SideMenuPanel {
                 }
             };
             th.start();
-            x = maxWidth;
+            currentWidth = maxWidth;
         }
 
     }
 
+    /**
+     * Collapse menu panel
+     */
     public void closeMenu() {
         if (getIsOpen()) {
             sideBar.setSize(new Dimension(minWidth, sideBar.getHeight()));
             mainContentPanel.setLocation(minWidth, mainContentPanel.getY());
             setGLSize(minWidth);
-//            close();
             isOpen = false;
-            x = 0;
+            currentWidth = 0;
         }
     }
 
+    /**
+     * Expand menu panel
+     */
     public void openMenu() {
         if (!getIsOpen()) {
             sideBar.setSize(new Dimension(minWidth + maxWidth, sideBar.getHeight()));
             mainContentPanel.setLocation(minWidth + maxWidth, mainContentPanel.getY());
             setGLSize(minWidth + maxWidth);
-            x = maxWidth;
+            currentWidth = maxWidth;
             isOpen = true;
         }
     }
 
+    /**
+     * Set Group layout component size
+     * @param size size
+     */
     private void setGLSize(int size) {
         gl = new GroupLayout(mainContentPanel.getParent());
         mainContentPanel.getParent().setLayout(gl);
@@ -330,7 +373,7 @@ public class SideMenuPanel {
     }
 
     /**
-     * Add menu items to the side bar
+     * Add menu items to the sidebar panel
      * @param menuItems list of menu items
      */
     public void addMenu(List<SideMenuItem> menuItems)  {

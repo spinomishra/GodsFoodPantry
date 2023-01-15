@@ -67,7 +67,7 @@ public class VolunteerTableModel extends RowTableModel<Volunteer> {
      * @return true if editable, else false
      */
     public boolean isCellEditable(int row, int col) {
-        return (col == 2 || col == 3) ? true : false;
+        return (col == 2 || col == 3 || col == 5) ? true : false;
     }
 
     /**
@@ -138,6 +138,30 @@ public class VolunteerTableModel extends RowTableModel<Volunteer> {
                     e.getActivityHistory();
                 }
                 break;
+
+                case 5: try {
+                    var activityInfo = e.getActivityHistory().get(0);
+                    if (activityInfo != null) {
+                        if (value instanceof Date)
+                            activityInfo.setEndTime(DateHelper.toLocalDateTime((Date)value)) ;
+                        else if (value instanceof String) {
+                            String temp = (String)value;
+                            temp = temp.replace("+","");
+                            temp = temp.replace("hours", "");
+                            temp = temp.trim();
+                            String[] tokens = temp.split(":");
+                            int hrs = Integer.parseInt(tokens[0]);
+                            int min = Integer.parseInt(tokens[1]);
+                            LocalDateTime checkoutTime = activityInfo.getStartTime();
+                            checkoutTime = checkoutTime.plusHours(hrs);
+                            checkoutTime = checkoutTime.plusMinutes(min);
+                            activityInfo.setEndTime(checkoutTime) ;
+                        }
+                    }
+                }
+                catch (Exception ex){
+                    // do nothing
+                }
             }
 
             fireTableCellUpdated(row, column);

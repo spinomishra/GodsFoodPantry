@@ -1,11 +1,20 @@
 package pantry.person;
 
+import pantry.helpers.DateHelper;
 import pantry.helpers.PhoneHelper;
 import pantry.helpers.StringHelper;
 import pantry.person.ui.PersonInfo;
 
+import javax.swing.*;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.text.DateFormat;
+import java.text.Format;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.Random;
 import java.io.Serializable;
 import java.security.SecureRandom;
@@ -37,6 +46,11 @@ public abstract class Person implements Serializable {
    * Contact Mobile number
    */
   private String Mobile_number;
+
+  /**
+   * Date of Birth
+   */
+  private Date DOB;
 
   /**
    * Constructor
@@ -105,6 +119,7 @@ public abstract class Person implements Serializable {
 
     setAddress(pInfo.getPersonAddress());
     setContactPhone(pInfo.getPersonContact());
+    setDateOfBirth(pInfo.getDateOfBirth());
   }
 
   /**
@@ -126,6 +141,31 @@ public abstract class Person implements Serializable {
     if (!PhoneHelper.isNullOrEmpty(phone_no))
       Mobile_number = phone_no;
   }
+
+  /**
+   * Sets person's Date of Birth
+   * @param dobStr Date of Birth
+   */
+  public void setDateOfBirth(String dobStr){
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+    setDateOfBirth(dobStr, formatter);
+  }
+
+  /**
+   * Sets person's Date of Birth
+   * @param dobStr Date of Birth
+   * @param formatter Formatter to use to part string DOB
+   */
+  public void setDateOfBirth(String dobStr, DateTimeFormatter formatter){
+    try {
+      LocalDate date = LocalDate.parse(dobStr, formatter);
+      DOB = Date.from(date.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+    }
+    catch (Exception ex){
+      JOptionPane.showMessageDialog(null, ex.getMessage(), "Pantryware - Exception", JOptionPane.ERROR_MESSAGE);
+    }
+  }
+
 
   /**
   * returns the name of the person
@@ -155,6 +195,29 @@ public abstract class Person implements Serializable {
   public String getContactNumber()
   {
     return Mobile_number;
+  }
+
+  /**
+   * Gets Person's date of birth
+   * @return Date of Birth for the person
+   */
+  public String getDateOfBirth() {
+    if (DOB == null)
+      return StringHelper.Empty;
+
+    Format formatter = new SimpleDateFormat("MMM dd yyyy");
+    return formatter.format(DOB);
+  }
+
+  /**
+   * Get person's age
+   * @return Persons age if DOB is available, else returns -1
+   */
+  public int getAge(){
+    if (DOB == null)
+      return -1;
+
+    return DateHelper.YearsFromDate(DOB);
   }
 
   /**

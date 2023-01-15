@@ -1,6 +1,8 @@
 package pantry.distribution.ui;
 
+import pantry.JTableEx;
 import pantry.distribution.Consumer;
+import pantry.helpers.PhoneHelper;
 import pantry.interfaces.ITableSelectionChangeListener;
 
 import javax.swing.*;
@@ -9,32 +11,18 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.text.MaskFormatter;
 import java.awt.*;
 import java.util.ArrayList;
 
 /**
  * This class extends JTable to support consumer record display
  */
-public class ConsumerTable extends JTable implements ListSelectionListener, TableModelListener {
+public class ConsumerTable extends JTableEx {
     /**
      * Employee object model
      */
     private ConsumerTableModel consumerModel;
-
-    /**
-     * Signature display control
-     */
-    private JLabel signControl ;
-
-    /**
-     * Color for selected row
-     */
-    private static final Color selectedRowColor = new Color(110, 181, 155);
-
-    /**
-     * Selection Change listener
-     */
-    private ITableSelectionChangeListener selectionChangeListener;
 
     /**
      * Reference to today's recorded consumers
@@ -48,23 +36,12 @@ public class ConsumerTable extends JTable implements ListSelectionListener, Tabl
         super (new ConsumerTableModel());
         this.consumers = consumers;
 
-        setCellSelectionEnabled(false);
-        setRowSelectionAllowed(true);
-        setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        setRowHeight(40);
-
         consumerModel = (ConsumerTableModel) this.getModel();
         if (consumers != null) {
             for (Consumer consumer : consumers) {
                 consumerModel.addRow(consumer);
             }
         }
-
-        setSelectionBackground(selectedRowColor);
-        setSelectionForeground(Color.WHITE);
-
-        var selectionModel = this.getSelectionModel();
-        selectionModel.addListSelectionListener(this);
 
         setColumnWidths();
     }
@@ -84,78 +61,58 @@ public class ConsumerTable extends JTable implements ListSelectionListener, Tabl
             switch (i) {
                 case 0: column.setMaxWidth(30); break;
                 case 1: column.setPreferredWidth(250); break ;
-                case 2: column.setMinWidth(120);
+                case 2: column.setPreferredWidth(90);
+                        // setting cell editor for DOB column
+                        try
+                        {
+                            MaskFormatter mask = new MaskFormatter("##/##/####");
+                            JFormattedTextField fText = new JFormattedTextField(mask);
+                            column.setCellEditor(new DefaultCellEditor(fText));
+                        }
+                        catch (Exception e){
+
+                        }
+                        column.setCellRenderer(centerRenderer);
+
+                        break ;
+
+                case 3: column.setMinWidth(120);
                         column.setMaxWidth(120);
+
+                        // setting cell editor for phone column
+                        try {
+                            MaskFormatter mask = PhoneHelper.getFormatterMask();
+                            JFormattedTextField ftext = new JFormattedTextField(mask);
+                            column.setCellEditor(new DefaultCellEditor(ftext));
+                        }
+                        catch (Exception e) {
+
+                        }
                         column.setCellRenderer(centerRenderer);
                         break ;
 
-                case 3: column.setMinWidth(300);
+                case 4: column.setMinWidth(300);
                         break;
 
-                case 4: column.setMaxWidth(100);
+                case 5: column.setMaxWidth(100);
                         column.setPreferredWidth(100);
                         column.setCellRenderer(centerRenderer);
                         break ;
 
-                case 5: column.setPreferredWidth(120);
+                case 6: column.setPreferredWidth(120);
                         column.setCellRenderer(centerRenderer);
                         break ;
 
-                case 6:
-                case 7: column.setPreferredWidth(90);
+                case 7:
+                case 8: column.setPreferredWidth(90);
                         column.setCellRenderer(centerRenderer);
                         break ;
 
-                case 8:
-                case 9: column.setMinWidth(70);
+                case 9:
+                case 10: column.setMinWidth(70);
                         column.setMaxWidth(70);
                         column.setCellRenderer(centerRenderer);
                         break ;
-            }
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     */
-    @Override
-    public Component prepareRenderer(TableCellRenderer renderer, int row, int column){
-        Component comp = super.prepareRenderer(renderer, row, column);
-        if (row != -1 && row ==  getSelectedRow())
-        {
-            comp.setBackground(selectedRowColor);
-            comp.setForeground(Color.WHITE);
-        }
-        else {
-            Color c = (row % 2 == 0 ? new Color(210, 231, 255) : Color.WHITE);
-            comp.setBackground(c);
-            comp.setForeground(Color.BLACK);
-        }
-        return comp;
-    }
-
-    /**
-     * When selection changes, enable button to remove employees data from records
-     * @param e list selection change event
-     */
-    public void valueChanged(ListSelectionEvent e) {
-        if (e.getSource() == this.getSelectionModel()) {
-            int selectedRowIndex = getSelectedRow();
-
-            // show the picture for this selected object
-            if (selectedRowIndex != -1)
-            {
-                // Following 2 lines of code allows me to highlight selected row using selected row Color
-                addRowSelectionInterval(selectedRowIndex, selectedRowIndex);
-                setColumnSelectionInterval(0, this.getColumnCount()-1);
-                selectionChangeListener.SelectionChanged(this, selectedRowIndex, 0);
-
-                Consumer consumer =  consumerModel.getRow(selectedRowIndex);
-                Image image = consumer.getSignatureImage();
-                if (signControl != null){
-                    signControl.setIcon(new ImageIcon(image));
-                }
             }
         }
     }
@@ -168,14 +125,6 @@ public class ConsumerTable extends JTable implements ListSelectionListener, Tabl
     {
         consumerModel.addRow(consumer);
         consumerModel.fireTableDataChanged();
-    }
-
-    /**
-     * Sets control where a consumer's captured signature can be displayed
-     * @param signatureDisplayControl The control
-     */
-    public void setSignatureDisplayControl(JLabel signatureDisplayControl) {
-        signControl = signatureDisplayControl;
     }
 
     /**
@@ -197,13 +146,8 @@ public class ConsumerTable extends JTable implements ListSelectionListener, Tabl
     }
 
     /**
-     * Adds selection change listener object
-     * @param listener The listener object
+     * Delete Selected Rows
      */
-    public void addSelectionChangeListener(ITableSelectionChangeListener listener){
-        selectionChangeListener = listener;
-    }
-
     public void deleteSelectedRows() {
         int[] selectedRows = getSelectedRows();
         if (selectedRows.length > 0){

@@ -4,6 +4,7 @@ import pantry.data.FileAdapter;
 import pantry.distribution.Consumer;
 import pantry.distribution.ui.ConsumerInfo;
 import pantry.distribution.ui.ConsumerTable;
+import pantry.distribution.ui.ConsumerTableModel;
 import pantry.helpers.PrintHelper;
 import pantry.interfaces.IHome;
 import pantry.interfaces.ITableSelectionChangeListener;
@@ -53,6 +54,11 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
      * Record choice combo box
      */
     JComboBox comboBox;
+
+    /**
+     * Signature display control
+     */
+    JLabel signatureDisplayControl;
 
     /**
      * Constructor
@@ -124,8 +130,6 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
         var deleteButtonIcon = getImageIcon("/images/recyclebin.png", 12,12);
         deleteBtn.setIcon(deleteButtonIcon);
 
-        consumerTable.addSelectionChangeListener(this);
-
         deleteBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -183,6 +187,7 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
             consumerTable = new ConsumerTable(todaysConsumers);
             JScrollPane scrollPane = new JScrollPane(consumerTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
             consumerTable.setFillsViewportHeight(true);
+            consumerTable.addSelectionChangeListener(this);
             tablePanel.add(scrollPane, BorderLayout.CENTER);
 
             {
@@ -192,6 +197,9 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
                 label.setFont(labelFont);
                 label.setHorizontalTextPosition(JLabel.CENTER);
                 panel.add(label, BorderLayout.CENTER);
+
+                String[] orderChoices = {"", "Name", "Address", "Age"};
+                JComboBox orderBox = new JComboBox(orderChoices);
 
                 String[] recordChoices = {"Today's", "Previous unconsolidated records"};
                 comboBox = new JComboBox(recordChoices);
@@ -204,22 +212,24 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
                         switch (comboBox.getSelectedIndex()){
                             case 0:
                                 consumerTable.ChangeDataModel(todaysConsumers);
+                                orderBox.setVisible(false);
                                 break ;
 
                             case 1:
                                 if (oldConsumers == null)
                                     oldConsumers = LoadOldConsumers();
                                 consumerTable.ChangeDataModel(oldConsumers);
+                                orderBox.setVisible(true);
                                 break ;
                         }
                     }
                 });
                 panel.add(comboBox, BorderLayout.SOUTH);
 
-                String[] orderChoices = {"", "Name", "Name and Address", "Age and Name"};
-                JComboBox orderBox = new JComboBox(orderChoices);
                 orderBox.setSelectedIndex(0);
                 orderBox.setMaximumSize(new Dimension(200, 80));
+                orderBox.setVisible(false);
+
                 orderBox.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
@@ -227,6 +237,11 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
                             oldConsumers = LoadOldConsumers();
 
                         switch (orderBox.getSelectedIndex()) {
+                            case 0: {
+                                consumerTable.ChangeDataModel(oldConsumers);
+                            }
+                            break;
+
                             case 1: {
                                 var sortedData = Sort(oldConsumers, "Name BY ASC");
                                 consumerTable.ChangeDataModel(sortedData);
@@ -234,7 +249,7 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
                             break ;
 
                             case 2:{
-                                var sortedData = Sort(oldConsumers, "Name BY ASC, Address BY DESC");
+                                var sortedData = Sort(oldConsumers, "Name BY ASC, Address BY ASC");
                                 consumerTable.ChangeDataModel(sortedData);
                             }
                             break;
@@ -261,12 +276,11 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
 
             {
                 JPanel panel = new JPanel();
-                JLabel signatureDisplayControl = new JLabel();
+                signatureDisplayControl = new JLabel();
                 Dimension dim = new Dimension(200, 200);
                 signatureDisplayControl.setMinimumSize(dim);
                 signatureDisplayControl.setPreferredSize(dim);
                 panel.add(signatureDisplayControl, BorderLayout.CENTER);
-                consumerTable.setSignatureDisplayControl(signatureDisplayControl);
                 signaturePanel.add(panel, BorderLayout.CENTER);
             }
 
@@ -478,12 +492,20 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
     @Override
     public void SelectionChanged(JTable table, int row, int col) {
         deleteBtn.setEnabled(true);
+
+        Consumer consumer = ((ConsumerTableModel) ((ConsumerTable)table).getModel()).getRow(row);
+        if (consumer != null) {
+            Image image = consumer.getSignatureImage();
+            if (signatureDisplayControl != null) {
+                signatureDisplayControl.setIcon(new ImageIcon(image));
+            }
+        }
     }
 
     /**
      * Sorts the consumers based on the input criteria in specified order
      * @param dataModel input data model that needs to be sorted
-     * @param sortingCriteria Criteria used for sorting  e.g. "Address BY ASC, NAME BY DESC" or "Address BY asc"
+     * @param sortingCriteria Criteria used for sorting  e.g. "Name or Address BY ASC, NAME BY DESC" or "Address BY asc"
      * @return sorted data model
      */
     public ArrayList<Consumer> Sort(ArrayList<Consumer> dataModel, String sortingCriteria) {
@@ -507,6 +529,9 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
                     else {
                         ascending = false;
                     }
+                } else if (splitTokens.length == 0) {
+                    dataName = criteria.trim();
+                    ascending = true;
                 }
             }
         }
@@ -519,12 +544,25 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
                 if (sortLevel > sortCriteria.size())   // incorrect sort level
                     return;
 
+                //
+                // 1. Sort on the level.
+                // 2. Remember the starting locations of each level after sorting
+                // 3. Repeat for next sorting criteria, only sorting the subsections.
+                //
                 String dataName = sortCriteria.get(sortLevel - 1).dataName ;
                 boolean ascending = sortCriteria.get(sortLevel - 1).ascending;
 
                 for (int x=idxStart; x<idxEnd; x++)
                 {
                     for (int i=idxStart; i < idxEnd-x-1; i++) {
+                        if (sortLevel == 2 ){
+                            SortCriteria criteria  = sortCriteria.get(0);
+                            String levelData1 = dataModel.get(i).getData(criteria.dataName);
+                            String levelData2 = dataModel.get(i+1).getData(criteria.dataName);
+                            if (levelData1 != levelData2)
+                                continue;
+                        }
+
                         try{
                             String data1 = dataModel.get(i).getData(dataName);
                             String data2 = dataModel.get(i+1).getData(dataName);
@@ -559,7 +597,9 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
         }
 
         Sorter sorter = new Sorter();
+
         sorter.Sort(sortedModel, 0, sortedModel.size(), sortCriteriaList, 1);
+
         return sortedModel;
     }
 }

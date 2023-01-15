@@ -263,6 +263,15 @@ public class ConsumerInfo extends PersonInfo implements integrisign.IDocInfo{
     }
 
     /**
+     * Can collect Date of birth information for the consumer
+     * @return true always
+     */
+    @Override
+    protected boolean canCollectDOB() {
+        return true;
+    }
+
+    /**
      * element insert handler
      */
     @Override
@@ -337,6 +346,4 @@ public class ConsumerInfo extends PersonInfo implements integrisign.IDocInfo{
 
         return consumer;
     }
-
-
 }

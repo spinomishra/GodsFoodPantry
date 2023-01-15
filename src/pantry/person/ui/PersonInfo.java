@@ -3,6 +3,7 @@
  */
 package pantry.person.ui;
 
+import pantry.helpers.DateHelper;
 import pantry.helpers.PhoneHelper;
 import pantry.helpers.StringHelper;
 
@@ -18,6 +19,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.text.ParseException;
+import java.util.Date;
 
 /**
  * Person information class
@@ -36,7 +38,10 @@ public class PersonInfo extends JDialog implements ActionListener, DocumentListe
 	 * Person's mailing address
 	 */
 	protected String personAddress ;
-
+	/**
+	 * Person's Date of Birth
+	 */
+	protected String dateOfBirth;
 	////////////////// CONTROLS ////////////////
 	/**
 	 * Name text field
@@ -71,6 +76,11 @@ public class PersonInfo extends JDialog implements ActionListener, DocumentListe
 	 * Tabbed pane where tabs will be added
 	 */
 	protected transient JTabbedPane tabbedPane;
+
+	/**
+	 * Formatted text field to capture Date of Birth
+	 */
+	protected transient JFormattedTextField dobField;
 
 	/**
 	 * Constructor
@@ -233,10 +243,45 @@ public class PersonInfo extends JDialog implements ActionListener, DocumentListe
 			contentPanel.add(nameTextBox);
 		}
 
+		Rectangle labelBounds = new Rectangle(10, 45, 120, 20);
+		Rectangle controlBounds = new Rectangle(135, 45, 220, 20);
+		Rectangle nextBoundsDiff=new Rectangle(0, 25, 0, 0);
+		{
+			if (canCollectDOB()) {
+				JLabel label = new JLabel("Date of Birth :");
+				label.setFocusable(false);
+				label.setBounds(labelBounds);
+				contentPanel.add(label);
+
+				try {
+					MaskFormatter dateFmt = new MaskFormatter("##/##/####");
+					dobField = new JFormattedTextField(dateFmt);
+					dobField.setColumns(12);
+
+					dobField.setBounds(controlBounds);
+					contentPanel.add(dobField);
+
+					// update label and control bounds for next set of controls
+					labelBounds.setBounds(labelBounds.x+nextBoundsDiff.x,
+										  labelBounds.y+nextBoundsDiff.y,
+										  labelBounds.width+nextBoundsDiff.width,
+										  labelBounds.height+nextBoundsDiff.height);
+					controlBounds.setBounds(controlBounds.x+nextBoundsDiff.x,
+							controlBounds.y+nextBoundsDiff.y,
+							controlBounds.width+nextBoundsDiff.width,
+							controlBounds.height+nextBoundsDiff.height);
+				}
+				catch(Exception e){
+					// do nothing on exception
+				}
+
+			}
+		}
+
 		{
 			JLabel label = new JLabel("Phone #:");
 			label.setFocusable(false);
-			label.setBounds(10, 45, 120, 20);
+			label.setBounds(labelBounds);
 			contentPanel.add(label);
 
 			MaskFormatter fmt = PhoneHelper.getFormatterMask();
@@ -245,14 +290,23 @@ public class PersonInfo extends JDialog implements ActionListener, DocumentListe
 			contactTextBox.setColumns(12);
 			contactTextBox.addActionListener(this);
 			contactTextBox.getDocument().addDocumentListener(this);
-			contactTextBox.setBounds(135, 45, 220, 20);
+			contactTextBox.setBounds(controlBounds);
 			contentPanel.add(contactTextBox);
+
+			labelBounds.setBounds(labelBounds.x+nextBoundsDiff.x,
+					labelBounds.y+nextBoundsDiff.y,
+					labelBounds.width+nextBoundsDiff.width,
+					labelBounds.height+nextBoundsDiff.height);
+			controlBounds.setBounds(controlBounds.x+nextBoundsDiff.x,
+					controlBounds.y+nextBoundsDiff.y,
+					controlBounds.width+nextBoundsDiff.width,
+					controlBounds.height+nextBoundsDiff.height);
 		}
 
 		{
 			JLabel label = new JLabel("Mailing Address:");
 			label.setFocusable(false);
-			label.setBounds(10, 70, 120, 20);
+			label.setBounds(labelBounds);	//10, 70, 120, 20
 			contentPanel.add(label);
 
 			Dimension minimalSize = new Dimension(120, 40);
@@ -262,7 +316,9 @@ public class PersonInfo extends JDialog implements ActionListener, DocumentListe
 			addressTextBox.setPreferredSize(minimalSize);
 			addressTextBox.setAutoscrolls(true);
 			addressTextBox.getDocument().addDocumentListener(this);
-			addressTextBox.setBounds(135, 70, 220, 60);
+			controlBounds.setBounds(controlBounds.x, controlBounds.y,
+					controlBounds.width,controlBounds.height+40);
+			addressTextBox.setBounds(controlBounds); //135, 70, 220, 60
 			contentPanel.add(addressTextBox);
 		}
 	}
@@ -314,6 +370,14 @@ public class PersonInfo extends JDialog implements ActionListener, DocumentListe
 	}
 
 	/**
+	 * Gets person's date of Birth
+	 * @return Date of Birth as String
+	 */
+	public String getDateOfBirth(){
+		return dateOfBirth;
+	}
+
+	/**
 	 * ui component handler
 	 */
 	@Override
@@ -334,6 +398,14 @@ public class PersonInfo extends JDialog implements ActionListener, DocumentListe
 	}
 
 	/**
+	 * Should we collect DOB information?
+	 * @return Yes if we can collect DOB,, else false
+	 */
+	protected boolean canCollectDOB(){
+		return false;
+	}
+
+	/**
 	 * Handles OK Button click
 	 * Always call super before you override this
 	 * @param e The ActionEvent object
@@ -343,6 +415,14 @@ public class PersonInfo extends JDialog implements ActionListener, DocumentListe
 		String phone = contactTextBox.getText().trim();
 		personContact = PhoneHelper.isNullOrEmpty(phone) ? StringHelper.Empty : phone;
 		personAddress = addressTextBox.getText().trim();
+		String dob = dobField.getText().trim();
+		dob = dob.replace("/", "");
+		if (!DateHelper.isEmptyDateString(dob)){
+			dateOfBirth = dob;
+		}
+		else {
+			dob = StringHelper.Empty;
+		}
 	}
 
 	/**

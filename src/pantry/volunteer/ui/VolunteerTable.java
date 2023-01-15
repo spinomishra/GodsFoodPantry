@@ -1,5 +1,6 @@
 package pantry.volunteer.ui;
 
+import pantry.JTableEx;
 import pantry.distribution.Consumer;
 import pantry.distribution.ui.ConsumerTableModel;
 import pantry.helpers.PhoneHelper;
@@ -24,26 +25,11 @@ import java.util.Comparator;
 /**
  * This class extends JTable to support consumer record display
  */
-public class VolunteerTable extends JTable{
+public class VolunteerTable extends JTableEx {
     /**
      * Employee object model
      */
     private VolunteerTableModel volunteerModel;
-
-    /**
-     * Color for selected row
-     */
-    private static final Color selectedRowColor = new Color(110, 181, 155);
-
-    /**
-     * Selection Change listener
-     */
-    private ITableSelectionChangeListener selectionChangeListener;
-
-    /**
-     * Model use for list selection
-     */
-    private ListSelectionModel tableListSelectionModel;
 
     /**
      * Table sorting object
@@ -56,49 +42,8 @@ public class VolunteerTable extends JTable{
     public VolunteerTable(ArrayList<Volunteer> volunteers){
         super (new VolunteerTableModel(volunteers));
 
-        setCellSelectionEnabled(false);
-        setRowSelectionAllowed(true);
-
-        setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
-        setRowHeight(40);
-
-        tableListSelectionModel = getSelectionModel();
-        var table = this;
-        tableListSelectionModel.addListSelectionListener(new ListSelectionListener() {
-            /**
-             * When selection changes, enable button to remove employees data from records
-             * @param e list selection change event
-             */
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                if (e.getSource() == tableListSelectionModel) {
-                    int selectedRowIndex = table.getSelectedRow();
-
-                    if (selectedRowIndex != -1)
-                    {
-                        // Following 2 lines of code allows me to highlight selected row using selected row Color
-                        addRowSelectionInterval(selectedRowIndex, selectedRowIndex);
-                        setColumnSelectionInterval(0, table.getColumnCount()-1);
-
-                        if (selectionChangeListener != null)
-                            selectionChangeListener.SelectionChanged(table, selectedRowIndex, 0);
-                    }
-                }
-            }
-        });
-        setSelectionModel(tableListSelectionModel);
-
         setColumnWidths();
         createRowSorter() ;
-
-        setSelectionBackground(selectedRowColor);
-        setSelectionForeground(Color.WHITE);
-
-        // setting cell editor for phone column
-        MaskFormatter mask = PhoneHelper.getFormatterMask();
-        JFormattedTextField ftext = new JFormattedTextField(mask);
-        getColumnModel().getColumn(2).setCellEditor(new DefaultCellEditor(ftext));
     }
 
     /**
@@ -117,18 +62,45 @@ public class VolunteerTable extends JTable{
                 case 0: column.setMaxWidth(30);
                         break;
 
-                case 1: column.setPreferredWidth(250); break ;
+                        // Name column
+                case 1: column.setPreferredWidth(250);
+                        break ;
+
+                        // Phone column
                 case 2: column.setMinWidth(120);
                         column.setMaxWidth(120);
+                        try {
+                            // setting cell editor for phone column
+                            MaskFormatter mask = PhoneHelper.getFormatterMask();
+                            JFormattedTextField ftext = new JFormattedTextField(mask);
+                            column.setCellEditor(new DefaultCellEditor(ftext));
+                        }
+                        catch (Exception e){
+                            // do nothing
+                        }
+
                         column.setCellRenderer(centerRenderer);
                         break ;
 
-                case 4:
-                case 5:
-
+                case 4: // checkin column
                 case 6:
-                        column.setCellRenderer(centerRenderer);
-                        break ;
+                    column.setCellRenderer(centerRenderer);
+                    break ;
+
+                case 5: // checkout column
+                    // Allows to add x hours to the checkin time
+                    try
+                    {
+                        MaskFormatter mask = new MaskFormatter("+ ##:## hours");
+                        JFormattedTextField fText = new JFormattedTextField(mask);
+                        column.setCellEditor(new DefaultCellEditor(fText));
+                    }
+                    catch (Exception e){
+
+                    }
+                    column.setCellRenderer(centerRenderer);
+
+                    break ;
             }
         }
     }
@@ -174,27 +146,6 @@ public class VolunteerTable extends JTable{
     }
 
     /**
-     * {@inheritDoc}
-     *
-     */
-    @Override
-    public Component prepareRenderer(TableCellRenderer renderer, int row, int column){
-        Component comp = super.prepareRenderer(renderer, row, column);
-        if(!comp.getBackground().equals(getSelectionBackground()) && row != getSelectedRow()) {
-            if (row != -1 && row == getSelectedRow()) {
-                comp.setBackground(selectedRowColor);
-                comp.setForeground(Color.WHITE);
-            } else {
-                Color c = (row % 2 == 0 ? new Color(210, 231, 255) : Color.WHITE);
-                comp.setBackground(c);
-                comp.setForeground(Color.BLACK);
-            }
-        }
-        return comp;
-    }
-
-
-    /**
      * Adds a new consumer object to the table model
      * @param v New Volunteer object
      */
@@ -222,14 +173,6 @@ public class VolunteerTable extends JTable{
 
         // raise the data table change notification
         model.fireTableDataChanged();
-    }
-
-    /**
-     * Adds selection change listener object
-     * @param listener The listener object
-     */
-    public void addSelectionChangeListener(ITableSelectionChangeListener listener){
-        selectionChangeListener = listener;
     }
 
     /**

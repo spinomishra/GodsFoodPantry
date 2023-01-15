@@ -2,7 +2,10 @@ package pantry.distribution.ui;
 
 import pantry.data.RowTableModel;
 import pantry.distribution.Consumer;
+import pantry.helpers.DateHelper;
+import pantry.helpers.PhoneHelper;
 import pantry.person.Identity;
+import pantry.volunteer.Volunteer;
 
 import java.util.Arrays;
 
@@ -17,6 +20,7 @@ public class ConsumerTableModel extends RowTableModel<Consumer> {
     private static String[] COLUMN_NAMES = {
             "#",
             "Full Name",
+            "DOB",
             "Phone #",
             "Address",
             "ID Type",
@@ -42,7 +46,7 @@ public class ConsumerTableModel extends RowTableModel<Consumer> {
      * @return true if editable, else false
      */
     public boolean isCellEditable(int row, int col) {
-        return false;
+        return  (col == 2 || col==4 || col == 3) ? true : false;
     }
 
     /**
@@ -60,14 +64,15 @@ public class ConsumerTableModel extends RowTableModel<Consumer> {
         switch (columnIndex){
             case 0: return rowIndex+1;
             case 1: return consumer.getName();
-            case 2: return consumer.getContactNumber();
-            case 3: return consumer.getAddress();
-            case 4: return Identity.IDType.values()[consumer.getIdentityInfo().IdentityType].toString();
-            case 5: return consumer.getIdentityInfo().Number;
-            case 6: return consumer.getIdentityInfo().IssuedOn;
-            case 7: return consumer.getIdentityInfo().ExpiresOn;
-            case 8: return consumer.isGroupFlagged() ? "Yes" : "No";
-            case 9: return consumer.getGroupMemberCount();
+            case 2: return consumer.getDateOfBirth();
+            case 3: return consumer.getContactNumber();
+            case 4: return consumer.getAddress();
+            case 5: return Identity.IDType.values()[consumer.getIdentityInfo().IdentityType].toString();
+            case 6: return consumer.getIdentityInfo().Number;
+            case 7: return consumer.getIdentityInfo().IssuedOn;
+            case 8: return consumer.getIdentityInfo().ExpiresOn;
+            case 9: return consumer.isGroupFlagged() ? "Yes" : "No";
+            case 10: return consumer.getGroupMemberCount();
             default: return null;
         }
     }
@@ -81,7 +86,26 @@ public class ConsumerTableModel extends RowTableModel<Consumer> {
     @Override
     public void setValueAt(Object value, int row, int column)
     {
-        Consumer e = getRow(row);
-        fireTableCellUpdated(row, column);
+        if (row < modelData.size()) {
+            Consumer c = getRow(row);
+
+            switch (column){
+                case 2: //
+                    if (!DateHelper.isEmptyDateString((String) value))
+                        c.setDateOfBirth((String) value);
+                    break ;
+
+                case 3:// phone number
+                    if (!PhoneHelper.isNullOrEmpty((String)value) && PhoneHelper.isValidNumber((String)value))
+                        c.setContactPhone((String)value);
+                    break;
+
+                case 4: // address
+                    c.setAddress((String) value);
+                    break ;
+            }
+
+            fireTableCellUpdated(row, column);
+        }
     }
 }

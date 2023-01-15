@@ -1,8 +1,11 @@
 package pantry.helpers;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
@@ -290,11 +293,45 @@ public class DateHelper {
     }
 
     /**
+     * Calculate no of years from the specified date
+     * @param date input date
+     * @return number of years from the input date
+     */
+    public static int YearsFromDate(Date date){
+        LocalDate today = LocalDate.now();
+        return Period.between(LocalDate.ofInstant(date.toInstant(), ZoneId.systemDefault()), today).getYears();
+    }
+
+    /**
+     * Create java.util.Date object from string format date
+     * @param dateStr Date as String
+     * @return Date object
+     * @throws ParseException If the String argument passed is not in the format as the pattern "MM/dd/yyyy", then a ParseException will be thrown.
+     */
+    public static Date fromString(String dateStr) throws ParseException {
+        var formatter = getDateFormatter();
+        return formatter.parse(dateStr);
+    }
+
+    /**
      * Gets Date formatter used across Pantryware
      * @return DateFormat object
      */
     public static DateFormat getDateFormatter(){
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
         return dateFormat;
+    }
+
+    /**
+     * Check if input date as string is an empty string
+     * @param dateStr date as String
+     * @return true if date is empty string else false
+     */
+    public static boolean isEmptyDateString(String dateStr){
+        String temp = dateStr.replace("/", "");
+        temp = temp.replace(":", "");
+        temp = temp.replace("T", "");
+        temp = temp.trim();
+        return StringHelper.isNullOrEmpty(temp);
     }
 }

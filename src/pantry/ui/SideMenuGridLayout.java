@@ -16,6 +16,7 @@ public class SideMenuGridLayout extends GridLayout {
      * Each row's height as row's component's maximum height. The preferred
      * layout size also accounts for the horizontal and vertical gap sizes
      * between components and the parent container insets.
+     *
      * @param parent container
      * @return preferred dimension
      */
@@ -27,13 +28,12 @@ public class SideMenuGridLayout extends GridLayout {
             int ncols = getColumns();
             if (nrows > 0) {
                 ncols = (ncomponents + nrows - 1) / nrows;
-            }
-            else {
+            } else {
                 nrows = (ncomponents + ncols - 1) / ncols;
             }
             int[] w = new int[ncols];
             int[] h = new int[nrows];
-            for (int i = 0; i < ncomponents; i ++) {
+            for (int i = 0; i < ncomponents; i++) {
                 int r = i / ncols;
                 int c = i % ncols;
                 Component comp = parent.getComponent(i);
@@ -46,17 +46,17 @@ public class SideMenuGridLayout extends GridLayout {
                 }
             }
             int nw = 0;
-            for (int j = 0; j < ncols; j ++) {
+            for (int j = 0; j < ncols; j++) {
                 nw += w[j];
             }
             int nh = 0;
-            for (int i = 0; i < nrows; i ++) {
+            for (int i = 0; i < nrows; i++) {
                 nh += h[i];
             }
             return new Dimension(insets.left + insets.right +
-                    nw + (ncols-1) * getHgap(),
+                    nw + (ncols - 1) * getHgap(),
                     insets.top + insets.bottom +
-                            nh + (nrows-1)*getVgap());
+                            nh + (nrows - 1) * getVgap());
         }
     }
 
@@ -65,6 +65,7 @@ public class SideMenuGridLayout extends GridLayout {
      * Each row's height as row's component's minimum height. The minimum
      * layout size also accounts for the horizontal and vertical gap sizes
      * between components and the parent container insets.
+     *
      * @param parent container
      * @return preferred dimension
      */
@@ -76,13 +77,12 @@ public class SideMenuGridLayout extends GridLayout {
             int ncols = getColumns();
             if (nrows > 0) {
                 ncols = (ncomponents + nrows - 1) / nrows;
-            }
-            else {
+            } else {
                 nrows = (ncomponents + ncols - 1) / ncols;
             }
             int[] w = new int[ncols];
             int[] h = new int[nrows];
-            for (int i = 0; i < ncomponents; i ++) {
+            for (int i = 0; i < ncomponents; i++) {
                 int r = i / ncols;
                 int c = i % ncols;
                 Component comp = parent.getComponent(i);
@@ -95,22 +95,21 @@ public class SideMenuGridLayout extends GridLayout {
                 }
             }
             int nw = 0;
-            for (int j = 0; j < ncols; j ++) {
+            for (int j = 0; j < ncols; j++) {
                 nw += w[j];
             }
             int nh = 0;
-            for (int i = 0; i < nrows; i ++) {
+            for (int i = 0; i < nrows; i++) {
                 nh += h[i];
             }
             return new Dimension(insets.left + insets.right +
-                    nw + (ncols-1) * getHgap(),
+                    nw + (ncols - 1) * getHgap(),
                     insets.top + insets.bottom +
-                            nh + (nrows-1)*getVgap());
+                            nh + (nrows - 1) * getVgap());
         }
     }
 
     /**
-     *
      * @param parent
      */
     public void layoutContainer(Container parent) {
@@ -124,8 +123,7 @@ public class SideMenuGridLayout extends GridLayout {
             }
             if (nrows > 0) {
                 ncols = (ncomponents + nrows - 1) / nrows;
-            }
-            else {
+            } else {
                 nrows = (ncomponents + ncols - 1) / ncols;
             }
             int hgap = getHgap();
@@ -137,7 +135,7 @@ public class SideMenuGridLayout extends GridLayout {
             // scale
             int[] w = new int[ncols];
             int[] h = new int[nrows];
-            for (int i = 0; i < ncomponents; i ++) {
+            for (int i = 0; i < ncomponents; i++) {
                 int r = i / ncols;
                 int c = i % ncols;
                 Component comp = parent.getComponent(i);
@@ -150,8 +148,8 @@ public class SideMenuGridLayout extends GridLayout {
                     h[r] = d.height;
                 }
             }
-            for (int c = 0, x = insets.left; c < ncols; c ++) {
-                for (int r = 0, y = insets.top; r < nrows; r ++) {
+            for (int c = 0, x = insets.left; c < ncols; c++) {
+                for (int r = 0, y = insets.top; r < nrows; r++) {
                     int i = r * ncols + c;
                     if (i < ncomponents) {
                         parent.getComponent(i).setBounds(x, y, w[c], h[r]);

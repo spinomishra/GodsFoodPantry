@@ -22,10 +22,11 @@ public class PrintHelper {
     /**
      * Prepare system to print
      * This will display a print settings dialogs box with the printer services available on the system.
+     *
      * @param window parent Window component for the dialog box
      * @return Print service selected by the user
      */
-    public static PrintService PrepareForPrint(Window window){
+    public static PrintService PrepareForPrint(Window window) {
         final int offset = 50;
 
         GraphicsConfiguration graphicsConfiguration = window == null ? null : window.getGraphicsConfiguration();
@@ -42,6 +43,7 @@ public class PrintHelper {
 
     /**
      * Retrieve the specified Print Service
+     *
      * @return PrintService object; returns null if none found.
      */
     public static PrintService findPrintService(String printerName) {
@@ -92,13 +94,14 @@ public class PrintHelper {
 
     /**
      * Helper method to make printing reports easy
+     *
      * @param parentWindow Parent Window
-     * @param table source JTable
+     * @param table        source JTable
      * @param headerFormat Print header
      * @param footerFormat Print footer
      * @return true if successfully printed, else false
      */
-    public static boolean Print(Window parentWindow, JTable table, String headerFormat){
+    public static boolean Print(Window parentWindow, JTable table, String headerFormat) {
         Objects.requireNonNull(table);
         Objects.requireNonNull(headerFormat);
 

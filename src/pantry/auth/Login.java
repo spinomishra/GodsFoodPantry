@@ -8,7 +8,6 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.*;
@@ -23,53 +22,53 @@ public class Login implements DocumentListener, ActionListener, KeyListener {
     /**
      * Username text field to capture username
      */
-    private JTextField      username;
+    private JTextField username;
     /**
      * Password field to capture password
      */
-    private JPasswordField  password;
+    private JPasswordField password;
 
     ////////// registration page controls ////////////////
 
     /**
      * Username control for user registration
      */
-    private JTextField      reg_username;
+    private JTextField reg_username;
 
     /**
      * Password control for user registration
      */
-    private JPasswordField  reg_password;
+    private JPasswordField reg_password;
 
     /**
      * Password confirmation control for user registration
      */
-    private JPasswordField  conf_password;
+    private JPasswordField conf_password;
 
     /**
      * Login button
      */
-    private JButton         loginButton;
+    private JButton loginButton;
 
     /**
      * register button
      */
-    private JButton         regButton;
+    private JButton regButton;
 
     /**
      * Register link button
      */
-    private JButton         regLinkButton;
+    private JButton regLinkButton;
 
     /**
      * Card layout control
      */
-    private CardLayout      cardLayout;
+    private CardLayout cardLayout;
 
     /**
      * Cards to be hosted in card layout
      */
-    private JPanel          cards;
+    private JPanel cards;
 
     /**
      * LoginUser label text
@@ -83,17 +82,17 @@ public class Login implements DocumentListener, ActionListener, KeyListener {
     /**
      * Password hash map
      */
-    private HashMap<String, String> passwordDB ;
+    private HashMap<String, String> passwordDB;
 
     /**
      * Model dialog for login/registration
      */
-    private JDialog modelDialog ;
+    private JDialog modelDialog;
 
     /**
      * Active card title
      */
-    private String activePage ;
+    private String activePage;
 
     /**
      * Flag to store authentication status
@@ -102,6 +101,7 @@ public class Login implements DocumentListener, ActionListener, KeyListener {
 
     /**
      * Shows dialog box and authenticates user
+     *
      * @param frame parent component for the dialog box
      * @return true if user has successfully authenticated, otherwise false
      */
@@ -121,9 +121,8 @@ public class Login implements DocumentListener, ActionListener, KeyListener {
 
         if (passwordDB.size() == 0) {
             ShowUserRegistrationPage();
-        }
-        else
-            ShowLoginPage() ;
+        } else
+            ShowLoginPage();
 
         modelDialog.setVisible(true);
 
@@ -142,7 +141,7 @@ public class Login implements DocumentListener, ActionListener, KeyListener {
     /**
      * Shows Registration page
      */
-    public void ShowUserRegistrationPage(){
+    public void ShowUserRegistrationPage() {
         modelDialog.setTitle("PantryWare - Register New User");
         cardLayout.show(cards, REGISTER_CARD);
         activePage = REGISTER_CARD;
@@ -150,21 +149,23 @@ public class Login implements DocumentListener, ActionListener, KeyListener {
 
     /**
      * Initialize components for the dialog box
+     *
      * @param dialog Dialog component
      */
-    private void InitComponent(JDialog dialog){
+    private void InitComponent(JDialog dialog) {
         cardLayout = new CardLayout();
         cards = new JPanel(cardLayout);
-        JPanel loginCard= AddLoginCard();
+        JPanel loginCard = AddLoginCard();
         JPanel registerCard = AddRegisterCard();
 
-        cards.add(loginCard,LOGIN_CARD) ;
-        cards.add(registerCard, REGISTER_CARD) ;
+        cards.add(loginCard, LOGIN_CARD);
+        cards.add(registerCard, REGISTER_CARD);
         dialog.add(cards);
     }
 
     /**
      * Adds register user card
+     *
      * @return JPanel The Panel containing registration controls
      */
     private JPanel AddRegisterCard() {
@@ -179,7 +180,7 @@ public class Login implements DocumentListener, ActionListener, KeyListener {
         registerPanel.add(unLabel);
 
         reg_username = new JTextField();
-        reg_username.setBounds(leftx+107, 8, 193, 28);
+        reg_username.setBounds(leftx + 107, 8, 193, 28);
         reg_username.addKeyListener(this);
         registerPanel.add(reg_username);
 
@@ -190,7 +191,7 @@ public class Login implements DocumentListener, ActionListener, KeyListener {
         reg_password = new JPasswordField();
         reg_password.getDocument().addDocumentListener(this);
         reg_password.getDocument().putProperty("owner", reg_password); //set the owner
-        reg_password.setBounds(leftx+107, 46, 193, 28);
+        reg_password.setBounds(leftx + 107, 46, 193, 28);
         reg_password.addKeyListener(this);
         registerPanel.add(reg_password);
 
@@ -201,7 +202,7 @@ public class Login implements DocumentListener, ActionListener, KeyListener {
         conf_password = new JPasswordField();
         conf_password.getDocument().addDocumentListener(this);
         conf_password.getDocument().putProperty("owner", conf_password); //set the owner
-        conf_password.setBounds(leftx+107, 84, 193, 28);
+        conf_password.setBounds(leftx + 107, 84, 193, 28);
         conf_password.addKeyListener(this);
         registerPanel.add(conf_password);
 
@@ -222,9 +223,10 @@ public class Login implements DocumentListener, ActionListener, KeyListener {
 
     /**
      * Add login card to the card layout
+     *
      * @return JPanel The panel containing login controls
      */
-    private JPanel AddLoginCard(){
+    private JPanel AddLoginCard() {
         // create panel object
         JPanel loginPanel = new JPanel();
         loginPanel.setLayout(null); // take the entire with and height of the screen
@@ -273,10 +275,10 @@ public class Login implements DocumentListener, ActionListener, KeyListener {
     /**
      * Enable or Disable register button
      */
-    private void UpdateRegisterButton(DocumentEvent e){
+    private void UpdateRegisterButton(DocumentEvent e) {
         Object owner = e.getDocument().getProperty("owner");
         if (owner == reg_password || owner == conf_password) {
-            boolean validPassword = (reg_password.getPassword().length >=8 && true == Arrays.equals(reg_password.getPassword(), conf_password.getPassword()));
+            boolean validPassword = (reg_password.getPassword().length >= 8 && Arrays.equals(reg_password.getPassword(), conf_password.getPassword()));
             regButton.setEnabled(validPassword);
         }
     }
@@ -288,22 +290,20 @@ public class Login implements DocumentListener, ActionListener, KeyListener {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-        if ( e.getSource() == loginButton) {
+        if (e.getSource() == loginButton) {
             if (!Authenticate(username.getText(), password.getPassword()))
                 JOptionPane.showMessageDialog(null, "Username or Password mismatch ");
             else {
-                authenticated = true ;
+                authenticated = true;
                 // close login dialog
                 modelDialog.dispose();
             }
-        }
-        else if (e.getSource() == regLinkButton){
+        } else if (e.getSource() == regLinkButton) {
             reg_username.setText("");
             reg_password.setText("");
             conf_password.setText("");
             ShowUserRegistrationPage();
-        }
-        else if (e.getSource() == regButton) {
+        } else if (e.getSource() == regButton) {
             passwordDB.put(reg_username.getText(), Hash.Sha2Hash(reg_password.getPassword()));
             SavePasswordDb(passwordDB);
             username.setText(reg_username.getText());
@@ -314,28 +314,26 @@ public class Login implements DocumentListener, ActionListener, KeyListener {
 
     /**
      * Loads password database
+     *
      * @return map of username and password
      */
-    private HashMap<String, String> LoadPasswordDb(){
-        HashMap<String, String> map = null ;
-        try
-        {
+    private HashMap<String, String> LoadPasswordDb() {
+        HashMap<String, String> map = null;
+        try {
             var fis = new FileInputStream("pantry.usr.db");
             ObjectInputStream ois = new ObjectInputStream(fis);
 
             if (ois != null) {
-                map = (HashMap<String, String>)ois.readObject();
+                map = (HashMap<String, String>) ois.readObject();
             }
 
             ois.close();
             fis.close();
 
             return map;
-        }
-        catch (FileNotFoundException fife){
+        } catch (FileNotFoundException fife) {
             System.out.println("No password database exists");
-        }
-        catch (IOException ioe){
+        } catch (IOException ioe) {
             ioe.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -349,14 +347,14 @@ public class Login implements DocumentListener, ActionListener, KeyListener {
 
     /**
      * Save passwords database
+     *
      * @param pwdMap has map containing passwords
      * @return true if passwords are saved, else false
      */
-    private boolean SavePasswordDb(HashMap<String, String> pwdMap){
+    private boolean SavePasswordDb(HashMap<String, String> pwdMap) {
         boolean saved = false;
 
-        try
-        {
+        try {
             var fos = new FileOutputStream("pantry.usr.db");
             var oos = new ObjectOutputStream(fos);
 
@@ -367,11 +365,9 @@ public class Login implements DocumentListener, ActionListener, KeyListener {
 
             oos.close();
             fos.close();
-        }
-        catch (FileNotFoundException fife){
+        } catch (FileNotFoundException fife) {
             System.out.println("Failed to open password database");
-        }
-        catch (IOException ioe){
+        } catch (IOException ioe) {
             ioe.printStackTrace();
         }
 
@@ -380,17 +376,18 @@ public class Login implements DocumentListener, ActionListener, KeyListener {
 
     /**
      * Authenticate user... search thru the hash in the hashmap, matching each with the input password hash
+     *
      * @param username username
-     * @param pwd password specified by the user entry
+     * @param pwd      password specified by the user entry
      * @return true if successfully authenticated
      */
     private boolean Authenticate(String username, char[] pwd) {
         boolean authenticated = false;
         boolean regRequired = true;
-        String verifyHash = Hash.Sha2Hash(pwd) ;
-        if (!verifyHash.isEmpty()){
-            if (passwordDB != null){
-                if (passwordDB.containsKey(username)){
+        String verifyHash = Hash.Sha2Hash(pwd);
+        if (!verifyHash.isEmpty()) {
+            if (passwordDB != null) {
+                if (passwordDB.containsKey(username)) {
                     regRequired = false;
                     String pwdHash = passwordDB.get(username);
                     if (pwdHash.compareToIgnoreCase(verifyHash) == 0)
@@ -399,7 +396,7 @@ public class Login implements DocumentListener, ActionListener, KeyListener {
             }
         }
 
-        return authenticated ;
+        return authenticated;
     }
 
     /**
@@ -410,7 +407,7 @@ public class Login implements DocumentListener, ActionListener, KeyListener {
      */
     @Override
     public void insertUpdate(DocumentEvent e) {
-            UpdateRegisterButton(e);
+        UpdateRegisterButton(e);
     }
 
     /**
@@ -422,7 +419,7 @@ public class Login implements DocumentListener, ActionListener, KeyListener {
      */
     @Override
     public void removeUpdate(DocumentEvent e) {
-            UpdateRegisterButton(e);
+        UpdateRegisterButton(e);
     }
 
     /**
@@ -432,7 +429,7 @@ public class Login implements DocumentListener, ActionListener, KeyListener {
      */
     @Override
     public void changedUpdate(DocumentEvent e) {
-          UpdateRegisterButton(e);
+        UpdateRegisterButton(e);
     }
 
     /**
@@ -456,13 +453,12 @@ public class Login implements DocumentListener, ActionListener, KeyListener {
      */
     @Override
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_ENTER){
+        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
             if (activePage == LOGIN_CARD) {
-                if (loginButton.isEnabled()){
+                if (loginButton.isEnabled()) {
                     loginButton.doClick();
                 }
-            }
-            else if (activePage == REGISTER_CARD) {
+            } else if (activePage == REGISTER_CARD) {
                 if (regButton.isEnabled())
                     regButton.doClick();
             }

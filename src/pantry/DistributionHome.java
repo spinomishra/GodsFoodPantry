@@ -43,7 +43,7 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
     /**
      * Previously recorded food consumers
      */
-    private ArrayList<Consumer> oldConsumers=null;
+    private ArrayList<Consumer> oldConsumers = null;
 
     /**
      * Allows record to be deleted
@@ -65,7 +65,7 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
      */
     public DistributionHome() {
         todaysConsumers = new ArrayList<Consumer>();
-        LoadConsumers() ;
+        LoadConsumers();
     }
 
     /**
@@ -91,7 +91,7 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
      */
     @Override
     public void Run() {
-        setTitle(Home.getDefaultPageTitle() +  " - Food Distribution Management");
+        setTitle(Home.getDefaultPageTitle() + " - Food Distribution Management");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         this.addWindowListener(new WindowAdapter() {
@@ -114,20 +114,21 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
 
     /**
      * Adds panel to contain buttons
+     *
      * @return The button panel object
      */
     private JPanel addActionButtons() {
         var This = this;
 
-        var buttonPanel = new JPanel() ;
+        var buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.LINE_AXIS));
-        buttonPanel.setBorder(new EmptyBorder(6,6,6,6));
+        buttonPanel.setBorder(new EmptyBorder(6, 6, 6, 6));
         buttonPanel.add(Box.createRigidArea(new Dimension(5, 0)));
 
         deleteBtn = new JButton("Delete Record");
         deleteBtn.setEnabled(false);
         deleteBtn.setMinimumSize(new Dimension(200, 100));
-        var deleteButtonIcon = getImageIcon("/images/recyclebin.png", 12,12);
+        var deleteButtonIcon = getImageIcon("/images/recyclebin.png", 12, 12);
         deleteBtn.setIcon(deleteButtonIcon);
 
         deleteBtn.addActionListener(new ActionListener() {
@@ -143,41 +144,41 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
                         deleteBtn.setEnabled(false);
                     }
                     consumerTable.deleteSelectedRows();
-                }
-                else {
+                } else {
                     String info = "Previous records are now sealed and cannot be altered. Only Today's records can be deleted.";
-                    String msg = "<html><body><p style='width: 300px; '>"+info+"</p></body></html>";
+                    String msg = "<html><body><p style='width: 300px; '>" + info + "</p></body></html>";
 
-                    JOptionPane.showMessageDialog(This, msg, "Consumer Records", JOptionPane.INFORMATION_MESSAGE| JOptionPane.OK_OPTION);
+                    JOptionPane.showMessageDialog(This, msg, "Consumer Records", JOptionPane.INFORMATION_MESSAGE | JOptionPane.OK_OPTION);
                 }
             }
         });
 
-       buttonPanel.add(deleteBtn);
-       buttonPanel.add(Box.createRigidArea(new Dimension(5, 0)));
+        buttonPanel.add(deleteBtn);
+        buttonPanel.add(Box.createRigidArea(new Dimension(5, 0)));
 
-       JButton printButton = new JButton("Print Records");
-       buttonPanel.add(Box.createRigidArea(new Dimension(5, 0)));
+        JButton printButton = new JButton("Print Records");
+        buttonPanel.add(Box.createRigidArea(new Dimension(5, 0)));
 
-       printButton.addActionListener(new ActionListener() {
+        printButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 PrintHelper.Print(This, consumerTable, " - Food Distribution Report");
             }
         });
-       buttonPanel.add(printButton);
+        buttonPanel.add(printButton);
 
-       return buttonPanel;
+        return buttonPanel;
     }
 
     /**
      * Adds Consumer records table to home page
+     *
      * @return The Table panel
      */
     private JPanel addTable() {
         var screenSize = getDefaultToolkit().getScreenSize();
 
-        var tablePanel = new JPanel() ;
+        var tablePanel = new JPanel();
         var topPanelLayout = new BorderLayout();
         tablePanel.setLayout(topPanelLayout);
         tablePanel.setOpaque(true);
@@ -185,7 +186,11 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
 
         {
             consumerTable = new ConsumerTable(todaysConsumers);
-            JScrollPane scrollPane = new JScrollPane(consumerTable, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+            JScrollPane scrollPane = new JScrollPane(consumerTable,
+                    JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                    JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
             consumerTable.setFillsViewportHeight(true);
             consumerTable.addSelectionChangeListener(this);
             tablePanel.add(scrollPane, BorderLayout.CENTER);
@@ -193,7 +198,7 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
             {
                 JPanel panel = new JPanel();
                 JLabel label = new JLabel("Food Distribution Consumer Records");
-                Font labelFont = new Font("Serif", Font.BOLD|Font.ITALIC, 14);
+                Font labelFont = new Font("Serif", Font.BOLD | Font.ITALIC, 14);
                 label.setFont(labelFont);
                 label.setHorizontalTextPosition(JLabel.CENTER);
                 panel.add(label, BorderLayout.CENTER);
@@ -209,18 +214,18 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         deleteBtn.setEnabled(false);
-                        switch (comboBox.getSelectedIndex()){
+                        switch (comboBox.getSelectedIndex()) {
                             case 0:
                                 consumerTable.ChangeDataModel(todaysConsumers);
                                 orderBox.setVisible(false);
-                                break ;
+                                break;
 
                             case 1:
                                 if (oldConsumers == null)
                                     oldConsumers = LoadOldConsumers();
                                 consumerTable.ChangeDataModel(oldConsumers);
                                 orderBox.setVisible(true);
-                                break ;
+                                break;
                         }
                     }
                 });
@@ -246,9 +251,9 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
                                 var sortedData = Sort(oldConsumers, "Name BY ASC");
                                 consumerTable.ChangeDataModel(sortedData);
                             }
-                            break ;
+                            break;
 
-                            case 2:{
+                            case 2: {
                                 var sortedData = Sort(oldConsumers, "Name BY ASC, Address BY ASC");
                                 consumerTable.ChangeDataModel(sortedData);
                             }
@@ -287,7 +292,7 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
             {
                 JPanel panel = new JPanel();
                 JLabel label = new JLabel("Signature Display");
-                Font labelFont = new Font("Serif", Font.BOLD|Font.ITALIC, 14);
+                Font labelFont = new Font("Serif", Font.BOLD | Font.ITALIC, 14);
                 label.setFont(labelFont);
                 label.setHorizontalTextPosition(JLabel.CENTER);
                 panel.add(label, BorderLayout.CENTER);
@@ -297,27 +302,28 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
             tablePanel.add(signaturePanel, BorderLayout.EAST);
         }
 
-        return tablePanel ;
+        return tablePanel;
     }
 
     /**
      * Add tiles to the home page
+     *
      * @return The Tile Manager object
      */
     private JPanel addTiles() {
         final int w = 100;
-        final int h = 100 ;
+        final int h = 100;
 
-        JPanel tilePanel = new TileManager(this) ;
-        Dimension tilePanelDim = new Dimension(400, 150) ;
+        JPanel tilePanel = new TileManager(this);
+        Dimension tilePanelDim = new Dimension(400, 150);
 
         tilePanel.setMaximumSize(tilePanelDim);
         tilePanel.setPreferredSize(tilePanelDim);
 
-        Font tileFont = new Font("Serif", Font.BOLD|Font.ITALIC, 14);
-        Dimension minDim = new Dimension(50, 50) ;
+        Font tileFont = new Font("Serif", Font.BOLD | Font.ITALIC, 14);
+        Dimension minDim = new Dimension(50, 50);
         Dimension prefDim = new Dimension(w, h);
-        Tile manualEntryTile = new Tile("Manual Entry", Color.BLACK, getImageIcon("/images/manual-entry.png", w-20,h-20) );
+        Tile manualEntryTile = new Tile("Manual Entry", Color.BLACK, getImageIcon("/images/manual-entry.png", w - 20, h - 20));
         manualEntryTile.setFont(tileFont);
         manualEntryTile.setActionCommand("Manual-Entry");
         manualEntryTile.addActionListener(this);
@@ -329,7 +335,7 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
         manualEntryTile.setVerticalAlignment(JLabel.BOTTOM);
         tilePanel.add(manualEntryTile);
 
-        Tile scanEntryTile = new Tile("Scan Identity", Color.BLACK, getImageIcon("/images/scan-id.png", w-20,h-20) );
+        Tile scanEntryTile = new Tile("Scan Identity", Color.BLACK, getImageIcon("/images/scan-id.png", w - 20, h - 20));
         scanEntryTile.setFont(tileFont);
         scanEntryTile.setActionCommand("ScanId");
         scanEntryTile.addActionListener(this);
@@ -345,20 +351,20 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
 
     /**
      * {@inheritDoc}
+     *
      * @param e the event to be processed
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-        switch (e.getActionCommand()){
-            case "Manual-Entry":{
+        switch (e.getActionCommand()) {
+            case "Manual-Entry": {
                 Consumer consumer = ConsumerInfo.RecordInformationManually(this);
-                if (consumer != null){
-                    try{
+                if (consumer != null) {
+                    try {
                         todaysConsumers.add(consumer);
                         SaveConsumers();
                         consumerTable.add(consumer);
-                    }
-                    catch (Exception ex){
+                    } catch (Exception ex) {
                         JOptionPane.showMessageDialog(this, ex.getMessage(), "Food Distribution - Exception", JOptionPane.ERROR_MESSAGE);
                     }
                 }
@@ -367,15 +373,16 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
 
             case "ScanId":
                 String info = "This option requires Barcode scanner with support to scan IDs";
-                String msg = "<html><body><p style='width: 200px;'>"+info+"</p></body></html>";
-                JOptionPane.showMessageDialog(this, msg, "Food Distribution", JOptionPane.OK_OPTION| JOptionPane.INFORMATION_MESSAGE);
+                String msg = "<html><body><p style='width: 200px;'>" + info + "</p></body></html>";
+                JOptionPane.showMessageDialog(this, msg, "Food Distribution", JOptionPane.OK_OPTION | JOptionPane.INFORMATION_MESSAGE);
                 break;
         }
     }
 
     /**
      * {@inheritDoc}
-     * @param ois  ObjectInputStream object
+     *
+     * @param ois ObjectInputStream object
      * @throws IOException
      * @throws ClassNotFoundException
      */
@@ -387,6 +394,7 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
 
     /**
      * {@inheritDoc}
+     *
      * @param oos output stream
      * @throws IOException
      */
@@ -398,13 +406,13 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
 
     /**
      * Helper method to construct image icon using the given image path
+     *
      * @param imagePath The image path
-     * @param w image icon width
-     * @param h image icon height
+     * @param w         image icon width
+     * @param h         image icon height
      * @return ImageIcon object
      */
-    private  ImageIcon getImageIcon(String imagePath, int w, int h)
-    {
+    private ImageIcon getImageIcon(String imagePath, int w, int h) {
         var resource = getClass().getResource(imagePath);
         if (resource != null) {
             var img = ((new ImageIcon(resource)).getImage()).getScaledInstance(w, h, java.awt.Image.SCALE_SMOOTH);
@@ -417,13 +425,12 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
      * Load consumers from today's food distribution drive
      */
     private void LoadConsumers() {
-        if (todaysConsumers == null){
+        if (todaysConsumers == null) {
             todaysConsumers = new ArrayList<>();
-        }
-        else
+        } else
             todaysConsumers.clear();
 
-        String filename = "food.distribution.consumers." + LocalDateTime.now().format(DateTimeFormatter.ofPattern("MMddyyyy")).toString() + ".rec";
+        String filename = "food.distribution.consumers." + LocalDateTime.now().format(DateTimeFormatter.ofPattern("MMddyyyy")) + ".rec";
         FileAdapter recordsFile = new FileAdapter(filename, this);
         recordsFile.Load();
     }
@@ -431,9 +438,9 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
     /**
      * Save consumers to file
      */
-    private void SaveConsumers(){
-        if (todaysConsumers != null && todaysConsumers.size()>0) {
-            String filename = "food.distribution.consumers." + LocalDateTime.now().format(DateTimeFormatter.ofPattern("MMddyyyy")).toString() + ".rec";
+    private void SaveConsumers() {
+        if (todaysConsumers != null && todaysConsumers.size() > 0) {
+            String filename = "food.distribution.consumers." + LocalDateTime.now().format(DateTimeFormatter.ofPattern("MMddyyyy")) + ".rec";
             FileAdapter recordsFile = new FileAdapter(filename, this);
             recordsFile.Save();
         }
@@ -441,38 +448,36 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
 
     /**
      * Load previous consumer records that have still not been consolidated
+     *
      * @return list of old consumers
      */
     private ArrayList<Consumer> LoadOldConsumers() {
-        String todaysFile = "food.distribution.consumers." + LocalDateTime.now().format(DateTimeFormatter.ofPattern("MMddyyyy")).toString() + ".rec";
+        String todaysFile = "food.distribution.consumers." + LocalDateTime.now().format(DateTimeFormatter.ofPattern("MMddyyyy")) + ".rec";
 
         File dir = new File(".\\");
-        File [] files = dir.listFiles(new FilenameFilter() {
+        File[] files = dir.listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
                 return name.endsWith(".rec") && name.startsWith("food.distribution.consumers.");
             }
         });
 
-        ArrayList<Consumer>  records = new ArrayList<>();
-        for (File file:files){
-            if (!todaysFile.equals(file.getName())){
-                try
-                {
+        ArrayList<Consumer> records = new ArrayList<>();
+        for (File file : files) {
+            if (!todaysFile.equals(file.getName())) {
+                try {
                     var fis = new FileInputStream(file);
                     var ois = new ObjectInputStream(fis);
 
                     if (ois != null) {
-                        records.addAll ((ArrayList<Consumer>) ois.readObject());
+                        records.addAll((ArrayList<Consumer>) ois.readObject());
                     }
 
                     ois.close();
                     fis.close();
-                }
-                catch (FileNotFoundException fife){
+                } catch (FileNotFoundException fife) {
                     System.out.println("No records exist");
-                }
-                catch (IOException ioe){
+                } catch (IOException ioe) {
                     ioe.printStackTrace();
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
@@ -485,15 +490,16 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
 
     /**
      * Consumer Table selection change listener
+     *
      * @param table Table raising the event
-     * @param row selected row
-     * @param col selected col
+     * @param row   selected row
+     * @param col   selected col
      */
     @Override
     public void SelectionChanged(JTable table, int row, int col) {
         deleteBtn.setEnabled(true);
 
-        Consumer consumer = ((ConsumerTableModel) ((ConsumerTable)table).getModel()).getRow(row);
+        Consumer consumer = ((ConsumerTableModel) table.getModel()).getRow(row);
         if (consumer != null) {
             Image image = consumer.getSignatureImage();
             if (signatureDisplayControl != null) {
@@ -504,7 +510,8 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
 
     /**
      * Sorts the consumers based on the input criteria in specified order
-     * @param dataModel input data model that needs to be sorted
+     *
+     * @param dataModel       input data model that needs to be sorted
      * @param sortingCriteria Criteria used for sorting  e.g. "Name or Address BY ASC, NAME BY DESC" or "Address BY asc"
      * @return sorted data model
      */
@@ -513,22 +520,23 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
         ArrayList<Consumer> sortedModel = new ArrayList<>(dataModel);
         String[] criteriaArray = sortingCriteria.split(",");
 
-        // nested class
+        /**
+         * Represents sorting criteria
+         */
         class SortCriteria {
             public String dataName;
             public boolean ascending;
 
-            public SortCriteria(String criteria){
+            /**
+             * Constructor
+             * @param criteria
+             */
+            public SortCriteria(String criteria) {
                 String[] splitTokens = criteria.trim().split("BY");
-                if (splitTokens.length == 2){
+                if (splitTokens.length == 2) {
                     dataName = splitTokens[0].trim();
                     String order = splitTokens[1].trim();
-                    if (order.compareToIgnoreCase("asc") == 0){
-                        ascending = true;
-                    }
-                    else {
-                        ascending = false;
-                    }
+                    ascending = order.compareToIgnoreCase("asc") == 0;
                 } else if (splitTokens.length == 0) {
                     dataName = criteria.trim();
                     ascending = true;
@@ -536,10 +544,21 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
             }
         }
 
-        class Sorter{
+        /**
+         * Sorter class. This class provides method to sort data at multiple levels
+         */
+        class Sorter {
+            /**
+             * Sort method
+             * @param dataModel data to sort
+             * @param idxStart index to start sorting from
+             * @param idxEnd index to stop sorting at
+             * @param sortCriteria sorting criteria list
+             * @param sortLevel sorting level
+             */
             private void Sort(ArrayList<Consumer> dataModel, int idxStart, int idxEnd, ArrayList<SortCriteria> sortCriteria, int sortLevel) {
                 if (dataModel.size() == 1)
-                    return ;    // nothing to sort
+                    return;    // nothing to sort
 
                 if (sortLevel > sortCriteria.size())   // incorrect sort level
                     return;
@@ -549,23 +568,22 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
                 // 2. Remember the starting locations of each level after sorting
                 // 3. Repeat for next sorting criteria, only sorting the subsections.
                 //
-                String dataName = sortCriteria.get(sortLevel - 1).dataName ;
+                String dataName = sortCriteria.get(sortLevel - 1).dataName;
                 boolean ascending = sortCriteria.get(sortLevel - 1).ascending;
 
-                for (int x=idxStart; x<idxEnd; x++)
-                {
-                    for (int i=idxStart; i < idxEnd-x-1; i++) {
-                        if (sortLevel == 2 ){
-                            SortCriteria criteria  = sortCriteria.get(0);
+                for (int x = idxStart; x < idxEnd; x++) {
+                    for (int i = idxStart; i < idxEnd - x - 1; i++) {
+                        if (sortLevel == 2) {
+                            SortCriteria criteria = sortCriteria.get(0);
                             String levelData1 = dataModel.get(i).getData(criteria.dataName);
-                            String levelData2 = dataModel.get(i+1).getData(criteria.dataName);
+                            String levelData2 = dataModel.get(i + 1).getData(criteria.dataName);
                             if (levelData1 != levelData2)
                                 continue;
                         }
 
-                        try{
+                        try {
                             String data1 = dataModel.get(i).getData(dataName);
-                            String data2 = dataModel.get(i+1).getData(dataName);
+                            String data2 = dataModel.get(i + 1).getData(dataName);
 
                             if (ascending) {
                                 if (data1.compareTo(data2) > 0) {
@@ -573,16 +591,14 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
                                     dataModel.set(i, dataModel.get(i + 1));
                                     dataModel.set(i + 1, temp);
                                 }
-                            }
-                            else  {
+                            } else {
                                 if (data1.compareTo(data2) < 0) {
                                     Consumer temp = dataModel.get(i);
                                     dataModel.set(i, dataModel.get(i + 1));
                                     dataModel.set(i + 1, temp);
                                 }
                             }
-                        }
-                        catch (UnsupportedOperationException ex){
+                        } catch (UnsupportedOperationException ex) {
 
                         }
                     }
@@ -591,15 +607,14 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
         }
 
         var sortCriteriaList = new java.util.ArrayList<SortCriteria>();
-        for (String c:criteriaArray){
+        for (String c : criteriaArray) {
             SortCriteria sortCriteria = new SortCriteria(c);
             sortCriteriaList.add(sortCriteria);
         }
 
         Sorter sorter = new Sorter();
-
         sorter.Sort(sortedModel, 0, sortedModel.size(), sortCriteriaList, 1);
-
+        sorter.Sort(sortedModel, 0, sortedModel.size(), sortCriteriaList, 2);
         return sortedModel;
     }
 }

@@ -1,16 +1,16 @@
 package pantry.volunteer.ui;
 
-import pantry.Home;
 import pantry.Pantry;
-import pantry.data.PantryData;
 import pantry.helpers.DateHelper;
 import pantry.helpers.PrintHelper;
 import pantry.interfaces.ITableSelectionChangeListener;
 import pantry.volunteer.Volunteer;
 
 import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -23,7 +23,7 @@ import java.util.Date;
 /**
  * Volunteer management card
  */
-public class VolunteerManagerCard extends JPanel implements  ActionListener, ITableSelectionChangeListener, TableModelListener {
+public class VolunteerManagerCard extends JPanel implements ActionListener, ITableSelectionChangeListener, TableModelListener {
     /**
      * Remove button label
      */
@@ -37,7 +37,7 @@ public class VolunteerManagerCard extends JPanel implements  ActionListener, ITa
     /**
      * Volunteer records table control
      */
-    private VolunteerTable volunteerTable ;
+    private final VolunteerTable volunteerTable;
 
     /**
      * Record choice combo box
@@ -56,6 +56,7 @@ public class VolunteerManagerCard extends JPanel implements  ActionListener, ITa
 
     /**
      * Constructor
+     *
      * @param parentWindow The Parent window
      */
     public VolunteerManagerCard(JFrame parentWindow) {
@@ -68,7 +69,7 @@ public class VolunteerManagerCard extends JPanel implements  ActionListener, ITa
             JPanel panel = new JPanel();
             JLabel label = new JLabel("Show Volunteer Records");
 
-            Font labelFont = new Font("Serif", Font.BOLD|Font.ITALIC, 14);
+            Font labelFont = new Font("Serif", Font.BOLD | Font.ITALIC, 14);
             label.setFont(labelFont);
             label.setHorizontalTextPosition(JLabel.CENTER);
             panel.add(label, BorderLayout.CENTER);
@@ -82,30 +83,30 @@ public class VolunteerManagerCard extends JPanel implements  ActionListener, ITa
                     removeButton.setEnabled(false);
                     // apply filter
                     // https://stackoverflow.com/questions/56119820/jtable-date-filter-not-working-the-way-it-should
-                    switch (comboBox.getSelectedIndex()){
+                    switch (comboBox.getSelectedIndex()) {
                         case 0:
                             // all days
-                            var sorter = (TableRowSorter<VolunteerTableModel>)volunteerTable.getRowSorter();
+                            var sorter = (TableRowSorter<VolunteerTableModel>) volunteerTable.getRowSorter();
                             sorter.setRowFilter(null);
-                            break ;
+                            break;
 
                         case 1: {
                             // filter all records for last 1 day
-                            Date fromDate =  DateHelper.fromLocalDateTime(LocalDate.now().atStartOfDay().minusDays(1));
+                            Date fromDate = DateHelper.fromLocalDateTime(LocalDate.now().atStartOfDay().minusDays(1));
                             Date toDate = DateHelper.fromLocalDateTime(LocalDateTime.now());
 
                             filterDates(fromDate, toDate);
                         }
-                        break ;
+                        break;
 
                         case 2: {
                             // filter all records for last 30 days
-                            Date fromDate =  DateHelper.fromLocalDateTime(LocalDate.now().atStartOfDay().minusDays(30));
+                            Date fromDate = DateHelper.fromLocalDateTime(LocalDate.now().atStartOfDay().minusDays(30));
                             Date toDate = DateHelper.fromLocalDateTime(LocalDateTime.now());
 
                             filterDates(fromDate, toDate);
                         }
-                        break ;
+                        break;
                     }
                 }
             });
@@ -152,9 +153,11 @@ public class VolunteerManagerCard extends JPanel implements  ActionListener, ITa
                         public void changedUpdate(DocumentEvent e) {
                             filterByName();
                         }
+
                         public void insertUpdate(DocumentEvent e) {
                             filterByName();
                         }
+
                         public void removeUpdate(DocumentEvent e) {
                             filterByName();
                         }
@@ -188,25 +191,25 @@ public class VolunteerManagerCard extends JPanel implements  ActionListener, ITa
         try {
             // (?i) is case-insensitive flag for regular expression
             // See https://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html#CASE_INSENSITIVE
-            rf = RowFilter.regexFilter("(?i)"+searchNameField.getText());
+            rf = RowFilter.regexFilter("(?i)" + searchNameField.getText());
         } catch (java.util.regex.PatternSyntaxException e) {
             return;
         }
 
-        var sorter = (TableRowSorter<VolunteerTableModel>)this.volunteerTable.getRowSorter();
+        var sorter = (TableRowSorter<VolunteerTableModel>) this.volunteerTable.getRowSorter();
         sorter.setRowFilter(rf);
     }
 
     /**
      * Update the table view based on the dates based on filtering
      */
-    private void filterDates(Date from, Date to){
-        ArrayList<RowFilter<Object,Object>> filters = new ArrayList<RowFilter<Object,Object>>(2);
-        filters.add(RowFilter.dateFilter(RowFilter.ComparisonType.AFTER, from, 4,5 ));
-        filters.add(RowFilter.dateFilter(RowFilter.ComparisonType.BEFORE, to,4,5));
-        RowFilter<Object,Object> dateFilter = RowFilter.andFilter(filters);
+    private void filterDates(Date from, Date to) {
+        ArrayList<RowFilter<Object, Object>> filters = new ArrayList<RowFilter<Object, Object>>(2);
+        filters.add(RowFilter.dateFilter(RowFilter.ComparisonType.AFTER, from, 4, 5));
+        filters.add(RowFilter.dateFilter(RowFilter.ComparisonType.BEFORE, to, 4, 5));
+        RowFilter<Object, Object> dateFilter = RowFilter.andFilter(filters);
 
-        var sorter = (TableRowSorter<VolunteerTableModel>)this.volunteerTable.getRowSorter();
+        var sorter = (TableRowSorter<VolunteerTableModel>) this.volunteerTable.getRowSorter();
         sorter.setRowFilter(RowFilter.andFilter(filters));
     }
 
@@ -228,13 +231,13 @@ public class VolunteerManagerCard extends JPanel implements  ActionListener, ITa
 
     /**
      * Helper method to construct image icon using the given image path
+     *
      * @param imagePath The image path
-     * @param w image icon width
-     * @param h image icon height
+     * @param w         image icon width
+     * @param h         image icon height
      * @return ImageIcon object
      */
-    private  ImageIcon getImageIcon(String imagePath, int w, int h)
-    {
+    private ImageIcon getImageIcon(String imagePath, int w, int h) {
         var resource = getClass().getResource(imagePath);
         if (resource != null) {
             var img = ((new ImageIcon(resource)).getImage()).getScaledInstance(w, h, java.awt.Image.SCALE_SMOOTH);
@@ -245,9 +248,10 @@ public class VolunteerManagerCard extends JPanel implements  ActionListener, ITa
 
     /**
      * Volunteer Table selection change listener
+     *
      * @param table Table raising the event
-     * @param row selected row
-     * @param col selected col
+     * @param row   selected row
+     * @param col   selected col
      */
     @Override
     public void SelectionChanged(JTable table, int row, int col) {
@@ -257,6 +261,7 @@ public class VolunteerManagerCard extends JPanel implements  ActionListener, ITa
 
     /**
      * Table model listener method implementation
+     *
      * @param e a {@code TableModelEvent} to notify listener that a table model
      *          has changed
      */
@@ -266,19 +271,15 @@ public class VolunteerManagerCard extends JPanel implements  ActionListener, ITa
         int lastRow = e.getLastRow();
         int index = e.getColumn();
 
-        switch (e.getType()){
-            case TableModelEvent.DELETE:
-            {
-                var volunteers = Pantry.getInstance().get_Data().get_Volunteers();
-                VolunteerTableModel model = (VolunteerTableModel)e.getSource();
-                if (firstRow < model.getRowCount()) {
-                    Volunteer v = model.getRow(firstRow);
-                    volunteers.remove(v);
-                }
-                // save the records
-                Pantry.getInstance().get_Data().Save();
+        if (e.getType() == TableModelEvent.DELETE) {
+            var volunteers = Pantry.getInstance().get_Data().get_Volunteers();
+            VolunteerTableModel model = (VolunteerTableModel) e.getSource();
+            if (firstRow < model.getRowCount()) {
+                Volunteer v = model.getRow(firstRow);
+                volunteers.remove(v);
             }
-            break ;
+            // save the records
+            Pantry.getInstance().get_Data().Save();
         }
     }
 }

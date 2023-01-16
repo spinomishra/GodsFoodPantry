@@ -1,7 +1,5 @@
 package pantry;
 
-import pantry.distribution.Consumer;
-import pantry.distribution.ui.ConsumerTableModel;
 import pantry.interfaces.ITableSelectionChangeListener;
 
 import javax.swing.*;
@@ -10,7 +8,6 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 import java.awt.*;
-import java.util.ArrayList;
 
 /**
  * JTableEx class extends Java's JTable control to provide common capabilities across PantryWare application
@@ -57,11 +54,10 @@ public class JTableEx extends JTable {
                 if (e.getSource() == tableListSelectionModel) {
                     int selectedRowIndex = table.getSelectedRow();
 
-                    if (selectedRowIndex != -1)
-                    {
+                    if (selectedRowIndex != -1) {
                         // Following 2 lines of code allows me to highlight selected row using selected row Color
                         addRowSelectionInterval(selectedRowIndex, selectedRowIndex);
-                        setColumnSelectionInterval(0, table.getColumnCount()-1);
+                        setColumnSelectionInterval(0, table.getColumnCount() - 1);
 
                         if (selectionChangeListener != null)
                             selectionChangeListener.SelectionChanged(table, selectedRowIndex, 0);
@@ -74,17 +70,14 @@ public class JTableEx extends JTable {
 
     /**
      * {@inheritDoc}
-     *
      */
     @Override
-    public Component prepareRenderer(TableCellRenderer renderer, int row, int column){
+    public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
         Component comp = super.prepareRenderer(renderer, row, column);
-        if (row != -1 && row ==  getSelectedRow())
-        {
+        if (row != -1 && row == getSelectedRow()) {
             comp.setBackground(selectedRowColor);
             comp.setForeground(Color.WHITE);
-        }
-        else {
+        } else {
             Color c = (row % 2 == 0 ? new Color(210, 231, 255) : Color.WHITE);
             comp.setBackground(c);
             comp.setForeground(Color.BLACK);
@@ -94,9 +87,10 @@ public class JTableEx extends JTable {
 
     /**
      * Adds selection change listener object
+     *
      * @param listener The listener object
      */
-    public void addSelectionChangeListener(ITableSelectionChangeListener listener){
+    public void addSelectionChangeListener(ITableSelectionChangeListener listener) {
         selectionChangeListener = listener;
     }
 }

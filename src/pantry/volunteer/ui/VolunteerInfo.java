@@ -27,7 +27,7 @@ public class VolunteerInfo extends PersonInfo {
     /**
      * Recent Activity information
      */
-    private ActivityInfo recentActivity ;
+    private ActivityInfo recentActivity;
 
     /**
      * Check in time control
@@ -36,6 +36,7 @@ public class VolunteerInfo extends PersonInfo {
 
     /**
      * Constructor
+     *
      * @param frame - parent component
      * @param title - dialog title box
      */
@@ -47,7 +48,7 @@ public class VolunteerInfo extends PersonInfo {
      * {@inheritDoc}
      */
     @Override
-    protected void addTabs(JTabbedPane tabbedPane){
+    protected void addTabs(JTabbedPane tabbedPane) {
         super.addTabs(tabbedPane);
 
         if (recentActivity == null)
@@ -88,6 +89,7 @@ public class VolunteerInfo extends PersonInfo {
 
     /**
      * Get volunteer's activity
+     *
      * @return Volunteer activity information
      */
     public ActivityInfo getRecentActivity() {
@@ -99,13 +101,12 @@ public class VolunteerInfo extends PersonInfo {
      */
     @Override
     public void insertUpdate(DocumentEvent e) {
-        String name =  nameTextBox.getText();
+        String name = nameTextBox.getText();
         String phone = contactTextBox.getText();
-        LocalDateTime  checkinTimeObj = null;
+        LocalDateTime checkinTimeObj = null;
         try {
             checkinTimeObj = LocalDateTime.parse(checkInTime.getText(), DateTimeFormatter.ofPattern("MMM dd, uuuu hh:mm a"));
-        }
-        catch(Exception ex){
+        } catch (Exception ex) {
 
         }
 
@@ -117,13 +118,12 @@ public class VolunteerInfo extends PersonInfo {
      */
     @Override
     public void removeUpdate(DocumentEvent e) {
-        String name =  nameTextBox.getText();
+        String name = nameTextBox.getText();
         String phone = contactTextBox.getText();
-        LocalDateTime  checkinTimeObj = null;
+        LocalDateTime checkinTimeObj = null;
         try {
             checkinTimeObj = LocalDateTime.parse(checkInTime.getText(), DateTimeFormatter.ofPattern("MMM dd, uuuu hh:mm a"));
-        }
-        catch(Exception ex){
+        } catch (Exception ex) {
 
         }
 
@@ -142,32 +142,32 @@ public class VolunteerInfo extends PersonInfo {
 
     /**
      * Find existing records corresponding to this volunteer information
+     *
      * @return list of volunteer records
      */
-    public ArrayList<Volunteer> findExistingRecords(){
+    public ArrayList<Volunteer> findExistingRecords() {
         return Pantry.getInstance().get_Data().searchVolunteers(this.personName, this.personContact);
     }
 
     /**
      * Create and show the UI for Volunteer information
+     *
      * @param frame - parent component
      * @param title - title of the dialog box
      * @return Volunteer object
      */
     public static Volunteer createAndShowGUI(Window frame, String title) {
-        var  pInfo = new VolunteerInfo(frame, title);
+        var pInfo = new VolunteerInfo(frame, title);
         pInfo.setVisible(true);
 
         Volunteer e = null;
         if (pInfo.option == JOptionPane.OK_OPTION) {
             ArrayList<Volunteer> volunteers = pInfo.findExistingRecords();
-            if (volunteers.size() == 0)
-            {
+            if (volunteers.size() == 0) {
                 e = new Volunteer(pInfo);
                 // add the volunteer object to the pantry data
                 Pantry.getInstance().get_Data().get_Volunteers().add(e);
-            }
-            else {
+            } else {
                 // pick one record and log volunteer activity
                 e = volunteers.get(0);
                 if (e != null)

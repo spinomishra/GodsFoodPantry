@@ -7,87 +7,90 @@ import pantry.helpers.StringHelper;
  * Pantry class ... Singleton class
  */
 public class Pantry {
-  /**
-   * Singleton instance of pantry manager object
-   */
-  static Pantry instance ;
+    /**
+     * Singleton instance of pantry manager object
+     */
+    static Pantry instance;
 
-  /**
-   * Pantry data records associated with the singleton pantry object
-   */
-  PantryData pantryRecords ;
+    /**
+     * Pantry data records associated with the singleton pantry object
+     */
+    PantryData pantryRecords;
 
-  /**
-   * Pantry name associated with the singleton pantry object
-   */
-  private String pantryName ;
+    /**
+     * Pantry name associated with the singleton pantry object
+     */
+    private String pantryName;
 
-  /**
-   * Constructor
-   */
-  public Pantry()
-  {
-    pantryName = StringHelper.Empty;
-  }
-
-  /**
-   * Static method to get singleton pantry manager object
-   * @return The singleton instance of Pantry object
-   */
-  public static Pantry getInstance()
-  {
-    if (instance == null) {
-        instance = new Pantry();
+    /**
+     * Constructor
+     */
+    public Pantry() {
+        pantryName = StringHelper.Empty;
     }
 
-    return instance;
-  }
+    /**
+     * Static method to get singleton pantry manager object
+     *
+     * @return The singleton instance of Pantry object
+     */
+    public static Pantry getInstance() {
+        if (instance == null) {
+            instance = new Pantry();
+        }
 
-  /**
-   * Sets pantry name for this object
-   * @param name Name of the pantry
-   */
-  public void setPantryName(String name) {
-    pantryName = name ;
-  }
+        return instance;
+    }
 
-  /**
-   * Gets pantry name for this object
-   * @return The name of the pantry
-   */
-  public String getPantryName(){
-    return pantryName;
-  }
+    /**
+     * Sets pantry name for this object
+     *
+     * @param name Name of the pantry
+     */
+    public void setPantryName(String name) {
+        pantryName = name;
+    }
 
-  /**
-   * Get PantryData object
-   * @return pantry data object
-   */
-  public PantryData get_Data() {
-    return pantryRecords;
-  }
+    /**
+     * Gets pantry name for this object
+     *
+     * @return The name of the pantry
+     */
+    public String getPantryName() {
+        return pantryName;
+    }
 
-  /**
-   * Open Pantry. Loads pantry data
-   */
-  public void Open(){
-    pantryRecords = new PantryData() ;
-    pantryRecords.Load() ;
-  }
+    /**
+     * Get PantryData object
+     *
+     * @return pantry data object
+     */
+    public PantryData get_Data() {
+        return pantryRecords;
+    }
 
-  /**
-   * Close Pantry object. Ensures that records are saved
-   */
-  public void Close(){
-    pantryRecords.Save();
-  }
+    /**
+     * Open Pantry. Loads pantry data
+     */
+    public void Open() {
+        pantryRecords = new PantryData();
+        pantryRecords.Load();
+    }
 
-  /**
-   * Overrides toString() for the Pantry object
-   * @return Name of the Pantry
-   */
-  @Override
-  public String toString() {
-    return pantryName;
-  }
+    /**
+     * Close Pantry object. Ensures that records are saved
+     */
+    public void Close() {
+        pantryRecords.Save();
+    }
+
+    /**
+     * Overrides toString() for the Pantry object
+     *
+     * @return Name of the Pantry
+     */
+    @Override
+    public String toString() {
+        return pantryName;
+    }
 }

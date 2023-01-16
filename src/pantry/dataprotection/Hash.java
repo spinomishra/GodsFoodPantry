@@ -13,6 +13,7 @@ import java.util.Arrays;
 public class Hash {
     /**
      * Hash input array of characters using SHA256 algorithm
+     *
      * @param chars array of characters
      * @return The Hash as string
      */
@@ -31,19 +32,16 @@ public class Hash {
 
             //Converting the byte array in to HexString format
             StringBuffer hexString = new StringBuffer();
-            for (int i = 0;i<digest.length;i++) {
+            for (int i = 0; i < digest.length; i++) {
                 hexString.append(Integer.toHexString(0xFF & digest[i]));
             }
 
             return hexString.toString();
-        }
-        catch (NoSuchAlgorithmException e) {
+        } catch (NoSuchAlgorithmException e) {
             System.out.println("Exception thrown : " + e);
-        }
-        catch (NullPointerException e) {
+        } catch (NullPointerException e) {
             System.out.println("Exception thrown : " + e);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             System.out.println("Exception thrown : " + e);
         }
 

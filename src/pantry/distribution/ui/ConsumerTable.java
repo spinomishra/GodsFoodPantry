@@ -3,16 +3,10 @@ package pantry.distribution.ui;
 import pantry.JTableEx;
 import pantry.distribution.Consumer;
 import pantry.helpers.PhoneHelper;
-import pantry.interfaces.ITableSelectionChangeListener;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.text.MaskFormatter;
-import java.awt.*;
 import java.util.ArrayList;
 
 /**
@@ -22,18 +16,18 @@ public class ConsumerTable extends JTableEx {
     /**
      * Employee object model
      */
-    private ConsumerTableModel consumerModel;
+    private final ConsumerTableModel consumerModel;
 
     /**
      * Reference to today's recorded consumers
      */
-    private ArrayList<Consumer> consumers;
+    private final ArrayList<Consumer> consumers;
 
     /**
      * Constructors
      */
-    public ConsumerTable(ArrayList<Consumer> consumers){
-        super (new ConsumerTableModel());
+    public ConsumerTable(ArrayList<Consumer> consumers) {
+        super(new ConsumerTableModel());
         this.consumers = consumers;
 
         consumerModel = (ConsumerTableModel) this.getModel();
@@ -50,90 +44,99 @@ public class ConsumerTable extends JTableEx {
      * Sets table column widths
      */
     private void setColumnWidths() {
-        setAutoResizeMode( JTable.AUTO_RESIZE_ALL_COLUMNS);
+        setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-        centerRenderer.setHorizontalAlignment( JLabel.CENTER );
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
 
-        int nCols =  getColumnModel().getColumnCount();
+        int nCols = getColumnModel().getColumnCount();
         for (int i = 0; i < nCols; i++) {
             var column = getColumnModel().getColumn(i);
             switch (i) {
-                case 0: column.setMaxWidth(30); break;
-                case 1: column.setPreferredWidth(250); break ;
-                case 2: column.setPreferredWidth(90);
-                        // setting cell editor for DOB column
-                        try
-                        {
-                            MaskFormatter mask = new MaskFormatter("##/##/####");
-                            JFormattedTextField fText = new JFormattedTextField(mask);
-                            column.setCellEditor(new DefaultCellEditor(fText));
-                        }
-                        catch (Exception e){
+                case 0:
+                    column.setMaxWidth(30);
+                    break;
+                case 1:
+                    column.setPreferredWidth(250);
+                    break;
+                case 2:
+                    column.setPreferredWidth(90);
+                    // setting cell editor for DOB column
+                    try {
+                        MaskFormatter mask = new MaskFormatter("##/##/####");
+                        JFormattedTextField fText = new JFormattedTextField(mask);
+                        column.setCellEditor(new DefaultCellEditor(fText));
+                    } catch (Exception e) {
 
-                        }
-                        column.setCellRenderer(centerRenderer);
+                    }
+                    column.setCellRenderer(centerRenderer);
 
-                        break ;
+                    break;
 
-                case 3: column.setMinWidth(120);
-                        column.setMaxWidth(120);
+                case 3:
+                    column.setMinWidth(120);
+                    column.setMaxWidth(120);
 
-                        // setting cell editor for phone column
-                        try {
-                            MaskFormatter mask = PhoneHelper.getFormatterMask();
-                            JFormattedTextField ftext = new JFormattedTextField(mask);
-                            column.setCellEditor(new DefaultCellEditor(ftext));
-                        }
-                        catch (Exception e) {
+                    // setting cell editor for phone column
+                    try {
+                        MaskFormatter mask = PhoneHelper.getFormatterMask();
+                        JFormattedTextField ftext = new JFormattedTextField(mask);
+                        column.setCellEditor(new DefaultCellEditor(ftext));
+                    } catch (Exception e) {
 
-                        }
-                        column.setCellRenderer(centerRenderer);
-                        break ;
+                    }
+                    column.setCellRenderer(centerRenderer);
+                    break;
 
-                case 4: column.setMinWidth(300);
-                        break;
+                case 4:
+                    column.setMinWidth(300);
+                    break;
 
-                case 5: column.setMaxWidth(100);
-                        column.setPreferredWidth(100);
-                        column.setCellRenderer(centerRenderer);
-                        break ;
+                case 5:
+                    column.setMaxWidth(100);
+                    column.setPreferredWidth(100);
+                    column.setCellRenderer(centerRenderer);
+                    break;
 
-                case 6: column.setPreferredWidth(120);
-                        column.setCellRenderer(centerRenderer);
-                        break ;
+                case 6:
+                    column.setPreferredWidth(120);
+                    column.setCellRenderer(centerRenderer);
+                    break;
 
                 case 7:
-                case 8: column.setPreferredWidth(90);
-                        column.setCellRenderer(centerRenderer);
-                        break ;
+                case 8:
+                    column.setPreferredWidth(90);
+                    column.setCellRenderer(centerRenderer);
+                    break;
 
                 case 9:
-                case 10: column.setMinWidth(70);
-                        column.setMaxWidth(70);
-                        column.setCellRenderer(centerRenderer);
-                        break ;
+                case 10:
+                    column.setMinWidth(70);
+                    column.setMaxWidth(70);
+                    column.setCellRenderer(centerRenderer);
+                    break;
             }
         }
     }
 
     /**
      * Adds a new consumer object to the table model
+     *
      * @param consumer New consumer object
      */
-    public void add(Consumer consumer)
-    {
+    public void add(Consumer consumer) {
         consumerModel.addRow(consumer);
         consumerModel.fireTableDataChanged();
     }
 
     /**
      * Change datamodel associated with table
+     *
      * @param oldConsumers list of consumer records
      */
     public void ChangeDataModel(ArrayList<Consumer> oldConsumers) {
         int nRows = consumerModel.getRowCount();
-        if(nRows > 0) {
+        if (nRows > 0) {
             consumerModel.removeRowRange(0, nRows - 1);
         }
 
@@ -150,7 +153,7 @@ public class ConsumerTable extends JTableEx {
      */
     public void deleteSelectedRows() {
         int[] selectedRows = getSelectedRows();
-        if (selectedRows.length > 0){
+        if (selectedRows.length > 0) {
             consumerModel.removeRows(selectedRows);
 
             // raise the data table change notification

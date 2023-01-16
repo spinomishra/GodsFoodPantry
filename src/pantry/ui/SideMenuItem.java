@@ -21,7 +21,7 @@ public class SideMenuItem extends JButton {
     /**
      * background color for the menu item
      */
-    private final Color backgroundColor = new Color(16,84,129);
+    private final Color backgroundColor = new Color(16, 84, 129);
     /**
      * Foreground color for the menu item
      */
@@ -29,12 +29,12 @@ public class SideMenuItem extends JButton {
     /**
      * Color when mouse hovers over the menu item
      */
-    private final Color hoverColor = new Color(151,83,74);
+    private final Color hoverColor = new Color(151, 83, 74);
 
     /**
      * Image icon for the menu item
      */
-    private ImageIcon icon ;
+    private ImageIcon icon;
     /**
      * Image to be displayed when mouse hovers over menu item
      */
@@ -46,7 +46,8 @@ public class SideMenuItem extends JButton {
 
     /**
      * Constructor
-     * @param menuText menu Text
+     *
+     * @param menuText    menu Text
      * @param menuImgPath menu Image path
      * @throws Exception
      */
@@ -59,7 +60,7 @@ public class SideMenuItem extends JButton {
         this.setForeground(foregroundColor);
         this.setBackground(backgroundColor);
 
-        if (menuText !=null && !menuText .trim().isEmpty()) {
+        if (menuText != null && !menuText.trim().isEmpty()) {
             //setText(menuText);
             this.setToolTipText(menuText);
         }
@@ -86,6 +87,7 @@ public class SideMenuItem extends JButton {
 
     /**
      * Constructor
+     *
      * @param menuText
      * @param menuImgPath
      * @param actionListener
@@ -97,6 +99,7 @@ public class SideMenuItem extends JButton {
 
     /**
      * Constructor
+     *
      * @param menuText
      * @param actionListener
      */
@@ -107,14 +110,15 @@ public class SideMenuItem extends JButton {
 
     /**
      * sets image for the menu Icon
+     *
      * @param imagePath path of the image
      * @throws FileNotFoundException
      */
     public void setIconImage(String imagePath) throws FileNotFoundException {
-        Dimension d = this.getPreferredSize() ;
-        if (imagePath!=null && !imagePath.trim().isEmpty()) {
+        Dimension d = this.getPreferredSize();
+        if (imagePath != null && !imagePath.trim().isEmpty()) {
             icon = new ImageIcon(((new ImageIcon(getClass().getResource(imagePath))).getImage()).getScaledInstance(
-                    d.height-2, d.height-2, java.awt.Image.SCALE_SMOOTH)) ;
+                    d.height - 2, d.height - 2, java.awt.Image.SCALE_SMOOTH));
             setIcon(icon);
 
             icon_hover = new ImageIcon(((new ImageIcon(getClass().getResource(imagePath))).getImage()).getScaledInstance(
@@ -130,24 +134,25 @@ public class SideMenuItem extends JButton {
 
     /**
      * Set icons for normal, hover and pressed states
+     *
      * @param imgNormal  Normal Image
-     * @param imgHover  Hover Image
+     * @param imgHover   Hover Image
      * @param imgPressed Menu item pressed image
      * @return the menu item object
      * @throws FileNotFoundException
      */
     public SideMenuItem setIcons(String imgNormal, String imgHover, String imgPressed) throws FileNotFoundException {
-        if (imgNormal!=null && !imgNormal.trim().isEmpty()) {
+        if (imgNormal != null && !imgNormal.trim().isEmpty()) {
             icon = new ImageIcon(((new ImageIcon(getClass().getResource(imgNormal))).getImage()).getScaledInstance(
                     MENUITEM_HEIGHT - 2, MENUITEM_HEIGHT - 2, java.awt.Image.SCALE_SMOOTH));
         }
 
-        if (imgHover!=null && !imgHover.trim().isEmpty()) {
+        if (imgHover != null && !imgHover.trim().isEmpty()) {
             icon_hover = new ImageIcon(((new ImageIcon(getClass().getResource(imgHover))).getImage()).getScaledInstance(
                     MENUITEM_HEIGHT - 2, MENUITEM_HEIGHT - 2, java.awt.Image.SCALE_SMOOTH));
         }
 
-        if (imgPressed!=null && !imgPressed.trim().isEmpty()) {
+        if (imgPressed != null && !imgPressed.trim().isEmpty()) {
             icon_pressed = new ImageIcon(((new ImageIcon(getClass().getResource(imgPressed))).getImage()).getScaledInstance(
                     MENUITEM_HEIGHT - 2, MENUITEM_HEIGHT - 2, java.awt.Image.SCALE_SMOOTH));
         }
@@ -169,7 +174,7 @@ public class SideMenuItem extends JButton {
     /**
      * Mouse event listener
      */
-    void setMouseListener(){
+    void setMouseListener() {
         addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 // enables to set the background color for the button. If set to false, the background color doesn't take effect

@@ -25,17 +25,19 @@ public class Tile extends JButton {
 
     /**
      * Constructor
-     * @param title Tile's title
+     *
+     * @param title      Tile's title
      * @param background Background color or image
      */
     public Tile(String title, Color textColor, Object background) {
-        this(title, new Font("Serif", Font.BOLD|Font.ITALIC, 54), textColor, background);
+        this(title, new Font("Serif", Font.BOLD | Font.ITALIC, 54), textColor, background);
     }
 
     /**
      * Construct with option to set title font
-     * @param title  Tile title text
-     * @param titleFont Title font
+     *
+     * @param title      Tile title text
+     * @param titleFont  Title font
      * @param titleColor Title text color
      * @param background Tile's background
      */
@@ -49,14 +51,13 @@ public class Tile extends JButton {
 
         if (background != null) {
             // Color - foreground and background
-            if (background instanceof ImageIcon){
-                ImageIcon icon = (ImageIcon)background;
+            if (background instanceof ImageIcon) {
+                ImageIcon icon = (ImageIcon) background;
                 this.setIcon(icon);
             }
 
             setBackground(background instanceof Color ? (Color) background : new Color(DefaultColor));
-        }
-        else
+        } else
             setBackground(new Color(DefaultColor));
 
         if (titleColor != null)
@@ -72,21 +73,21 @@ public class Tile extends JButton {
 
         // mouse listener
         this.addMouseListener(new MouseAdapter() {
-            public void mouseEntered(MouseEvent evt)
-            {
+            public void mouseEntered(MouseEvent evt) {
 
                 setBackground(new Color(MouseHoverColor));
             }
-            public void mouseExited(MouseEvent evt)
-            {
-                setBackground( background instanceof Color ? (Color) background : new Color(DefaultColor));
+
+            public void mouseExited(MouseEvent evt) {
+                setBackground(background instanceof Color ? (Color) background : new Color(DefaultColor));
             }
 
-            public void mousePressed(MouseEvent e){
+            public void mousePressed(MouseEvent e) {
                 setBackground(new Color(MouseHoverColor).brighter());
             }
-            public void mouseReleased(MouseEvent e){
-                setBackground( background instanceof Color ? (Color) background : new Color(DefaultColor));
+
+            public void mouseReleased(MouseEvent e) {
+                setBackground(background instanceof Color ? (Color) background : new Color(DefaultColor));
             }
         });
     }

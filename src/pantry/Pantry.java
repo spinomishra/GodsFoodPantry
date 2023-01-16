@@ -25,7 +25,7 @@ public class Pantry {
     /**
      * Constructor
      */
-    public Pantry() {
+    private Pantry() {
         pantryName = StringHelper.Empty;
     }
 

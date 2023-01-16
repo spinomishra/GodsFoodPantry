@@ -9,7 +9,7 @@ import java.awt.event.*;
 
 /**
  * This application works in 3 different modes
- * 1. Privileged Management\
+ * 1. Privileged Management
  * 2. Volunteer checkin/checkout
  * 3. Food Distribution record keeping
  * This class presents users an opportunity to choose one of the modes for application

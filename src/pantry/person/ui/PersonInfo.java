@@ -280,7 +280,6 @@ public class PersonInfo extends JDialog implements ActionListener, DocumentListe
             contentPanel.add(label);
 
             MaskFormatter fmt = PhoneHelper.getFormatterMask();
-
             contactTextBox = new JFormattedTextField(fmt);
             contactTextBox.setColumns(12);
             contactTextBox.addActionListener(this);

@@ -159,8 +159,10 @@ public abstract class Person implements Serializable {
      */
     public void setDateOfBirth(String dobStr, DateTimeFormatter formatter) {
         try {
-            LocalDate date = LocalDate.parse(dobStr, formatter);
-            DOB = Date.from(date.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+            if (!StringHelper.isNullOrEmpty(dobStr)) {
+                LocalDate date = LocalDate.parse(dobStr, formatter);
+                DOB = Date.from(date.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+            }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "Pantryware - Exception", JOptionPane.ERROR_MESSAGE);
         }

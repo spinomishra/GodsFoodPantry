@@ -12,6 +12,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 
+/**
+ * Class to manage custom data model for the volunteer table.
+ */
 public class VolunteerTableModel extends RowTableModel<Volunteer> {
     /**
      * Volunteer table columns

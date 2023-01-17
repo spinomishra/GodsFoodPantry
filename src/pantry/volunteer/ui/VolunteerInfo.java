@@ -16,7 +16,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 /**
- * Class represents Volunteer information
+ * Class represents UI to capture Volunteer information
  */
 public class VolunteerInfo extends PersonInfo {
     /**

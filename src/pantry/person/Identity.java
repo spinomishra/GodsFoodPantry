@@ -27,17 +27,16 @@ public class Identity implements Serializable {
      * Identity number
      */
     public String Number;
-    /**
-     * Date of Birth
-     */
-    //public String DOB ;
+
     /**
      * Date when ID was issued
      */
     public String IssuedOn;
+
     /**
      * Dare when ID will expiry
      */
+
     public String ExpiresOn;
     /**
      * State that issues ID

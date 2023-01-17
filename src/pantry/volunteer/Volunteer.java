@@ -8,6 +8,9 @@ import pantry.volunteer.ui.VolunteerInfo;
 import java.util.ArrayList;
 import java.util.ListIterator;
 
+/**
+ * Volunteer class represents information about the people who volunteer to support pantry or are enforced by law agencies
+ */
 public class Volunteer extends Person {
     /**
      * Version number for serialization purposes

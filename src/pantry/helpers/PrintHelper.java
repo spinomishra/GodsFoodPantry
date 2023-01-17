@@ -98,7 +98,6 @@ public class PrintHelper {
      * @param parentWindow Parent Window
      * @param table        source JTable
      * @param headerFormat Print header
-     * @param footerFormat Print footer
      * @return true if successfully printed, else false
      */
     public static boolean Print(Window parentWindow, JTable table, String headerFormat) {

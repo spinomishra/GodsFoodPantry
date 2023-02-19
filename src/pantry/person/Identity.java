@@ -42,4 +42,9 @@ public class Identity implements Serializable {
      * State that issues ID
      */
     public String IssuedByState;
+
+    /**
+     * Race
+     */
+    public int Race;
 }

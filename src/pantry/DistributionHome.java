@@ -405,7 +405,7 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
     }
 
     /**
-     * Helper method to construct image icon using the given image path
+     * Helper methoe d to construct image icon using thgiven image path
      *
      * @param imagePath The image path
      * @param w         image icon width

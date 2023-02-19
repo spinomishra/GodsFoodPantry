@@ -59,14 +59,16 @@ public enum State {
 
     /**
      * Constructor
+     *
      * @param state State's string
      */
-    private State(String state) {
+    State(String state) {
         this.state = state;
     }
 
     /**
      * Converting the enum to string
+     *
      * @return String for the enum
      */
     @Override

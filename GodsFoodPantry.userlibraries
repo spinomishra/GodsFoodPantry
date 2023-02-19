@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eclipse-userlibraries>
+  <library name="SDK">
+    <archive path="C:/Program Files/IntegriSign Desktop/SDKs/Capture SDK (Java)/SDK" />
+    <archive path="C:/Program Files/IntegriSign Desktop/SDKs/Capture SDK (Java)/SDK/integrisign" />
+    <archive path="C:/Program Files/IntegriSign Desktop/SDKs/Capture SDK (Java)/SDK/integrisign/desktop" />
+  </library>
+  <library name="jasperreports">
+    <archive path="C:/Development/jasperreports/jasperreports-6.20.0.jar" />
+  </library>
+</eclipse-userlibraries>
+

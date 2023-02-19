@@ -1,21 +1,9 @@
 package pantry.employee.ui;
 
-import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.data.JRMapArrayDataSource;
-import net.sf.jasperreports.engine.design.JasperDesign;
-import net.sf.jasperreports.engine.xml.JRXmlLoader;
-import pantry.Home;
 import pantry.Pantry;
-import pantry.helpers.PrintHelper;
 import pantry.employee.Employee;
+import pantry.helpers.PrintHelper;
 
-import javax.print.DocPrintJob;
-import javax.print.PrintService;
-import javax.print.event.PrintJobAdapter;
-import javax.print.event.PrintJobEvent;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -27,11 +15,8 @@ import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.print.PrinterException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.text.MessageFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -71,32 +56,32 @@ public class EmployeeManagerCard extends JPanel implements ListSelectionListener
     /**
      * Employee Table control
      */
-    private JTable employeeTable ;
+    private JTable employeeTable;
 
     /**
      * New button control
      */
-    private	JButton newButton;
+    private final JButton newButton;
 
     /**
      * Remove button control
      */
-    private JButton removeButton;
+    private final JButton removeButton;
 
     /**
      * Print button control
      */
-    private JButton printButton;
+    private final JButton printButton;
 
     /**
      * Reference to the employees list
      */
-    private ArrayList<Employee> employees;
+    private final ArrayList<Employee> employees;
 
     /**
      * Parent window object
      */
-    private Window  parentWindow;
+    private final Window parentWindow;
 
     /**
      * Constructor
@@ -114,8 +99,8 @@ public class EmployeeManagerCard extends JPanel implements ListSelectionListener
 
         // Action buttons
         JPanel buttonPane = new JPanel();
-        buttonPane.setLayout(new BoxLayout(buttonPane,BoxLayout.LINE_AXIS));
-        buttonPane.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+        buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.LINE_AXIS));
+        buttonPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
         // "Add New Employee" button
         newButton = new JButton("Add New Employee");
@@ -151,12 +136,13 @@ public class EmployeeManagerCard extends JPanel implements ListSelectionListener
 
     /**
      * Adds a JTable object with a table model
+     *
      * @return
      */
     private JScrollPane CreateTableForData() {
         employeeModel = new EmployeeTableModel();
         if (employees != null) {
-            for (int i=0; i<employees.size(); i++){
+            for (int i = 0; i < employees.size(); i++) {
                 employeeModel.addRow(employees.get(i));
             }
         }
@@ -164,7 +150,7 @@ public class EmployeeManagerCard extends JPanel implements ListSelectionListener
         employeeTable = new JTable(employeeModel) {
             public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
                 Component comp = super.prepareRenderer(renderer, row, column);
-                if(!comp.getBackground().equals(getSelectionBackground())) {
+                if (!comp.getBackground().equals(getSelectionBackground())) {
                     Color c = (row % 2 == 0 ? new Color(210, 231, 255) : Color.WHITE);
                     comp.setBackground(c);
                     c = null;
@@ -172,7 +158,7 @@ public class EmployeeManagerCard extends JPanel implements ListSelectionListener
                 return comp;
             }
         };
-        employeeTable.setAutoResizeMode( JTable.AUTO_RESIZE_ALL_COLUMNS);
+        employeeTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         employeeTable.setSelectionBackground(new Color(110, 181, 155));
         employeeTable.setSelectionForeground(new Color(255, 255, 255));
         employeeTableListModel = employeeTable.getSelectionModel();
@@ -180,15 +166,25 @@ public class EmployeeManagerCard extends JPanel implements ListSelectionListener
         employeeTable.setSelectionModel(employeeTableListModel);
 
         employeeTable.setRowHeight(40);
-        int nCols =  employeeTable.getColumnModel().getColumnCount();
+        int nCols = employeeTable.getColumnModel().getColumnCount();
         for (int i = 0; i < nCols; i++) {
             var column = employeeTable.getColumnModel().getColumn(i);
             switch (i) {
-                case 0: column.setPreferredWidth(150); break ;
-                case 1: column.setPreferredWidth(80); break ;
-                case 2: column.setPreferredWidth(100); break ;
-                case 3: column.setPreferredWidth(100); break ;
-                case 4: column.setPreferredWidth(300); break ;
+                case 0:
+                    column.setPreferredWidth(150);
+                    break;
+                case 1:
+                    column.setPreferredWidth(80);
+                    break;
+                case 2:
+                    column.setPreferredWidth(100);
+                    break;
+                case 3:
+                    column.setPreferredWidth(100);
+                    break;
+                case 4:
+                    column.setPreferredWidth(300);
+                    break;
             }
         }
 
@@ -200,11 +196,10 @@ public class EmployeeManagerCard extends JPanel implements ListSelectionListener
     }
 
     /**
-     *
      * @param table
      * @param col
      */
-    void setRoleColumn(JTable table, int col){
+    void setRoleColumn(JTable table, int col) {
         TableColumn roleColumn = table.getColumnModel().getColumn(col);
 
         List<Employee.EmployeeRole> roleList = Arrays.asList(Employee.EmployeeRole.values());
@@ -223,27 +218,23 @@ public class EmployeeManagerCard extends JPanel implements ListSelectionListener
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getActionCommand() == addNew)
-        {
+        if (e.getActionCommand() == addNew) {
             // New Employee button has been clicked
             // prompt to acquire new employee information
             Employee newPerson = EmployeeInfo.createAndShowGUI(this.parentWindow, "New Employee");
-            if (newPerson != null)
-            {
+            if (newPerson != null) {
                 // add to employees list
-                employees.add(newPerson) ;
+                employees.add(newPerson);
 
                 // add to employee table
                 employeeModel.addRow(newPerson);
             }
-        }
-        else if (e.getActionCommand() == removeLabel)
-        {
+        } else if (e.getActionCommand() == removeLabel) {
             //This method can be called only if
             //there's a valid selection
             //so go ahead and remove whatever's selected.
             int[] selectedRowIndex = employeeTable.getSelectedRows();
-            if (selectedRowIndex.length != 0){
+            if (selectedRowIndex.length != 0) {
                 for (int idx : selectedRowIndex) {
                     Employee emp = employeeModel.getRow(idx);
                     if (emp != null)
@@ -256,15 +247,15 @@ public class EmployeeManagerCard extends JPanel implements ListSelectionListener
             if (size == 0) { //Nobody's left, disable firing.
                 removeButton.setEnabled(false);
             }
-        }
-        else if (e.getActionCommand() == printLabel){
-            PrintHelper.Print(this.parentWindow, employeeTable, Home.getPantryName() + " - Employees");
+        } else if (e.getActionCommand() == printLabel) {
+            PrintHelper.Print(this.parentWindow, employeeTable, " - Employees");
         }
     }
 
     /**
      * {@inheritDoc}
      * When selection changes, enable button to remove employees data from records
+     *
      * @param e list selection change event
      */
     public void valueChanged(ListSelectionEvent e) {
@@ -277,7 +268,7 @@ public class EmployeeManagerCard extends JPanel implements ListSelectionListener
 
     /**
      * {@inheritDoc}
-     *
+     * <p>
      * This fine grain notification tells listeners the exact range
      * of cells, rows, or columns that changed.
      *
@@ -286,14 +277,13 @@ public class EmployeeManagerCard extends JPanel implements ListSelectionListener
      */
     @Override
     public void tableChanged(TableModelEvent e) {
-        if (e.getSource() == employeeTableListModel){
+        if (e.getSource() == employeeTableListModel) {
             int firstRow = e.getFirstRow();
             int lastRow = e.getLastRow();
             int index = e.getColumn();
 
-            switch (e.getType()){
-                case TableModelEvent.UPDATE:
-                    if (firstRow == TableModelEvent.HEADER_ROW) {
+            if (e.getType() == TableModelEvent.UPDATE) {
+                if (firstRow == TableModelEvent.HEADER_ROW) {
                     if (index == TableModelEvent.ALL_COLUMNS) {
                         System.out.println("A column was added");
                     } else {
@@ -302,13 +292,12 @@ public class EmployeeManagerCard extends JPanel implements ListSelectionListener
                 } else {
                     for (int i = firstRow; i <= lastRow; i++) {
                         if (index == TableModelEvent.ALL_COLUMNS) {
-                            System.out.println("ROW: "+ i + ": All columns have changed");
+                            System.out.println("ROW: " + i + ": All columns have changed");
                         } else {
                             System.out.println(index);
                         }
                     }
                 }
-                break;
             }
         }
     }

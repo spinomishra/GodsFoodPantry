@@ -1,0 +1,15 @@
+pantry
+pantry.auth
+pantry.data
+pantry.dataprotection
+pantry.distribution
+pantry.distribution.ui
+pantry.employee
+pantry.employee.ui
+pantry.helpers
+pantry.interfaces
+pantry.person
+pantry.person.ui
+pantry.ui
+pantry.volunteer
+pantry.volunteer.ui

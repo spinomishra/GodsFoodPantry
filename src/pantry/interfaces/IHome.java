@@ -12,5 +12,5 @@ public interface IHome {
     /**
      * Home page processor
      */
-    void Run() ;
+    void Run();
 }

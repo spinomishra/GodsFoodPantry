@@ -15,44 +15,44 @@ import java.util.Properties;
  * This singleton class controls the main dashboard of the application
  */
 public abstract class Home {
-    private static String pantryName ;
-
     /**
      * entry method for application
+     *
      * @param args - command line arguments
      *             -mmode=volunteer | manage
      */
     public static void main(String[] args) {
+        Pantry pantry = Pantry.getInstance();
+
         /*
             Load properties from config.properties
             e.g. pantry title
          */
-        pantryName = "";
-        boolean rememberMe=false;
+        boolean rememberMe = false;
         String mode = System.getProperty("mode");
 
-        Properties prop = LoadConfiguration() ;
+        Properties prop = LoadConfiguration();
         if (prop != null) {
-            pantryName = prop.getProperty("PANTRY_NAME");
+            pantry.setPantryName(prop.getProperty("PANTRY_NAME"));
             mode = prop.getProperty("EXECUTION_MODE");
             var tempStr = prop.getProperty("REMEMBER_ME");
-            if (!StringHelper.isNullOrEmpty(tempStr)){
-                rememberMe = (Integer.parseInt(tempStr) == 1) ? true : false;
+            if (!StringHelper.isNullOrEmpty(tempStr)) {
+                rememberMe = Integer.parseInt(tempStr) == 1;
             }
         }
 
         // command line arguments override properties defined in the config.properties
-        boolean overrideProperties=false ;
-        if (args != null){
+        boolean overrideProperties = false;
+        if (args != null) {
             String nextOptionValue = "";
-            for (String option:args){
+            for (String option : args) {
                 switch (option) {
                     case "-m":
-                        nextOptionValue="mode";
+                        nextOptionValue = "mode";
                         break;
 
                     case "-p":
-                        nextOptionValue="title";
+                        nextOptionValue = "title";
                         break;
 
                     default:
@@ -60,20 +60,19 @@ public abstract class Home {
                             continue;
 
                         if (nextOptionValue == "title") {
-                            pantryName = option;
-                        }
-                        else if (nextOptionValue == "mode") {
+                            pantry.setPantryName(option);
+                        } else if (nextOptionValue == "mode") {
                             mode = option;
-                            overrideProperties=true;
+                            overrideProperties = true;
                         }
-                        nextOptionValue=StringHelper.Empty;
+                        nextOptionValue = StringHelper.Empty;
                         break;
                 }
             }
         }
 
         IHome home = null;
-        if (!overrideProperties && (StringHelper.isNullOrEmpty(mode) || rememberMe == false)) {
+        if (!overrideProperties && (StringHelper.isNullOrEmpty(mode) || !rememberMe)) {
             ExecutionModeSelection modeSelector = new ExecutionModeSelection(mode, "Pantryware");
             modeSelector.setVisible(true);
             mode = modeSelector.executionMode;
@@ -96,19 +95,19 @@ public abstract class Home {
         }
 
 
-        switch (mode){
+        switch (mode) {
             case "manage": {
-                home = new ManagementHome(pantryName);
+                home = new ManagementHome();
             }
             break;
 
             case "volunteer": {
-                home = new VolunteerHome(pantryName);
+                home = new VolunteerHome();
             }
             break;
 
             case "distribution": {
-                home = new DistributionHome(pantryName);
+                home = new DistributionHome();
             }
             break;
 
@@ -117,8 +116,9 @@ public abstract class Home {
                 break;
         }
 
+        // Open pantry now... this will load pantry data
         Pantry.getInstance().Open();
-        home.ShowHome() ;
+        home.ShowHome();
 
         /* Create and display the form */
         IHome finalHome = home;
@@ -130,24 +130,19 @@ public abstract class Home {
     }
 
     /**
-     * Gets pantry name
-     */
-    public static String getPantryName() {
-        return pantryName;
-    }
-
-    /**
      * Gets default tile for various application windows
      */
-    public static String getDefaultPageTitle(){
-        return (StringHelper.isNullOrEmpty(pantryName)) ? "PantryWare" : "PantryWare - " + getPantryName();
+    public static String getDefaultPageTitle() {
+        String pantryName = Pantry.getInstance().getPantryName();
+        return (StringHelper.isNullOrEmpty(pantryName)) ? "PantryWare" : "PantryWare - " + pantryName;
     }
 
     /**
      * Load configuration properties from file config.properties
+     *
      * @return Properties object
      */
-    private static Properties LoadConfiguration(){
+    private static Properties LoadConfiguration() {
         String currentDirectory = System.getProperty("user.dir");
         Properties prop = null;
         try {
@@ -158,9 +153,8 @@ public abstract class Home {
             propsInput.close();
         } catch (IOException e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Config.properties couldn't be found at "+currentDirectory);
-        }
-        catch (Exception e){
+            JOptionPane.showMessageDialog(null, "Config.properties couldn't be found at " + currentDirectory);
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
 
@@ -169,9 +163,10 @@ public abstract class Home {
 
     /**
      * Save application configuration properties
+     *
      * @param prop Configuration properties
      */
-    private static void SaveConfiguration(Properties prop){
+    private static void SaveConfiguration(Properties prop) {
         try {
             String configFilePath = "config.properties";
             var propsOutput = new FileOutputStream(configFilePath);

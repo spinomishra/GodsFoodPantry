@@ -22,36 +22,42 @@ public class PantryData implements IPantryData {
     /**
      * Pantry data filename - pantry.rec
      */
-    private String recordsFileName = "pantry.rec";
+    private final String recordsFileName = "pantry.rec";
 
     /**
      * Employees record list
      */
-    private ArrayList<Employee> employees ;
+    private ArrayList<Employee> employees;
 
     /**
      * Volunteers record list
      */
-    private ArrayList<Volunteer> volunteers ;
+    private ArrayList<Volunteer> volunteers;
 
     /**
      * Constructor
      */
-    public PantryData(){
+    public PantryData() {
         Reset();
     }
 
     /**
      * Gets Employees list
+     *
      * @return employee list
      */
-    public ArrayList<Employee> get_Employees() {return employees;}
+    public ArrayList<Employee> get_Employees() {
+        return employees;
+    }
 
     /**
      * Gets volunteers list
+     *
      * @return volunteer list
      */
-    public ArrayList<Volunteer> get_Volunteers() {return volunteers;}
+    public ArrayList<Volunteer> get_Volunteers() {
+        return volunteers;
+    }
 
     /**
      * Load data from pantry records file
@@ -71,16 +77,17 @@ public class PantryData implements IPantryData {
 
     /**
      * Search Volunteers in the volunteer record set
-     * @param name Volunteer name to be searched
+     *
+     * @param name     Volunteer name to be searched
      * @param phone_no Volunteer phone number
      * @return list of volunteers (return empty list if no match found)
      */
-    public ArrayList<Volunteer> searchVolunteers(String name, String phone_no){
+    public ArrayList<Volunteer> searchVolunteers(String name, String phone_no) {
         ArrayList<Volunteer> matchList = new ArrayList<Volunteer>();
         boolean usePhoneNumberToo = !StringHelper.isNullOrEmpty(phone_no);
-        for (Volunteer v:volunteers) {
+        for (Volunteer v : volunteers) {
             if (v.getName().compareToIgnoreCase(name) == 0 &&
-                    (usePhoneNumberToo ? v.getContactNumber().compareToIgnoreCase(phone_no) == 0 : true)){
+                    (!usePhoneNumberToo || v.getContactNumber().compareToIgnoreCase(phone_no) == 0)) {
                 matchList.add(v);
             }
         }
@@ -95,18 +102,19 @@ public class PantryData implements IPantryData {
      */
     /**
      * Search Volunteers in the volunteer record set that volunteered in that last x days
+     *
      * @param xDays Last n number of days
      * @return List of volunteers that volunteered in last xDays. The list could be empty in case no one volunteered in last x days.
      */
-    public ArrayList<Volunteer> searchVolunteers(int xDays){
+    public ArrayList<Volunteer> searchVolunteers(int xDays) {
         LocalDateTime todayDT = LocalDateTime.now();
-        Date lastDay = DateHelper.fromLocalDateTime(todayDT.minusDays(xDays+1));
+        Date lastDay = DateHelper.fromLocalDateTime(todayDT.minusDays(xDays + 1));
         ArrayList<Volunteer> matchList = new ArrayList<Volunteer>();
-        for (Volunteer v:volunteers) {
+        for (Volunteer v : volunteers) {
             var activityHistory = v.getActivityHistory();
-            if (activityHistory != null){
-                for (ActivityInfo activityInfo : activityHistory){
-                    if (activityInfo.getStartTime() != null){
+            if (activityHistory != null) {
+                for (ActivityInfo activityInfo : activityHistory) {
+                    if (activityInfo.getStartTime() != null) {
                         Date checkinDate = DateHelper.fromLocalDateTime(activityInfo.getStartTime());
                         if (checkinDate.after(lastDay))
                             matchList.add(v);
@@ -120,20 +128,22 @@ public class PantryData implements IPantryData {
 
     /**
      * Read from input stream
+     *
      * @param ois ObjectInputStream type
-     * @throws IOException Input output exception
+     * @throws IOException            Input output exception
      * @throws ClassNotFoundException Class not found exception
      */
     public void ReadFrom(ObjectInputStream ois) throws IOException, ClassNotFoundException {
         Objects.requireNonNull(ois);
 
-        Reset() ;
+        Reset();
         volunteers.addAll((ArrayList<Volunteer>) ois.readObject());
         employees.addAll((ArrayList<Employee>) ois.readObject());
     }
 
     /**
      * Write to output stream
+     *
      * @param oos output stream
      * @throws IOException input output exception
      */
@@ -147,14 +157,14 @@ public class PantryData implements IPantryData {
     /**
      * Reset the data
      */
-    private void Reset(){
+    private void Reset() {
         if (employees == null)
             employees = new ArrayList<Employee>();
         else
             employees.clear();
 
         if (volunteers == null)
-            volunteers  = new ArrayList<Volunteer>();
+            volunteers = new ArrayList<Volunteer>();
         else
             volunteers.clear();
     }

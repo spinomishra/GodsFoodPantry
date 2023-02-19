@@ -9,9 +9,10 @@ import javax.swing.*;
 public interface ITableSelectionChangeListener {
     /**
      * Selection has changed notification
+     *
      * @param table Table raising the event
-     * @param row selected row
-     * @param col selected col
+     * @param row   selected row
+     * @param col   selected col
      */
-    public void SelectionChanged(JTable table, int row, int col);
+    void SelectionChanged(JTable table, int row, int col);
 }

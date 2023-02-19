@@ -11,6 +11,7 @@ public class StringHelper {
 
     /**
      * Is String null or empty?
+     *
      * @param str input string
      * @return true if input string is null or empty; otherwise false
      */
@@ -18,9 +19,6 @@ public class StringHelper {
         if (str == null)
             return true;
 
-        if (str.trim().isEmpty())
-            return true;
-
-        return false;
+        return str.trim().isEmpty();
     }
 }

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package pantry.employee.ui;
 
@@ -18,151 +18,148 @@ import java.text.ParseException;
  * Class to display UI to collect employee information
  */
 public class EmployeeInfo extends PersonInfo {
-	/**
-	 * Roles list combo box
-	 */
-	private JComboBox<Employee.EmployeeRole> roleList;
-	/**
-	 * Employee Role
-	 */
+    /**
+     * Roles list combo box
+     */
+    private JComboBox<Employee.EmployeeRole> roleList;
+    /**
+     * Employee Role
+     */
     private Employee.EmployeeRole Role;
-	/**
-	 * SSN text box control
-	 */
-	JFormattedTextField ssnField;
+    /**
+     * SSN text box control
+     */
+    JFormattedTextField ssnField;
 
-	/**
-	 * Employment Start date
-	 */
-	JFormattedTextField empStart;
+    /**
+     * Employment Start date
+     */
+    JFormattedTextField empStart;
 
-	/**
-	 * Constructor
-	 * @param frame - parent window
-	 * @param title - title
-	 */
-	public EmployeeInfo(Window frame, String title)
-	{	
-		super(frame, title) ;
-	}
-	
-	/**
-	 * add controls to top panel of the UI
-	 */
-	@Override
-	protected void addTabs(JTabbedPane tabbedPane)  {
-		super.addTabs(tabbedPane);
+    /**
+     * Constructor
+     * @param frame - parent window
+     * @param title - title
+     */
+    public EmployeeInfo(Window frame, String title) {
+        super(frame, title);
+    }
 
-		JPanel containerPanel = createNewTab(tabbedPane, "Employment Info", null);
+    /**
+     * add controls to top panel of the UI
+     */
+    @Override
+    protected void addTabs(JTabbedPane tabbedPane) {
+        super.addTabs(tabbedPane);
 
-		JPanel panel ;
+        JPanel containerPanel = createNewTab(tabbedPane, "Employment Info", null);
 
-		{
-			{
-				panel = addNewItemPanel("Social Security Number");
-				try {
-					MaskFormatter fmt = new MaskFormatter("###-##-####");
-					ssnField = new JFormattedTextField(fmt);
-					ssnField.setColumns(12);
-					panel.add(ssnField, BorderLayout.CENTER);
-				} catch (ParseException e) {
-					// exception handler
-				}
-				containerPanel.add(panel);
-			}
+        JPanel panel;
 
-			{
-				panel = addNewItemPanel("Employment Start (mm/dd/yyyy)");
-				try {
-					MaskFormatter dateFmt = new MaskFormatter("##/##/####");
-					empStart = new JFormattedTextField(dateFmt);
-					empStart.setColumns(11);
-					panel.add(empStart, BorderLayout.CENTER);
-				} catch (ParseException e) {
-					// exception handler
-				}
-				containerPanel.add(panel);
-			}
+        {
+            {
+                panel = addNewItemPanel("Social Security Number");
+                try {
+                    MaskFormatter fmt = new MaskFormatter("###-##-####");
+                    ssnField = new JFormattedTextField(fmt);
+                    ssnField.setColumns(12);
+                    panel.add(ssnField, BorderLayout.CENTER);
+                } catch (ParseException e) {
+                    // exception handler
+                }
+                containerPanel.add(panel);
+            }
 
-			{
-				panel = addNewItemPanel("Employee Role");
+            {
+                panel = addNewItemPanel("Employment Start (mm/dd/yyyy)");
+                try {
+                    MaskFormatter dateFmt = new MaskFormatter("##/##/####");
+                    empStart = new JFormattedTextField(dateFmt);
+                    empStart.setColumns(11);
+                    panel.add(empStart, BorderLayout.CENTER);
+                } catch (ParseException e) {
+                    // exception handler
+                }
+                containerPanel.add(panel);
+            }
 
-				// Role list combo box model
-				DefaultComboBoxModel<Employee.EmployeeRole> roleListModel = new DefaultComboBoxModel<>();
-				for (Employee.EmployeeRole r : Employee.EmployeeRole.values())
-					roleListModel.addElement(r);
+            {
+                panel = addNewItemPanel("Employee Role");
 
-				//Create the list box to show the volunteers names
-				roleList = new JComboBox<Employee.EmployeeRole>(roleListModel);
+                // Role list combo box model
+                DefaultComboBoxModel<Employee.EmployeeRole> roleListModel = new DefaultComboBoxModel<>();
+                for (Employee.EmployeeRole r : Employee.EmployeeRole.values())
+                    roleListModel.addElement(r);
 
-				// single item can be selected
-				roleList.setActionCommand("roleList");
-				roleList.setSelectedIndex(0);
-				roleList.addActionListener(this);
+                //Create the list box to show the volunteers names
+                roleList = new JComboBox<Employee.EmployeeRole>(roleListModel);
 
-				panel.add(roleList, BorderLayout.CENTER);
-				containerPanel.add(panel);
-			}
+                // single item can be selected
+                roleList.setActionCommand("roleList");
+                roleList.setSelectedIndex(0);
+                roleList.addActionListener(this);
 
-		}
-	}
-	
-	/**
-	 * Get employee role
-	 * @return - employee's role
-	 */
-	public Employee.EmployeeRole getRole() {
-		return Role;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		super.actionPerformed(e);
-		if (e.getActionCommand() == "OK") {
-			Role = roleList.getItemAt(roleList.getSelectedIndex());
-		}
-		else if (e.getActionCommand() == "roleList")
-		{
-			Role = roleList.getItemAt(roleList.getSelectedIndex());
-		}
-	}
+                panel.add(roleList, BorderLayout.CENTER);
+                containerPanel.add(panel);
+            }
 
-	/**
-	 * Create and show the UI for Employee information
-	 * @param frame - parent component
-	 * @param title - title of the dialog box
-	 * @return EmployeeInfo object
-	 */
-	public static Employee createAndShowGUI(Window frame, String title) {
-		EmployeeInfo pInfo = new EmployeeInfo(frame, title);
-      
-		//Display the window.
-		pInfo.pack();
-		pInfo.setVisible(true);
+        }
+    }
 
-		Employee e = null;
-		if (pInfo.option == JOptionPane.OK_OPTION) {
-			e = new Employee(pInfo.personName, pInfo.Role);
+    /**
+     * Get employee role
+     * @return - employee's role
+     */
+    public Employee.EmployeeRole getRole() {
+        return Role;
+    }
 
-			String ssn = pInfo.ssnField.getText();
-			ssn = ssn.replace("-", StringHelper.Empty);
-			ssn = ssn.trim();
-			if (StringHelper.isNullOrEmpty(ssn))
-				ssn = StringHelper.Empty;
-			else {
-				ssn = pInfo.ssnField.getText();
-				String ssnHash = Hash.Sha2Hash(ssn.toCharArray());
-				e.setSSN(ssnHash);
-			}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        super.actionPerformed(e);
+        if (e.getActionCommand() == "OK") {
+            Role = roleList.getItemAt(roleList.getSelectedIndex());
+        } else if (e.getActionCommand() == "roleList") {
+            Role = roleList.getItemAt(roleList.getSelectedIndex());
+        }
+    }
 
-			e.setAddress(pInfo.personAddress);
-			e.setContactPhone(pInfo.personContact);
-		}
+    /**
+     * Create and show the UI for Employee information
+     * @param frame - parent component
+     * @param title - title of the dialog box
+     * @return EmployeeInfo object
+     */
+    public static Employee createAndShowGUI(Window frame, String title) {
+        EmployeeInfo pInfo = new EmployeeInfo(frame, title);
 
-		pInfo.dispose();
-		return e;
-	}
+        //Display the window.
+        pInfo.pack();
+        pInfo.setVisible(true);
+
+        Employee e = null;
+        if (pInfo.option == JOptionPane.OK_OPTION) {
+            e = new Employee(pInfo.personName, pInfo.Role);
+
+            String ssn = pInfo.ssnField.getText();
+            ssn = ssn.replace("-", StringHelper.Empty);
+            ssn = ssn.trim();
+            if (StringHelper.isNullOrEmpty(ssn))
+                ssn = StringHelper.Empty;
+            else {
+                ssn = pInfo.ssnField.getText();
+                String ssnHash = Hash.Sha2Hash(ssn.toCharArray());
+                e.setSSN(ssnHash);
+            }
+
+            e.setAddress(pInfo.personAddress);
+            e.setContactPhone(pInfo.personContact);
+        }
+
+        pInfo.dispose();
+        return e;
+    }
 }

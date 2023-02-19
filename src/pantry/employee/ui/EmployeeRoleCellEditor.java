@@ -2,16 +2,12 @@ package pantry.employee.ui;
 
 import pantry.employee.Employee;
 
-import java.awt.Component;
+import javax.swing.*;
+import javax.swing.table.TableCellEditor;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
-
-import javax.management.relation.Role;
-import javax.swing.AbstractCellEditor;
-import javax.swing.JComboBox;
-import javax.swing.JTable;
-import javax.swing.table.TableCellEditor;
 
 /**
  * A custom editor for cells in the Role column.
@@ -26,10 +22,11 @@ public class EmployeeRoleCellEditor extends AbstractCellEditor
     /**
      * List of possible roles for Employee
      */
-    private List<Employee.EmployeeRole> listRole;
+    private final List<Employee.EmployeeRole> listRole;
 
     /**
      * Constructs cell editor object for employee role
+     *
      * @param listRole
      */
     public EmployeeRoleCellEditor(List<Employee.EmployeeRole> listRole) {
@@ -38,6 +35,7 @@ public class EmployeeRoleCellEditor extends AbstractCellEditor
 
     /**
      * {@inheritDoc}
+     *
      * @return Empolyee role
      */
     @Override
@@ -47,11 +45,12 @@ public class EmployeeRoleCellEditor extends AbstractCellEditor
 
     /**
      * {@inheritDoc}
-     * @param table JTable instance
-     * @param value Employee role object
+     *
+     * @param table      JTable instance
+     * @param value      Employee role object
      * @param isSelected is object select
-     * @param row row number in table
-     * @param column column number in the row
+     * @param row        row number in table
+     * @param column     column number in the row
      * @return ComboBox component
      */
     @Override
@@ -81,6 +80,7 @@ public class EmployeeRoleCellEditor extends AbstractCellEditor
 
     /**
      * {@inheritDoc}
+     *
      * @param event action event
      */
     @Override

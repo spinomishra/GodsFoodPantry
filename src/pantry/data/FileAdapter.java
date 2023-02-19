@@ -13,7 +13,7 @@ public class FileAdapter implements IDataConnector {
     /**
      * Filename
      */
-    private String fileName ;
+    private final String fileName;
 
     /**
      * Input stream
@@ -32,10 +32,11 @@ public class FileAdapter implements IDataConnector {
 
     /**
      * Constructor
-     * @param fn filename
+     *
+     * @param fn   filename
      * @param data pantry data
      */
-    public FileAdapter(String fn, IPantryData data){
+    public FileAdapter(String fn, IPantryData data) {
         Objects.requireNonNull(fn, "Requires filename");
         Objects.requireNonNull(data, "Requires pantry data object");
 
@@ -48,8 +49,7 @@ public class FileAdapter implements IDataConnector {
      */
     @Override
     public void Load() {
-        try
-        {
+        try {
             fis = new FileInputStream(fileName);
             ois = new ObjectInputStream(fis);
 
@@ -59,11 +59,9 @@ public class FileAdapter implements IDataConnector {
 
             ois.close();
             fis.close();
-        }
-        catch (FileNotFoundException fife){
+        } catch (FileNotFoundException fife) {
             System.out.println("No records exist");
-        }
-        catch (IOException ioe){
+        } catch (IOException ioe) {
             ioe.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -75,8 +73,7 @@ public class FileAdapter implements IDataConnector {
      */
     @Override
     public void Save() {
-        try
-        {
+        try {
             FileOutputStream fos = new FileOutputStream(fileName);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
 
@@ -84,9 +81,7 @@ public class FileAdapter implements IDataConnector {
 
             oos.close();
             fos.close();
-        }
-        catch (IOException ioe)
-        {
+        } catch (IOException ioe) {
             ioe.printStackTrace();
         }
     }
@@ -96,6 +91,6 @@ public class FileAdapter implements IDataConnector {
      */
     @Override
     public void Close() {
-        Save() ;
+        Save();
     }
 }

@@ -1,8 +1,11 @@
 package pantry.helpers;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
@@ -12,14 +15,15 @@ import java.util.Date;
  */
 public class DateHelper {
     /**
-     *  The maximum date possible.
+     * The maximum date possible.
      */
     public static Date MAX_DATE = new Date(Long.MAX_VALUE);
 
     /**
      * Checks if two dates are on the same day ignoring time.
-     * @param date1  the first date, not altered, not null
-     * @param date2  the second date, not altered, not null
+     *
+     * @param date1 the first date, not altered, not null
+     * @param date2 the second date, not altered, not null
      * @return true if they represent the same day
      * @throws IllegalArgumentException if either date is <code>null</code>
      */
@@ -37,8 +41,9 @@ public class DateHelper {
 
     /**
      * Checks if two calendars represent the same day ignoring time.
-     * @param cal1  the first calendar, not altered, not null
-     * @param cal2  the second calendar, not altered, not null
+     *
+     * @param cal1 the first calendar, not altered, not null
+     * @param cal2 the second calendar, not altered, not null
      * @return true if they represent the same day
      * @throws IllegalArgumentException if either calendar is <code>null</code>
      */
@@ -53,6 +58,7 @@ public class DateHelper {
 
     /**
      * Checks if a date is today.
+     *
      * @param date the date, not altered, not null.
      * @return true if the date is today.
      * @throws IllegalArgumentException if the date is <code>null</code>
@@ -63,7 +69,8 @@ public class DateHelper {
 
     /**
      * Checks if a calendar date is today.
-     * @param cal  the calendar, not altered, not null
+     *
+     * @param cal the calendar, not altered, not null
      * @return true if cal date is today
      * @throws IllegalArgumentException if the calendar is <code>null</code>
      */
@@ -73,6 +80,7 @@ public class DateHelper {
 
     /**
      * Checks if the first date is before the second date ignoring time.
+     *
      * @param date1 the first date, not altered, not null
      * @param date2 the second date, not altered, not null
      * @return true if the first date day is before the second date day.
@@ -91,6 +99,7 @@ public class DateHelper {
 
     /**
      * Checks if the first calendar date is before the second calendar date ignoring time.
+     *
      * @param cal1 the first calendar, not altered, not null.
      * @param cal2 the second calendar, not altered, not null.
      * @return true if cal1 date is before cal2 date ignoring time.
@@ -109,6 +118,7 @@ public class DateHelper {
 
     /**
      * Checks if the first date is after the second date ignoring time.
+     *
      * @param date1 the first date, not altered, not null
      * @param date2 the second date, not altered, not null
      * @return true if the first date day is after the second date day.
@@ -127,6 +137,7 @@ public class DateHelper {
 
     /**
      * Checks if the first calendar date is after the second calendar date ignoring time.
+     *
      * @param cal1 the first calendar, not altered, not null.
      * @param cal2 the second calendar, not altered, not null.
      * @return true if cal1 date is after cal2 date ignoring time.
@@ -145,6 +156,7 @@ public class DateHelper {
 
     /**
      * Checks if a date is after today and within a number of days in the future.
+     *
      * @param date the date to check, not altered, not null.
      * @param days the number of days.
      * @return true if the date day is after today and within days in the future .
@@ -161,7 +173,8 @@ public class DateHelper {
 
     /**
      * Checks if a calendar date is after today and within a number of days in the future.
-     * @param cal the calendar, not altered, not null
+     *
+     * @param cal  the calendar, not altered, not null
      * @param days the number of days.
      * @return true if the calendar date day is after today and within days in the future .
      * @throws IllegalArgumentException if the calendar is <code>null</code>
@@ -173,15 +186,19 @@ public class DateHelper {
         Calendar today = Calendar.getInstance();
         Calendar future = Calendar.getInstance();
         future.add(Calendar.DAY_OF_YEAR, days);
-        return (isAfterDay(cal, today) && ! isAfterDay(cal, future));
+        return (isAfterDay(cal, today) && !isAfterDay(cal, future));
     }
 
-    /** Returns the given date with the time set to the start of the day. */
+    /**
+     * Returns the given date with the time set to the start of the day.
+     */
     public static Date getStart(Date date) {
         return clearTime(date);
     }
 
-    /** Returns the given date with the time values cleared. */
+    /**
+     * Returns the given date with the time values cleared.
+     */
     public static Date clearTime(Date date) {
         if (date == null) {
             return null;
@@ -197,6 +214,7 @@ public class DateHelper {
 
     /**
      * Determines whether or not a date has any time values.
+     *
      * @param date The date.
      * @return true if the date is not null and any of the date's hour, minute,
      * seconds or millisecond values are greater than zero.
@@ -216,14 +234,12 @@ public class DateHelper {
         if (c.get(Calendar.SECOND) > 0) {
             return true;
         }
-        if (c.get(Calendar.MILLISECOND) > 0) {
-            return true;
-        }
-        return false;
+        return c.get(Calendar.MILLISECOND) > 0;
     }
 
     /**
      * Returns the given date with time set to the end of the day
+     *
      * @param date The date
      * @return The date with time set to the end of the day
      */
@@ -243,6 +259,7 @@ public class DateHelper {
     /**
      * Returns the maximum of two dates. A null date is treated as being less
      * than any non-null date.
+     *
      * @param d1 Input Date1
      * @param d2 Input Date 2
      * @return maximum date
@@ -257,6 +274,7 @@ public class DateHelper {
     /**
      * Returns the minimum of two dates. A null date is treated as being less
      * than any non-null date.
+     *
      * @param d1 Input Date1
      * @param d2 Input Date 2
      * @return minimum date
@@ -270,31 +288,71 @@ public class DateHelper {
 
     /**
      * Converts Date object to LocalDateTime
+     *
      * @param dt The Date
      * @return LocalDateTime object
      */
-    public static LocalDateTime toLocalDateTime(Date dt){
+    public static LocalDateTime toLocalDateTime(Date dt) {
         //for more info - https://stackoverflow.com/questions/19431234/converting-between-java-time-localdatetime-and-java-util-date
         return LocalDateTime.ofInstant(dt.toInstant(), ZoneId.systemDefault());
     }
 
     /**
      * Converts LocalDateTime object to Date object
+     *
      * @param local The LocalDateTime object
      * @return the Date
      */
-    public static Date fromLocalDateTime(LocalDateTime local){
+    public static Date fromLocalDateTime(LocalDateTime local) {
         //for more info - https://stackoverflow.com/questions/19431234/converting-between-java-time-localdatetime-and-java-util-date
         Date dt = Date.from(local.atZone(ZoneId.systemDefault()).toInstant());
         return dt;
     }
 
     /**
+     * Calculate no of years from the specified date
+     *
+     * @param date input date
+     * @return number of years from the input date
+     */
+    public static int YearsFromDate(Date date) {
+        LocalDate today = LocalDate.now();
+        return Period.between(LocalDate.ofInstant(date.toInstant(), ZoneId.systemDefault()), today).getYears();
+    }
+
+    /**
+     * Create java.util.Date object from string format date
+     *
+     * @param dateStr Date as String
+     * @return Date object
+     * @throws ParseException If the String argument passed is not in the format as the pattern "MM/dd/yyyy", then a ParseException will be thrown.
+     */
+    public static Date fromString(String dateStr) throws ParseException {
+        var formatter = getDateFormatter();
+        return formatter.parse(dateStr);
+    }
+
+    /**
      * Gets Date formatter used across Pantryware
+     *
      * @return DateFormat object
      */
-    public static DateFormat getDateFormatter(){
+    public static DateFormat getDateFormatter() {
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
         return dateFormat;
+    }
+
+    /**
+     * Check if input date as string is an empty string
+     *
+     * @param dateStr date as String
+     * @return true if date is empty string else false
+     */
+    public static boolean isEmptyDateString(String dateStr) {
+        String temp = dateStr.replace("/", "");
+        temp = temp.replace(":", "");
+        temp = temp.replace("T", "");
+        temp = temp.trim();
+        return StringHelper.isNullOrEmpty(temp);
     }
 }

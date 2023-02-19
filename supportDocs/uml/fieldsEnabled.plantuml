@@ -1,0 +1,358 @@
+@startuml
+
+!theme plain
+top to bottom direction
+skinparam linetype ortho
+
+enum Activities << enumeration >> {
+  + Food_Serving: 
+  + Stacking: 
+  + Generic: 
+  + Harvesting: 
+  + FoodDelivery: 
+  + FundRaising: 
+  + Packaging: 
+  + Cleaning: 
+}
+class ActivityInfo {
+  - serialVersionUID: long
+  - end_time: LocalDateTime
+  - activity: Activities
+  - start_time: LocalDateTime
+}
+class Consumer {
+  - serialVersionUID: long
+  - signature: String
+  - group: boolean
+  - identityInfo: Identity
+  - signaturePNG: String
+  - groupMember: short
+}
+class ConsumerInfo {
+  + issuedOn: JFormattedTextField
+  - signNow: JButton
+  + idNumber: JTextField
+  + stateBox: JComboBox
+  + groupCheckBox: JCheckBox
+  + deskSign1: DeskSign
+  + idTypeBox: JComboBox
+  + spinner: JSpinner
+  + expiryFld: JFormattedTextField
+}
+class ConsumerTable {
+  - consumerModel: ConsumerTableModel
+  - selectedRowColor: Color
+  - selectionChangeListener: ITableSelectionChangeListener
+  - signControl: JLabel
+  - consumers: ArrayList<Consumer>
+}
+class ConsumerTableModel {
+  - COLUMN_NAMES: String[]
+}
+class DateHelper {
+  + MAX_DATE: Date
+}
+class DistributionHome {
+  - todaysConsumers: ArrayList<Consumer>
+  - oldConsumers: ArrayList<Consumer>
+  ~ comboBox: JComboBox
+  - pantryName: String
+  - consumerTable: ConsumerTable
+  ~ deleteBtn: JButton
+}
+class Employee {
+  - serialVersionUID: long
+  - SSNHash: String
+  - Role: EmployeeRole
+}
+class EmployeeInfo {
+  - Role: EmployeeRole
+  ~ ssnField: JFormattedTextField
+  - roleList: JComboBox<EmployeeRole>
+  ~ empStart: JFormattedTextField
+}
+class EmployeeManagerCard {
+  + Title: String
+  - employees: ArrayList<Employee>
+  - removeLabel: String
+  - parentWindow: Window
+  - addNew: String
+  - printLabel: String
+  - employeeModel: EmployeeTableModel
+  - removeButton: JButton
+  - employeeTableListModel: ListSelectionModel
+  - printButton: JButton
+  - employeeTable: JTable
+  - newButton: JButton
+}
+enum EmployeeRole << enumeration >> {
+  + Cleaner: 
+  + Cook: 
+  + Validator: 
+  + Undecided: 
+  + Assistant: 
+  + Owner: 
+  + Driver: 
+  + Accountant: 
+  + Manager: 
+}
+class EmployeeRoleCellEditor {
+  - role: EmployeeRole
+  - listRole: List<EmployeeRole>
+}
+class EmployeeRoleCellRenderer
+class EmployeeTableModel {
+  - COLUMN_NAMES: String[]
+}
+class ExecutionModeSelection {
+  + rememberMe: boolean
+  + executionMode: String
+}
+class FileAdapter {
+  - fileName: String
+  ~ ois: ObjectInputStream
+  - fis: FileInputStream
+  ~ pantryData: IPantryData
+}
+class Hash
+class Home {
+  - pantryName: String
+}
+enum IDType << enumeration >> {
+  + DriverLicense: 
+  + PassPort: 
+  + StateId: 
+}
+interface IDataConnector << interface >>
+interface IHome << interface >>
+interface IPantryData << interface >>
+interface ITableSelectionChangeListener << interface >>
+class Identity {
+  + Number: String
+  + IdentityType: int
+  + IssuedByState: String
+  + ExpiresOn: String
+  - serialVersionUID: long
+  + IssuedOn: String
+}
+class Login {
+  - password: JPasswordField
+  - reg_password: JPasswordField
+  - regButton: JButton
+  - reg_username: JTextField
+  - authenticated: boolean
+  - conf_password: JPasswordField
+  - REGISTER_CARD: String
+  - cards: JPanel
+  - regLinkButton: JButton
+  - username: JTextField
+  - LOGIN_CARD: String
+  - activePage: String
+  - passwordDB: HashMap<String, String>
+  - modelDialog: JDialog
+  - cardLayout: CardLayout
+  - loginButton: JButton
+}
+class MainPanel {
+  - cards: Map<String, JPanel>
+  - cardLayout: CardLayout
+  - parentWindow: JFrame
+}
+class ManagementHome {
+  ~ jPanel1: JPanel
+  ~ sideMenuPanel: SideMenuPanel
+  ~ mainPanel: MainPanel
+  ~ pantryName: String
+  ~ mainPanelCards: Map<String, JPanel>
+}
+class Pantry {
+  ~ pantryRecords: PantryData
+  ~ instance: Pantry
+}
+class PantryData {
+  - employees: ArrayList<Employee>
+  - recordsFileName: String
+  - volunteers: ArrayList<Volunteer>
+}
+class Person {
+  - Address: String
+  - serialVersionUID: long
+  - Mobile_number: String
+  - fName: String
+  - lName: String
+  - Id: int
+}
+class PersonInfo {
+  # option: int
+  # contactTextBox: JFormattedTextField
+  # cancelButton: JButton
+  # dialogPane: JPanel
+  # okButton: JButton
+  # addressTextBox: JTextArea
+  # personName: String
+  # personContact: String
+  # nameTextBox: JTextField
+  # personAddress: String
+  # tabbedPane: JTabbedPane
+}
+class PhoneHelper
+class PrintHelper
+class RowTableModel<T> {
+  # columnClasses: Class[]
+  # isColumnEditable: Boolean[]
+  # modelData: List<T>
+  # columnNames: List<String>
+  - isModelEditable: boolean
+  - rowClass: Class
+}
+class SideMenuGridLayout
+class SideMenuItem {
+  + MENUITEM_WIDTH: int
+  - icon_hover: ImageIcon
+  - icon_pressed: ImageIcon
+  - foregroundColor: Color
+  - hoverColor: Color
+  + MENUITEM_HEIGHT: int
+  - backgroundColor: Color
+  - icon: ImageIcon
+}
+class SideMenuPanel {
+  - gl: GroupLayout
+  - currentWidth: int
+  - speed: int
+  - isOpen: boolean
+  - frame: JFrame
+  - sideBar: JPanel
+  - mainContentPanel: JPanel
+  - minWidth: int
+  - responsiveMinWidth: int
+  - menuBar: JPanel
+  - maxWidth: int
+  - isEnabled: boolean
+}
+enum State << enumeration >> {
+  + TX: 
+  + WI: 
+  + AR: 
+  + GA: 
+  + OH: 
+  + CT: 
+  + ID: 
+  + CO: 
+  + NV: 
+  + OR: 
+  + VT: 
+  + OK: 
+  + NY: 
+  + DE: 
+  + HI: 
+  + KS: 
+  + NJ: 
+  + AL: 
+  + SC: 
+  + WV: 
+  + WA: 
+  + NM: 
+  + LA: 
+  + CA: 
+  + PA: 
+  - state: String
+  + MI: 
+  + AZ: 
+  + MN: 
+  + NH: 
+  + RI: 
+  + ND: 
+  + FL: 
+  + IA: 
+  + SD: 
+  + WY: 
+  + VA: 
+  + TN: 
+  + IL: 
+  + UT: 
+  + MA: 
+  + KY: 
+  + ME: 
+  + IN: 
+  + MD: 
+  + MT: 
+  + MO: 
+  + NC: 
+  + AK: 
+  + NE: 
+  + MS: 
+}
+class StringHelper {
+  + Empty: String
+}
+class Tile {
+  - DefaultColor: int
+  - MouseHoverColor: int
+  - MousePressedColor: int
+}
+class TileManager {
+  + Title: String
+  - parentWindow: Window
+}
+class Volunteer {
+  - activityHistory: ArrayList<ActivityInfo>
+  - serialVersionUID: long
+}
+class VolunteerCheckout {
+  - modelDialog: JDialog
+  - recentVolunteersComboBox: JComboBox<Volunteer>
+  - checkoutVolunteer: Volunteer
+}
+class VolunteerHome {
+  - checkinTile: Tile
+  ~ pantryName: String
+  - checkoutTile: Tile
+  - recentVolunteers: ArrayList<Volunteer>
+}
+class VolunteerInfo {
+  - activitiesComboBox: JComboBox<Activities>
+  - recentActivity: ActivityInfo
+  ~ checkInTime: JTextField
+}
+class VolunteerManagerCard {
+  - volunteerTable: VolunteerTable
+  ~ comboBox: JComboBox
+  ~ searchNameField: JTextField
+  + Title: String
+  - removeButton: JButton
+  - removeLabel: String
+}
+class VolunteerRegistration
+class VolunteerTable {
+  - selectionChangeListener: ITableSelectionChangeListener
+  - volunteerModel: VolunteerTableModel
+  - sorter: TableRowSorter<VolunteerTableModel>
+  - selectedRowColor: Color
+  - tableListSelectionModel: ListSelectionModel
+}
+class VolunteerTableModel {
+  - COLUMN_NAMES: String[]
+}
+
+Activities                     +-[#820000,plain]-  ActivityInfo                  
+Consumer                       -[#000082,plain]-^  Person                        
+ConsumerInfo                   -[#000082,plain]-^  PersonInfo                    
+ConsumerTableModel             -[#000082,plain]-^  RowTableModel                 
+DistributionHome               -[#008200,dashed]-^  IHome                         
+DistributionHome               -[#008200,dashed]-^  IPantryData                   
+DistributionHome               -[#008200,dashed]-^  ITableSelectionChangeListener 
+Employee                       -[#000082,plain]-^  Person                        
+EmployeeInfo                   -[#000082,plain]-^  PersonInfo                    
+EmployeeRole                   +-[#820000,plain]-  Employee                      
+EmployeeTableModel             -[#000082,plain]-^  RowTableModel                 
+FileAdapter                    -[#008200,dashed]-^  IDataConnector                
+IDType                         +-[#820000,plain]-  Identity                      
+ManagementHome                 -[#008200,dashed]-^  IHome                         
+PantryData                     -[#008200,dashed]-^  IPantryData                   
+Volunteer                      -[#000082,plain]-^  Person                        
+VolunteerHome                  -[#008200,dashed]-^  IHome                         
+VolunteerInfo                  -[#000082,plain]-^  PersonInfo                    
+VolunteerManagerCard           -[#008200,dashed]-^  ITableSelectionChangeListener 
+VolunteerTableModel            -[#000082,plain]-^  RowTableModel                 
+@enduml

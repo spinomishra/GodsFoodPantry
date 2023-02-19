@@ -9,7 +9,7 @@ import java.awt.event.*;
 
 /**
  * This application works in 3 different modes
- * 1. Privileged Management\
+ * 1. Privileged Management
  * 2. Volunteer checkin/checkout
  * 3. Food Distribution record keeping
  * This class presents users an opportunity to choose one of the modes for application
@@ -20,27 +20,28 @@ public class ExecutionModeSelection extends JDialog implements ActionListener {
     /**
      * Remember Me flag
      */
-    public boolean rememberMe ;
+    public boolean rememberMe;
     /**
      * Selected execution mode
      */
-    public String  executionMode ;
+    public String executionMode;
 
     /**
      * Constructor
-     * @param mode current execution mode
+     *
+     * @param mode  current execution mode
      * @param title Title of this dialog
      */
-    public ExecutionModeSelection(String mode, String title){
+    public ExecutionModeSelection(String mode, String title) {
         super(null, title, Dialog.ModalityType.DOCUMENT_MODAL);
-        executionMode = (mode!=null?mode:"") ;
+        executionMode = (mode != null ? mode : "");
         initComponents();
     }
 
     /**
      * Initializes dialogs child components/controls
      */
-    private void initComponents(){
+    private void initComponents() {
         //setSize(new Dimension(400, 300));
         setResizable(false);
 
@@ -52,15 +53,15 @@ public class ExecutionModeSelection extends JDialog implements ActionListener {
         // set borders for the dialog pane
         dialogPane.setBorder(new EmptyBorder(12, 12, 12, 12));
         dialogPane.setBorder(new CompoundBorder(
-                new TitledBorder(new EmptyBorder(0,0,0,0), "",
+                new TitledBorder(new EmptyBorder(0, 0, 0, 0), "",
                         TitledBorder.CENTER, TitledBorder.BOTTOM,
-                        new Font("Dialog", java.awt.Font.BOLD,12),
-                        Color.RED),dialogPane. getBorder()));
+                        new Font("Dialog", java.awt.Font.BOLD, 12),
+                        Color.RED), dialogPane.getBorder()));
         dialogPane.setLayout(new BorderLayout());
 
-        JLabel label = new JLabel() ;
+        JLabel label = new JLabel();
         String info = "<br/>PantryWare executes in 3 modes. <br/>Please choose one of the modes for this execution instance!";
-        String msg = "<html><body><p style='width: 300px;'>"+info+"</p><br></body></html>";
+        String msg = "<html><body><p style='width: 300px;'>" + info + "</p><br></body></html>";
         label.setForeground(new Color(0xD77500));
         label.setText(msg);
         label.setBorder(BorderFactory.createRaisedBevelBorder());
@@ -71,13 +72,13 @@ public class ExecutionModeSelection extends JDialog implements ActionListener {
 
         JPanel buttonPane = new JPanel(new FlowLayout());
         JButton okButton = new JButton("OK");
-        okButton.setPreferredSize(new Dimension(80,30));
+        okButton.setPreferredSize(new Dimension(80, 30));
         okButton.setActionCommand("OK");
         okButton.addActionListener(this);
         buttonPane.add(okButton);
 
         JButton cancelButton = new JButton("Cancel");
-        cancelButton.setPreferredSize(new Dimension(80,30));
+        cancelButton.setPreferredSize(new Dimension(80, 30));
         cancelButton.setActionCommand("Cancel");
         cancelButton.addActionListener(this);
         buttonPane.add(cancelButton);
@@ -91,6 +92,7 @@ public class ExecutionModeSelection extends JDialog implements ActionListener {
 
     /**
      * Creates a panel containing different options
+     *
      * @return The JPanel object
      */
     private JPanel getOptionsPanel() {
@@ -129,7 +131,7 @@ public class ExecutionModeSelection extends JDialog implements ActionListener {
         choicePanel.add(privMangement);
         choicePanel.add(volunteerTimeLog);
         choicePanel.add(foodDistributionLog);
-        ButtonGroup bg=new ButtonGroup();
+        ButtonGroup bg = new ButtonGroup();
         bg.add(privMangement);
         bg.add(volunteerTimeLog);
         bg.add(foodDistributionLog);
@@ -138,13 +140,13 @@ public class ExecutionModeSelection extends JDialog implements ActionListener {
         choicePanel.add(new Box.Filler(minSize, minSize, minSize));
 
         JCheckBox checkBox = new JCheckBox("Remember my execution mode selection");
-        Font font = new Font("Serif", Font.BOLD|Font.ITALIC, 14);
+        Font font = new Font("Serif", Font.BOLD | Font.ITALIC, 14);
         checkBox.setFont(font);
         //checkBox.setForeground(new Color(0xD78200));
         checkBox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                rememberMe = (e.getStateChange() == 1) ? true : false;
+                rememberMe = e.getStateChange() == 1;
             }
         });
         choicePanel.add(checkBox);
@@ -153,6 +155,7 @@ public class ExecutionModeSelection extends JDialog implements ActionListener {
 
     /**
      * Action handler for OK and Cancel button
+     *
      * @param e the event to be processed
      */
     @Override

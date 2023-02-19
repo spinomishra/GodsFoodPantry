@@ -4,10 +4,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.List;
 
 /**
  * Side Menu Panel
@@ -69,6 +69,7 @@ public class SideMenuPanel {
 
     /**
      * Constructor
+     *
      * @param frame - parent frame
      */
     public SideMenuPanel(JFrame frame) {
@@ -86,7 +87,8 @@ public class SideMenuPanel {
 
     /**
      * Constructor
-     * @param frame - parent frame
+     *
+     * @param frame   - parent frame
      * @param content - content panel
      */
     public SideMenuPanel(JFrame frame, JPanel content) {
@@ -106,6 +108,7 @@ public class SideMenuPanel {
 
     /**
      * gets open state of the menu panel
+     *
      * @return true if menu panel is Open, else false
      */
     public boolean getIsOpen() {
@@ -114,6 +117,7 @@ public class SideMenuPanel {
 
     /**
      * Set side menu panel as open or closed
+     *
      * @param isOpen true if side menu panel is Open, else false
      */
     public void setIsOpen(boolean isOpen) {
@@ -122,6 +126,7 @@ public class SideMenuPanel {
 
     /**
      * gets the minimum responsive width of the side menu panel
+     *
      * @return minimim responsive width
      */
     public int getResponsiveMinWidth() {
@@ -130,6 +135,7 @@ public class SideMenuPanel {
 
     /**
      * Sets responsive with for the menu panel
+     *
      * @param responsiveWidth width
      */
     public void setResponsiveMinWidth(int responsiveWidth) {
@@ -138,6 +144,7 @@ public class SideMenuPanel {
 
     /**
      * get Speed for the menu panel to expand and collapse
+     *
      * @return speed
      */
     public int getSpeed() {
@@ -146,6 +153,7 @@ public class SideMenuPanel {
 
     /**
      * Set speed for the menu panel expansion and collapse
+     *
      * @param speed The Speed
      */
     public void setSpeed(int speed) {
@@ -157,6 +165,7 @@ public class SideMenuPanel {
 
     /**
      * Get minimum width
+     *
      * @return minimum width
      */
     public int getMinWidth() {
@@ -165,6 +174,7 @@ public class SideMenuPanel {
 
     /**
      * Get maximum width
+     *
      * @return maximum width
      */
     public int getMaxWidth() {
@@ -173,6 +183,7 @@ public class SideMenuPanel {
 
     /**
      * Get SideBar panel
+     *
      * @return The panel
      */
     public JPanel getSideBar() {
@@ -181,6 +192,7 @@ public class SideMenuPanel {
 
     /**
      * Get Main content panel
+     *
      * @return The main content panel
      */
     public JPanel getMainContentPanel() {
@@ -189,6 +201,7 @@ public class SideMenuPanel {
 
     /**
      * Is animation enabled or not
+     *
      * @return enable flag
      */
     public boolean getMainAnimation() {
@@ -197,6 +210,7 @@ public class SideMenuPanel {
 
     /**
      * Sets menu panel's minimum width
+     *
      * @param min minimum width
      */
     public void setMinWidth(int min) {
@@ -205,6 +219,7 @@ public class SideMenuPanel {
 
     /**
      * Set Maximum width for side menu panel when expanded
+     *
      * @param max Maximum width
      */
     public void setMaxWidth(int max) {
@@ -213,6 +228,7 @@ public class SideMenuPanel {
 
     /**
      * Set Main content panel
+     *
      * @param mainContentPanel
      */
     public void setMainContentPanel(JPanel mainContentPanel) {
@@ -221,6 +237,7 @@ public class SideMenuPanel {
 
     /**
      * sets flag to enable menu panel animation
+     *
      * @param isEnabled true or false
      */
     public void setMainAnimation(boolean isEnabled) {
@@ -340,6 +357,7 @@ public class SideMenuPanel {
 
     /**
      * Set Group layout component size
+     *
      * @param size size
      */
     private void setGLSize(int size) {
@@ -363,7 +381,7 @@ public class SideMenuPanel {
     /**
      * Create SideBar
      */
-    private void createSideBar(){
+    private void createSideBar() {
         sideBar = new javax.swing.JPanel();
         int defaultWidth = 100;
 
@@ -374,16 +392,17 @@ public class SideMenuPanel {
 
     /**
      * Add menu items to the sidebar panel
+     *
      * @param menuItems list of menu items
      */
-    public void addMenu(List<SideMenuItem> menuItems)  {
+    public void addMenu(List<SideMenuItem> menuItems) {
         int nItems = menuItems.size();
 
         GridLayout sidebarLayout = new SideMenuGridLayout(nItems, 1, 7, 15);
         sideBar.setLayout(sidebarLayout);
         //sideBar.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
 
-        for (SideMenuItem menuItem : menuItems ){
+        for (SideMenuItem menuItem : menuItems) {
             sideBar.add(menuItem);
         }
         sidebarLayout.layoutContainer(sideBar);

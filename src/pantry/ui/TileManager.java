@@ -15,12 +15,12 @@ public class TileManager extends JPanel {
     /**
      * Parent Window
      */
-    private Window  parentWindow;
+    private final Window parentWindow;
 
     /**
      * Constructor
      */
-    public TileManager(JFrame parent){
+    public TileManager(JFrame parent) {
         parentWindow = parent;
         initLayout();
     }
@@ -28,7 +28,7 @@ public class TileManager extends JPanel {
     /**
      * initialize layout for the TileManager
      */
-    private void initLayout(){
+    private void initLayout() {
         var layout = new GridBagLayout();
         setLayout(layout);
     }
@@ -46,10 +46,11 @@ public class TileManager extends JPanel {
 
     /**
      * Adds specified component relative to the last component added to the gridbaglayout.
+     *
      * @param comp component to be added
      */
     private void addComponentAtFirstAvailablePosition(Component comp) {
-        GridBagLayout layout = (GridBagLayout)this.getLayout();
+        GridBagLayout layout = (GridBagLayout) this.getLayout();
 
         // it is possible to reuse the same GridBagConstraints instance for multiple components, even if the
         // components have different constraints. However, it is recommended that you do not reuse GridBagConstraints,
@@ -61,7 +62,7 @@ public class TileManager extends JPanel {
         //gridBagConstraints.fill = GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 0.25;
         gridBagConstraints.weighty = 0.25;
-        gridBagConstraints.insets = new Insets(5,5,5,5);  //top padding
+        gridBagConstraints.insets = new Insets(5, 5, 5, 5);  //top padding
         layout.setConstraints(comp, gridBagConstraints);
     }
 }

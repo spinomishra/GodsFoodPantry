@@ -23,11 +23,6 @@ import java.util.Map;
  */
 public class ManagementHome extends JFrame implements IHome {
     /**
-     * Pantry Name
-     */
-    String pantryName;
-
-    /**
      * Main Panel
      */
     MainPanel mainPanel;
@@ -35,7 +30,7 @@ public class ManagementHome extends JFrame implements IHome {
     /**
      * Map of cards for main panel
      */
-    Map<String, JPanel>  mainPanelCards ;
+    Map<String, JPanel> mainPanelCards;
 
     /**
      * Side Menu Panel
@@ -49,10 +44,8 @@ public class ManagementHome extends JFrame implements IHome {
 
     /**
      * Constructor
-     * @param pn Pantry Name
      */
-    ManagementHome(String pn){
-        pantryName = pn;
+    ManagementHome() {
         mainPanelCards = new HashMap<String, JPanel>();
     }
 
@@ -80,7 +73,7 @@ public class ManagementHome extends JFrame implements IHome {
              */
             @Override
             public void windowClosing(WindowEvent e) {
-                handleClosing() ;
+                handleClosing();
             }
         });
 
@@ -105,7 +98,7 @@ public class ManagementHome extends JFrame implements IHome {
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE);
 
-        if (result == JOptionPane.YES_OPTION){
+        if (result == JOptionPane.YES_OPTION) {
             Pantry.getInstance().Close();
             System.exit(0);
         }
@@ -114,7 +107,7 @@ public class ManagementHome extends JFrame implements IHome {
     /**
      * Initializes home screen
      */
-    private  void initHome() {
+    private void initHome() {
         mainPanel = new MainPanel(this);
         ShowDashboard();
     }
@@ -122,8 +115,8 @@ public class ManagementHome extends JFrame implements IHome {
     /**
      * Shows management dashboard
      */
-    private void ShowDashboard(){
-        setTitle(Home.getDefaultPageTitle() +  " - Management");
+    private void ShowDashboard() {
+        setTitle(Home.getDefaultPageTitle() + " - Management");
         setSize(800, 600);
 
         // main screen
@@ -169,9 +162,10 @@ public class ManagementHome extends JFrame implements IHome {
 
     /**
      * Create menu items list
+     *
      * @return list of menu items
      */
-    private List<SideMenuItem> CreateMenuList(){
+    private List<SideMenuItem> CreateMenuList() {
         JFrame mainFrame = this;
         List<SideMenuItem> menuItems = new java.util.ArrayList<SideMenuItem>();
         try {
@@ -188,8 +182,7 @@ public class ManagementHome extends JFrame implements IHome {
                     mainPanel.Show(VolunteerManagerCard.Title);
                 }
             }));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

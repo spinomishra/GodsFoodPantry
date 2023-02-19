@@ -1,13 +1,9 @@
 package pantry.volunteer.ui;
 
 import pantry.data.RowTableModel;
-import pantry.distribution.Consumer;
-import pantry.distribution.ui.ConsumerTableModel;
-import pantry.employee.Employee;
 import pantry.helpers.DateHelper;
 import pantry.helpers.PhoneHelper;
 import pantry.helpers.StringHelper;
-import pantry.person.Identity;
 import pantry.volunteer.ActivityInfo;
 import pantry.volunteer.Volunteer;
 
@@ -16,11 +12,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 
+/**
+ * Class to manage custom data model for the volunteer table.
+ */
 public class VolunteerTableModel extends RowTableModel<Volunteer> {
     /**
      * Volunteer table columns
      */
-    private static String[] COLUMN_NAMES = {
+    private static final String[] COLUMN_NAMES = {
             "#",
             "Full Name",
             "Phone #",
@@ -47,6 +46,7 @@ public class VolunteerTableModel extends RowTableModel<Volunteer> {
 
     /**
      * Constructor
+     *
      * @param volunteers List of volunteers
      */
     VolunteerTableModel(ArrayList<Volunteer> volunteers) {
@@ -62,12 +62,13 @@ public class VolunteerTableModel extends RowTableModel<Volunteer> {
 
     /**
      * Makes column cell editable
+     *
      * @param row the row whose value is to be queried
      * @param col the col which will be editable or otherwise
      * @return true if editable, else false
      */
     public boolean isCellEditable(int row, int col) {
-        return (col == 2 || col == 3) ? true : false;
+        return col == 2 || col == 3 || col == 5;
     }
 
     /**
@@ -117,19 +118,19 @@ public class VolunteerTableModel extends RowTableModel<Volunteer> {
 
     /**
      * When column cells are
-     * @param value   value to assign to cell
-     * @param row   row of cell
-     * @param column  column of cell
+     *
+     * @param value  value to assign to cell
+     * @param row    row of cell
+     * @param column column of cell
      */
     @Override
-    public void setValueAt(Object value, int row, int column)
-    {
+    public void setValueAt(Object value, int row, int column) {
         if (row < modelData.size()) {
             Volunteer e = getRow(row);
 
             switch (column) {
                 case 2:
-                    e.setContactPhone((String)value);
+                    e.setContactPhone((String) value);
                     break;
                 case 3:
                     e.setAddress((String) value);
@@ -138,6 +139,30 @@ public class VolunteerTableModel extends RowTableModel<Volunteer> {
                     e.getActivityHistory();
                 }
                 break;
+
+                case 5:
+                    try {
+                        var activityInfo = e.getActivityHistory().get(0);
+                        if (activityInfo != null) {
+                            if (value instanceof Date)
+                                activityInfo.setEndTime(DateHelper.toLocalDateTime((Date) value));
+                            else if (value instanceof String) {
+                                String temp = (String) value;
+                                temp = temp.replace("+", "");
+                                temp = temp.replace("hours", "");
+                                temp = temp.trim();
+                                String[] tokens = temp.split(":");
+                                int hrs = Integer.parseInt(tokens[0]);
+                                int min = Integer.parseInt(tokens[1]);
+                                LocalDateTime checkoutTime = activityInfo.getStartTime();
+                                checkoutTime = checkoutTime.plusHours(hrs);
+                                checkoutTime = checkoutTime.plusMinutes(min);
+                                activityInfo.setEndTime(checkoutTime);
+                            }
+                        }
+                    } catch (Exception ex) {
+                        // do nothing
+                    }
             }
 
             fireTableCellUpdated(row, column);

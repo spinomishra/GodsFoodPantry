@@ -12,7 +12,7 @@ public class Identity implements Serializable {
     /**
      * Identity type used for person identification
      */
-    public static enum IDType {
+    public enum IDType {
         DriverLicense, // Driver License
         PassPort, // Passport
         StateId, // State issued Identity
@@ -26,21 +26,25 @@ public class Identity implements Serializable {
     /**
      * Identity number
      */
-    public String  Number;
-    /**
-     * Date of Birth
-     */
-    //public String DOB ;
+    public String Number;
+
     /**
      * Date when ID was issued
      */
     public String IssuedOn;
+
     /**
      * Dare when ID will expiry
      */
+
     public String ExpiresOn;
     /**
      * State that issues ID
      */
     public String IssuedByState;
+
+    /**
+     * Race
+     */
+    public int Race;
 }

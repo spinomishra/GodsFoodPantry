@@ -11,12 +11,14 @@ import java.io.ObjectOutputStream;
 public interface IPantryData {
     /**
      * Read from input stream
-     * @param ois  ObjectInputStream object
+     *
+     * @param ois ObjectInputStream object
      */
-    void ReadFrom(ObjectInputStream ois) throws IOException, ClassNotFoundException ;
+    void ReadFrom(ObjectInputStream ois) throws IOException, ClassNotFoundException;
 
     /**
      * Write to output stream
+     *
      * @param oos output stream
      * @throws IOException input output exception
      */

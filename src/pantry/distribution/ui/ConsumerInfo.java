@@ -20,7 +20,7 @@ import java.awt.event.ItemListener;
  * This class implements integrisign's IDocInfo interface. This interface defines methods that needs to be implemented by
  * the host application to bind the content to the signature that is being captured.
  */
-public class ConsumerInfo extends PersonInfo implements integrisign.IDocInfo{
+public class ConsumerInfo extends PersonInfo implements integrisign.IDocInfo {
     ////////////////// Controls Begin /////////////////////////////
     /**
      * Identity type combo box
@@ -71,6 +71,7 @@ public class ConsumerInfo extends PersonInfo implements integrisign.IDocInfo{
 
     /**
      * Constructor
+     *
      * @param frame - parent component
      * @param title - dialog title box
      */
@@ -80,9 +81,10 @@ public class ConsumerInfo extends PersonInfo implements integrisign.IDocInfo{
 
     /**
      * Add tab control to capture Consumer information
+     *
      * @param tabbedPane The tabbed pane control.
      */
-    protected void addTabs(JTabbedPane tabbedPane){
+    protected void addTabs(JTabbedPane tabbedPane) {
         super.addTabs(tabbedPane);
 
         JPanel containerPanel = createNewTab(tabbedPane, "Identity", null);
@@ -121,8 +123,7 @@ public class ConsumerInfo extends PersonInfo implements integrisign.IDocInfo{
                 issuedOn.setActionCommand("issuedOn");
                 issuedOn.getDocument().addDocumentListener(this);
                 panel.add(issuedOn, BorderLayout.CENTER);
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 JOptionPane.showMessageDialog(getParent(), ex.getMessage());
             }
 
@@ -138,8 +139,7 @@ public class ConsumerInfo extends PersonInfo implements integrisign.IDocInfo{
                 expiryFld.setActionCommand("expiresOn");
                 expiryFld.getDocument().addDocumentListener(this);
                 panel.add(expiryFld, BorderLayout.CENTER);
-            }
-            catch (Exception ex){
+            } catch (Exception ex) {
                 JOptionPane.showMessageDialog(getParent(), ex.getMessage());
             }
 
@@ -189,9 +189,9 @@ public class ConsumerInfo extends PersonInfo implements integrisign.IDocInfo{
             Dimension minimalSize = new Dimension(160, 120);
             deskSign1.setPreferredSize(minimalSize);
             deskSign1.setSize(minimalSize);
-            deskSign1.setBounds(2, 2, Short.MAX_VALUE, Short.MAX_VALUE) ;
+            deskSign1.setBounds(2, 2, Short.MAX_VALUE, Short.MAX_VALUE);
 
-            var tablePanelBorder = BorderFactory.createEmptyBorder(5,5,5,5);
+            var tablePanelBorder = BorderFactory.createEmptyBorder(5, 5, 5, 5);
             deskSign1.setBorder(tablePanelBorder);
             panel.add(deskSign1, BorderLayout.CENTER);
 
@@ -202,10 +202,11 @@ public class ConsumerInfo extends PersonInfo implements integrisign.IDocInfo{
     /**
      * Add action buttons to the UI
      * This specific override adds "Sign Now" to initialize inkPad
+     *
      * @return The JPanel object
      */
     @Override
-    protected JPanel addActionControls(){
+    protected JPanel addActionControls() {
         JPanel actionPanel = super.addActionControls();
 
         Dimension btnSize = new Dimension(108, 30);
@@ -218,7 +219,7 @@ public class ConsumerInfo extends PersonInfo implements integrisign.IDocInfo{
         signNow.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                SignNow() ;
+                SignNow();
             }
         });
         signNow.setEnabled(false);
@@ -235,6 +236,7 @@ public class ConsumerInfo extends PersonInfo implements integrisign.IDocInfo{
      * using existing signature info, user details
      * like Name, Designation, Organization, Address can
      * be queried if they are set.
+     *
      * @param iGrabber IGrabber object
      */
     @Override
@@ -246,6 +248,7 @@ public class ConsumerInfo extends PersonInfo implements integrisign.IDocInfo{
 
     /**
      * Get the version for the signature data
+     *
      * @return version info
      */
     @Override
@@ -255,11 +258,22 @@ public class ConsumerInfo extends PersonInfo implements integrisign.IDocInfo{
 
     /**
      * Get document IDd
+     *
      * @return empty string as doc ID
      */
     @Override
     public String getDocID() {
         return "";
+    }
+
+    /**
+     * Can collect Date of birth information for the consumer
+     *
+     * @return true always
+     */
+    @Override
+    protected boolean canCollectDOB() {
+        return true;
     }
 
     /**
@@ -290,47 +304,48 @@ public class ConsumerInfo extends PersonInfo implements integrisign.IDocInfo{
      */
     private void SignNow() {
         try {
-            deskSign1.setSignThickness((byte)1);
+            deskSign1.setSignThickness((byte) 1);
             deskSign1.setForeground(Color.BLUE);
             deskSign1.setOpaque(false);
 
             if (deskSign1.isSigned()) {
                 deskSign1.clear();
-                deskSign1.signNowEx(idNumber.getText().trim(), nameTextBox.getText().trim(),"", "", addressTextBox.getText().trim(),"", false,  (integrisign.IDocInfo)this);
+                deskSign1.signNowEx(idNumber.getText().trim(), nameTextBox.getText().trim(), "", "", addressTextBox.getText().trim(), "", false, this);
             } else {
-                deskSign1.signNowEx(idNumber.getText().trim(), nameTextBox.getText().trim(),"", "", addressTextBox.getText().trim(),"", false,  (integrisign.IDocInfo)this);
+                deskSign1.signNowEx(idNumber.getText().trim(), nameTextBox.getText().trim(), "", "", addressTextBox.getText().trim(), "", false, this);
             }
 
             deskSign1.setOpaque(true);
             // update the state for OK button
             insertUpdate(null);
-        }
-        catch(Exception ex){
-            JOptionPane.showMessageDialog(this, ex.getMessage(),"Signature", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Signature", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     /**
      * Handles mouse click event on OK button
+     *
      * @param e The ActionEvent object
      */
-    protected void onOKButtonClicked(ActionEvent e){
+    protected void onOKButtonClicked(ActionEvent e) {
         super.onOKButtonClicked(e);
     }
 
     /**
      * Prompt to record consumer information before consumer receives food distribution
+     *
      * @param parent Parent frame object
      * @return Consumer object
      */
     public static Consumer RecordInformationManually(JFrame parent) {
-        var  pInfo = new ConsumerInfo(parent, "Food Distribution-Consumer Info");
+        var pInfo = new ConsumerInfo(parent, "Food Distribution-Consumer Info");
         pInfo.pack();
         pInfo.setVisible(true);
 
         Consumer consumer = (pInfo.option == JOptionPane.OK_OPTION) ?
-                                    consumer = new Consumer(pInfo)
-                                    : null;
+                consumer = new Consumer(pInfo)
+                : null;
 
         // dispose pInfo NOW
         pInfo.dispose();

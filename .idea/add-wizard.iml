@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_11">
+    <output url="file://$MODULE_DIR$/production/add-wizard" />
+    <output-test url="file://$MODULE_DIR$/test/add-wizard" />
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" exported="" name="SDK" level="project" />
+    <orderEntry type="library" name="jasperreports-6.20.0" level="project" />
+    <orderEntry type="library" exported="" name="g-wiz-1.0.1" level="project" />
+  </component>
+</module>

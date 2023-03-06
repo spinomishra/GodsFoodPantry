@@ -5,8 +5,12 @@ import pantry.distribution.Consumer;
 import pantry.helpers.DateHelper;
 import pantry.helpers.State;
 import pantry.person.Identity;
+import pantry.person.ui.IdentityInfoPage;
+import pantry.person.ui.PersonInfoPage;
 import pantry.person.ui.PersonInfo;
+import se.gustavkarlsson.gwiz.Wizard;
 
+import pantry.ui.wizard.*;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import java.awt.*;
@@ -14,6 +18,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.Date;
 
 /**
  * ConsumerInfo class represents UI to capture consumer information about individuals/groups that receive the food distribution.
@@ -339,17 +344,45 @@ public class ConsumerInfo extends PersonInfo implements integrisign.IDocInfo {
      * @return Consumer object
      */
     public static Consumer RecordInformationManually(JFrame parent) {
-        var pInfo = new ConsumerInfo(parent, "Food Distribution-Consumer Info");
-        pInfo.pack();
-        pInfo.setVisible(true);
+        //JFrameWizard wizard = new JFrameWizard("My new wizard");
+        WizardDialog wizard = new WizardDialog(parent, "Food Distribution-Consumer Info");
+        wizard.setMinimumSize(new Dimension(500, 300));
+        WizardController wizardController = new WizardController(wizard);
 
-        Consumer consumer = (pInfo.option == JOptionPane.OK_OPTION) ?
-                consumer = new Consumer(pInfo)
-                : null;
+        // pages of the wizard
+        PersonInfoPage basicIdentityPage = new PersonInfoPage() ;
+        IdentityInfoPage identityInfoPage = new IdentityInfoPage();
+        DistributionConfirmationPage distributionConfirmationPage = new DistributionConfirmationPage();
 
-        // dispose pInfo NOW
-        pInfo.dispose();
+        // order the pages
+        basicIdentityPage.setNextPage(identityInfoPage);
+        identityInfoPage.setNextPage(distributionConfirmationPage);
 
-        return consumer;
+        // set the beginning page
+        wizardController.startWizard(basicIdentityPage);
+
+        final Consumer[] consumers = {null};
+        wizard.addCloseListener(new WizardClosingListener(){
+            @Override
+            public void wizardClosing(Wizard wizard, boolean finish) {
+                super.wizardClosing(wizard, finish);
+                if (finish){
+                    Consumer consumer = null;
+                    consumer = new Consumer(basicIdentityPage.getPersonName());
+                    basicIdentityPage.ReadControlsInto(consumer);
+
+                    Identity identity = consumer.getIdentityInfo();
+                    identityInfoPage.ReadControlsInto(identity);
+
+                    distributionConfirmationPage.ReadControlsInto(consumer);
+
+                    consumers[0] = consumer;
+                }
+            }
+        });
+
+        wizard.setVisible(true);
+
+        return consumers[0];
     }
 }

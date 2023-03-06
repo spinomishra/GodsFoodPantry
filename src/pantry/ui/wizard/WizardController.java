@@ -1,11 +1,18 @@
 package pantry.ui.wizard;
-import javax.swing.AbstractButton;
+
+import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.EmptyStackException;
+import java.util.List;
+import java.util.Stack;
+
+import javax.swing.AbstractButton;
+import se.gustavkarlsson.gwiz.Wizard;
 
 /**
- * A controller for a {@link Wizard}. Used to control navigation,
- * setting the correct {@link AbstractWizardPage}, and
+ * A controller for a {@link Wizard}. Used to control navigation, setting the correct {@link AbstractWizardPage}, and
  * keeping tack of history.
  *
  * @author Gustav Karlsson <gustav.karlsson@gmail.com>
@@ -104,6 +111,12 @@ public class WizardController {
     }
 
     /**
+     * Get Wizrd
+     * @return Wizard object
+     */
+    public Wizard getWizard() {return wizard;}
+
+    /**
      * Gets the current page of the wizard.
      *
      * @return the current page of the wizard
@@ -111,6 +124,21 @@ public class WizardController {
     public AbstractWizardPage getCurrentPage() {
         return currentPage;
     }
+
+    /**
+     * Gets the current page of the wizard.
+     * @param pageTitle page Title
+     * @return the current page of the wizard
+     */
+    public AbstractWizardPage getPage(String pageTitle) {
+        for (AbstractWizardPage page : getPageHistoryList()){
+            if (page.getPageTitle() == pageTitle)
+                return page;
+        }
+
+        return null;
+    }
+
 
     /**
      * Gets a list of the pages in the page history. The list does not contain the current page. Modifications to the

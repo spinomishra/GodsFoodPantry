@@ -178,4 +178,17 @@ public class Consumer extends Person {
                 throw new UnsupportedOperationException();
         }
     }
+
+    public void setGroupNumber(short grpNumber) {
+        this.groupMember = grpNumber;
+    }
+
+    public void setGroupFlag(boolean groupOn) {
+        this.group = groupOn;
+    }
+
+    public void setSignatureInfo(String sign, String png) {
+        signature=sign;
+        signaturePNG = png;
+    }
 }

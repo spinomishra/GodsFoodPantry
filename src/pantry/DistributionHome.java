@@ -502,7 +502,7 @@ public class DistributionHome extends JFrame implements IHome, ActionListener, p
         Consumer consumer = ((ConsumerTableModel) table.getModel()).getRow(row);
         if (consumer != null) {
             Image image = consumer.getSignatureImage();
-            if (signatureDisplayControl != null) {
+            if (image != null && signatureDisplayControl != null) {
                 signatureDisplayControl.setIcon(new ImageIcon(image));
             }
         }

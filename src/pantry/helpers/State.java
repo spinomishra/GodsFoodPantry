@@ -53,7 +53,8 @@ public enum State {
     MS("Mississippi"),
     WI("Wisconsin"),
     MO("Missouri"),
-    WY("Wyoming");
+    WY("Wyoming"),
+    OT("");
 
     private final String state;
 
